@@ -2,7 +2,7 @@
 
 title:            Random stuff on random stuff
 locale:           en_US
-url:              http://localhost:4000
+url:              //leucos.github.io
 
 
 # Jekyll configuration
@@ -27,7 +27,7 @@ kramdown:
 # Site owner
 owner:
   name: Michel Blanc
-  avatar: mb.jpg
+  avatar: bio-photo.jpg
   bio: "Long time sysadmin with DevOps tendencies"
   email: mb@mbnet.fr
   disqus-shortname: randomstuffonrandomstuff

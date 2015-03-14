@@ -3,6 +3,7 @@ _site
 .DS_Store
 *.sublime-project
 *.sublime-workspace
+.tags
 codekit-config.json
 node_modules
 _asset_bundler_cache
