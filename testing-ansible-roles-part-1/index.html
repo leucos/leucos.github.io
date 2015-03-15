@@ -1,0 +1,438 @@
+<!doctype html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if (IE 7)&!(IEMobile)]><html class="no-js lt-ie9 lt-ie8" lang="en"><![endif]-->
+<!--[if (IE 8)&!(IEMobile)]><html class="no-js lt-ie9" lang="en"><![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"><!--<![endif]-->
+<head>
+<meta charset="utf-8">
+<title>Testing Ansible roles, part 1 &#8211; Random stuff on random stuff</title>
+<meta name="description" content="Testing Ansible roles, TDD style, with rolespec, Vagrant and Guard">
+<meta name="keywords" content="ansible, tdd, rolespec, guard, vagrant">
+
+
+
+<!-- Twitter Cards -->
+<meta name="twitter:title" content="Testing Ansible roles, part 1">
+<meta name="twitter:description" content="Testing Ansible roles, TDD style, with rolespec, Vagrant and Guard">
+<meta name="twitter:site" content="@b9m">
+<meta name="twitter:creator" content="@b9m">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://leucos.github.io/images/default-thumb.png">
+
+<!-- Open Graph -->
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Testing Ansible roles, part 1">
+<meta property="og:description" content="Testing Ansible roles, TDD style, with rolespec, Vagrant and Guard">
+<meta property="og:url" content="http://leucos.github.io/testing-ansible-roles-part-1/">
+<meta property="og:site_name" content="Random stuff on random stuff">
+
+
+
+
+
+<link rel="canonical" href="http://leucos.github.io/testing-ansible-roles-part-1/">
+<link href="http://leucos.github.io/feed.xml" type="application/atom+xml" rel="alternate" title="Random stuff on random stuff Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="http://leucos.github.io/assets/css/main.css">
+
+<meta http-equiv="cleartype" content="on">
+
+<!-- HTML5 Shiv and Media Query Support -->
+<!--[if lt IE 9]>
+	<script src="http://leucos.github.io/assets/js/vendor/html5shiv.min.js"></script>
+	<script src="http://leucos.github.io/assets/js/vendor/respond.min.js"></script>
+<![endif]-->
+
+<!-- Modernizr -->
+<script src="http://leucos.github.io/assets/js/vendor/modernizr-2.7.1.custom.min.js"></script>
+
+<link href='//fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700%7CPT+Serif:400,700,400italic' rel='stylesheet' type='text/css'>
+
+<!-- Icons -->
+<!-- 16x16 -->
+<link rel="shortcut icon" href="http://leucos.github.io/favicon.ico">
+<!-- 32x32 -->
+<link rel="shortcut icon" href="http://leucos.github.io/favicon.png">
+<!-- 57x57 (precomposed) for iPhone 3GS, pre-2011 iPod Touch and older Android devices -->
+<link rel="apple-touch-icon-precomposed" href="http://leucos.github.io/images/apple-touch-icon-precomposed.png">
+<!-- 72x72 (precomposed) for 1st generation iPad, iPad 2 and iPad mini -->
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="http://leucos.github.io/images/apple-touch-icon-72x72-precomposed.png">
+<!-- 114x114 (precomposed) for iPhone 4, 4S, 5 and post-2011 iPod Touch -->
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="http://leucos.github.io/images/apple-touch-icon-114x114-precomposed.png">
+<!-- 144x144 (precomposed) for iPad 3rd and 4th generation -->
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="http://leucos.github.io/images/apple-touch-icon-144x144-precomposed.png">
+<link rel="icon" type="image/png" sizes="192x192"  href="http://leucos.github.io/images/android-icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://leucos.github.io/images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="http://leucos.github.io/images/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="http://leucos.github.io/images/favicon-16x16.png">
+
+</head>
+
+<body class="post">
+
+<!--[if lt IE 9]><div class="browser-upgrade alert alert-info">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</div><![endif]-->
+
+<div class="navigation-wrapper">
+	<div class="site-name">
+		<a href="http://leucos.github.io/">Random stuff on random stuff</a>
+	</div><!-- /.site-name -->
+	<div class="top-navigation">
+		<nav role="navigation" id="site-nav" class="nav">
+		    <ul>
+		        
+				    
+				        
+				    
+				    <li><a href="http://leucos.github.io/about/" >About</a></li>
+				
+				    
+				        
+				    
+				    <li><a href="http://leucos.github.io/posts/" >Posts</a></li>
+				
+		    </ul>
+		</nav>
+	</div><!-- /.top-navigation -->
+</div><!-- /.navigation-wrapper -->
+
+
+
+<div id="main" role="main">
+  <div class="article-author-side">
+    
+
+
+<div itemscope itemtype="http://schema.org/Person">
+
+
+	<img src="http://leucos.github.io/images/mb.jpg" class="bio-photo" alt="Michel Blanc bio photo">
+
+
+  <h3 itemprop="name">Michel Blanc</h3>
+  <p>Long time sysadmin with DevOps tendencies</p>
+  <a href="mailto:mb@mbnet.fr" class="author-social" target="_blank"><i class="fa fa-fw fa-envelope-square"></i>Email</a>
+  <a href="http://twitter.com/b9m" class="author-social" target="_blank"><i class="fa fa-fw fa-twitter-square"></i> Twitter</a>
+  
+  
+  <a href="http://linkedin.com/in/michelblanc" class="author-social" target="_blank"><i class="fa fa-fw fa-linkedin-square"></i> LinkedIn</a>
+  
+  
+  <a href="http://github.com/leucos" class="author-social" target="_blank"><i class="fa fa-fw fa-github"></i> Github</a>
+  <a href="http://stackoverflow.com/users/467722/leucos" class="author-social" target="_blank"><i class="fa fa-fw fa-stack-overflow"></i> Stackoverflow</a>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+</div>
+  </div>
+  <article class="post">
+    <div class="headline-wrap">
+      
+        <h1><a href="http://leucos.github.io/testing-ansible-roles-part-1/" rel="bookmark" title="Testing Ansible roles, part 1">Testing Ansible roles, part 1</a></h1>
+      
+    </div><!--/ .headline-wrap -->
+    <div class="article-wrap">
+      <p><a href="https://github.com/nickjj/rolespec/">RoleSpec</a> does a great job helping out
+testing your roles. It is maintained and used primarily to test the
+<a href="https://github.com/debops/debops">debops</a> role suite. RoleSpec handles all the
+boiler plate to run tests (installing the right version of Ansible, adjusting
+paths, taking care of the inventory, wrapping your role in a playbook, …) and
+privides a simple DSL to write tests.</p>
+
+<p>However, in its current state, RoleSpec is mostly intended to run a test suite
+on travis. And this test suite is separated from your role.</p>
+
+<p>I personally prefer to have my role tests along the Ansible role, in a <code>tests</code> directory.</p>
+
+<p>We see below how we can achieve this with RoleSpec, and will leverage Vagrant
+for this. We’ll also use Guard to continuously test our role while writing it.</p>
+
+<h2 id="a-simple-role">A simple role</h2>
+
+<p>Let’s start by creating a simple nginx role:</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">mkdir -p ansible-nginx/<span class="o">{</span>defaults,handlers,tasks,templates,tests/ansible-nginx/inventory<span class="o">}</span></code></pre></div>
+
+<p>The <code>tests</code> directory will be sued for our tests later.</p>
+
+<p>If you already have a role want to convert it, create <code>tests/ansible-
+nginx/inventory</code> and skip to 
+<a href="#creating-the-vagrant-machine">Creating the Vagrant machine</a>.</p>
+
+<h3 id="defaults">Defaults</h3>
+
+<p>In <code>default/main.yml</code>, we’ll declare a few default values for our role. We won’t do much,
+in our role, just install nginx and set a few variables, so let’s keep this
+simple:</p>
+
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">nginx_root</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/var/lib/nginx/</span>
+<span class="l-Scalar-Plain">nginx_worker_connections</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">1024</span>
+<span class="l-Scalar-Plain">nginx_ie8_support</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">yes</span>
+<span class="l-Scalar-Plain">nginx_port</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">80</span></code></pre></div>
+
+<h3 id="handlers">Handlers</h3>
+
+<p>For the handlers part, <code>handlers/main.yml</code> will contain a basic restart handler, followed by a port check for good measure:</p>
+
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="p-Indicator">-</span> <span class="l-Scalar-Plain">name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">Restart nginx</span>
+  <span class="l-Scalar-Plain">action</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">service name=nginx state=restarted</span>
+  <span class="l-Scalar-Plain">notify</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">Check nginx</span>
+
+<span class="p-Indicator">-</span> <span class="l-Scalar-Plain">name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">Check nginx</span>
+  <span class="l-Scalar-Plain">wait_for</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">port={{ nginx_port }} delay=5 timeout=10</span></code></pre></div>
+
+<h3 id="tasks">Tasks</h3>
+
+<p>Now the task part. I always put my tasks in a separate file, and include this
+file from <code>main.yml</code>. This trick will allow you to set a tag for the whole
+included file, like so:</p>
+
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="p-Indicator">-</span> <span class="l-Scalar-Plain">include</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">nginx.yml tags=nginx</span></code></pre></div>
+
+<p>And then, in <code>nginx.yml</code>, put the real tasks:</p>
+
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="p-Indicator">-</span> <span class="l-Scalar-Plain">name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">Adds nginx ppa</span>
+  <span class="l-Scalar-Plain">apt_repository</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">repo=ppa:nginx/stable</span>
+
+<span class="p-Indicator">-</span> <span class="l-Scalar-Plain">name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">Adds PPA key</span>
+  <span class="l-Scalar-Plain">apt_key</span><span class="p-Indicator">:</span> 
+    <span class="l-Scalar-Plain">url=http://keyserver.ubuntu.com:11371/pks/lookup?op=get&amp;search=0x00A6F0A3C300EE8C</span>
+    <span class="l-Scalar-Plain">state=present</span>
+
+<span class="p-Indicator">-</span> <span class="l-Scalar-Plain">name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">Installs nginx</span>
+  <span class="l-Scalar-Plain">apt</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">pkg=nginx-full</span>
+    <span class="l-Scalar-Plain">state=latest</span>
+
+<span class="p-Indicator">-</span> <span class="l-Scalar-Plain">name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">Writes nginx.conf</span>
+  <span class="l-Scalar-Plain">template</span><span class="p-Indicator">:</span> 
+    <span class="l-Scalar-Plain">src=&quot;../templates/nginx.conf.j2&quot;</span>
+    <span class="l-Scalar-Plain">dest=/etc/nginx/nginx.conf</span>
+    <span class="l-Scalar-Plain">validate=&#39;nginx -tc %s&#39;</span>
+  <span class="l-Scalar-Plain">notify</span><span class="p-Indicator">:</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">Restart nginx</span>
+
+<span class="p-Indicator">-</span> <span class="l-Scalar-Plain">name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">Replaces nginx default server</span>
+  <span class="l-Scalar-Plain">template</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">src=&quot;../templates/default.j2&quot;</span>
+    <span class="l-Scalar-Plain">dest=/etc/nginx/sites-available/default</span>
+  <span class="l-Scalar-Plain">notify</span><span class="p-Indicator">:</span>
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">Restart nginx</span></code></pre></div>
+
+<h3 id="templates">Templates</h3>
+
+<p>We just need to add 2 templates, and our role will be ready. The first one is the main <code>nginx.conf.j2</code> file:</p>
+
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">user www-data;</span>
+<span class="l-Scalar-Plain">worker_processes {{ ansible_processor_count }};</span>
+
+<span class="l-Scalar-Plain">pid         /var/run/nginx.pid;</span>
+
+<span class="l-Scalar-Plain">events {</span>
+    <span class="l-Scalar-Plain">worker_connections {{ nginx_worker_connections }};</span>
+    <span class="l-Scalar-Plain"># multi_accept on;</span>
+<span class="l-Scalar-Plain">}</span>
+
+<span class="l-Scalar-Plain">http {</span>
+    <span class="l-Scalar-Plain">##</span>
+    <span class="l-Scalar-Plain"># Basic Settings</span>
+    <span class="l-Scalar-Plain">##</span>
+    <span class="l-Scalar-Plain">sendfile    on;</span>
+    <span class="l-Scalar-Plain">tcp_nopush  on;</span>
+    <span class="l-Scalar-Plain">tcp_nodelay on;</span>
+
+    <span class="l-Scalar-Plain"># SSL stuff</span>
+    <span class="l-Scalar-Plain">ssl_protocols TLSv1 TLSv1.1 TLSv1.2;</span>
+
+<span class="l-Scalar-Plain">{% if nginx_ie8_support %}</span>
+    <span class="l-Scalar-Plain">ssl_ciphers &quot;ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4&quot;;</span>
+<span class="l-Scalar-Plain">{% else %}</span>
+    <span class="l-Scalar-Plain">ssl_ciphers &quot;EECDH+ECDSA+AESGCM:EECDH+aRSA+AESGCM:EECDH+ECDSA+SHA384:EECDH+ECDSA+SHA256:EECDH+aRSA+SHA384:EECDH+aRSA+SHA256:EECDH+aRSA+RC4:EECDH:EDH+aRSA:!RC4:!aNULL:!eNULL:!LOW:!3DES:!MD5:!EXPORT:!PSK:!SRP:!DSS&quot;;</span>
+<span class="l-Scalar-Plain">{% endif %}</span>
+
+    <span class="l-Scalar-Plain">ssl_session_cache shared:SSL:32m;</span>
+    <span class="l-Scalar-Plain">ssl_buffer_size 8k;</span>
+    <span class="l-Scalar-Plain">ssl_session_timeout 10m;</span>
+
+    <span class="l-Scalar-Plain">keepalive_timeout     65;</span>
+    <span class="l-Scalar-Plain">types_hash_max_size 2048;</span>
+
+    <span class="l-Scalar-Plain">server_tokens off;</span>
+
+    <span class="l-Scalar-Plain">include       /etc/nginx/mime.types;</span>
+    <span class="l-Scalar-Plain">default_type  application/octet-stream;</span>
+
+    <span class="l-Scalar-Plain">##</span>
+    <span class="l-Scalar-Plain"># Logging Settings</span>
+    <span class="l-Scalar-Plain">##</span>
+    <span class="l-Scalar-Plain">access_log /var/log/nginx/access.log;</span>
+    <span class="l-Scalar-Plain">error_log /var/log/nginx/error.log;</span>
+
+    <span class="l-Scalar-Plain">##</span>
+    <span class="l-Scalar-Plain"># Gzip Settings</span>
+    <span class="l-Scalar-Plain">##</span>
+    <span class="l-Scalar-Plain">gzip on;</span>
+    <span class="l-Scalar-Plain">gzip_disable &quot;msie6&quot;;</span>
+    <span class="l-Scalar-Plain">gzip_comp_level 6;</span>
+    <span class="l-Scalar-Plain">gzip_buffers 16 8k;</span>
+    <span class="l-Scalar-Plain">gzip_types  application/javascript</span> 
+                <span class="l-Scalar-Plain">application/json</span> 
+                <span class="l-Scalar-Plain">application/x-javascript</span> 
+                <span class="l-Scalar-Plain">application/xml</span> 
+                <span class="l-Scalar-Plain">application/xml+rss</span> 
+                <span class="l-Scalar-Plain">image/svg+xml</span>
+                <span class="l-Scalar-Plain">text/css</span> 
+                <span class="l-Scalar-Plain">text/plain</span>
+                <span class="l-Scalar-Plain">text/xml</span> 
+                <span class="l-Scalar-Plain">text/javascript;</span>
+
+    <span class="l-Scalar-Plain">##</span>
+    <span class="l-Scalar-Plain"># If HTTPS, then set a variable so it can be passed along.</span>
+    <span class="l-Scalar-Plain">##</span>
+    <span class="l-Scalar-Plain">map $scheme $server_https {</span>
+        <span class="l-Scalar-Plain">default off;</span>
+        <span class="l-Scalar-Plain">https on;</span>
+    <span class="l-Scalar-Plain">}</span>
+
+    <span class="l-Scalar-Plain">##</span>
+    <span class="l-Scalar-Plain"># Virtual Host Configs</span>
+    <span class="l-Scalar-Plain">##</span>
+    <span class="l-Scalar-Plain">include /etc/nginx/conf.d/*.conf;</span>
+    <span class="l-Scalar-Plain">include /etc/nginx/sites-enabled/*;</span>
+<span class="l-Scalar-Plain">}</span></code></pre></div>
+
+<p>The file is a bit long, but it just contains basic settings. Note that we’re
+aligning the number of worker processes to the number of processors reported by
+Ansible for the host.</p>
+
+<p>We are also switching cipher suites depending on whether we want to support IE8
+or not.</p>
+
+<p>Then, we just add a default virtualhost on our server:</p>
+
+<div class="highlight"><pre><code class="language-nginx" data-lang="nginx"><span class="k">server</span> <span class="p">{</span>
+  <span class="kn">listen</span> <span class="p">{</span><span class="kn">{</span> <span class="s">nginx_port</span> <span class="err">}}</span><span class="p">;</span> <span class="c1">## listen for ipv4; this line is default and implied</span>
+
+  <span class="kn">root</span> <span class="p">{</span><span class="kn">{</span> <span class="s">nginx_root</span> <span class="err">}}</span><span class="p">;</span>
+  <span class="kn">index</span> <span class="s">index.html</span> <span class="s">index.htm</span><span class="p">;</span>
+
+  <span class="c1"># Make site accessible from http://localhost/</span>
+  <span class="kn">server_name</span> <span class="s">_</span><span class="p">;</span>
+
+  <span class="kn">location</span> <span class="s">/</span> <span class="p">{</span>
+    <span class="kn">try_files</span> <span class="nv">$uri</span> <span class="nv">$uri/</span> <span class="s">/index.php?q=</span><span class="nv">$uri&amp;$args</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="kn">error_page</span> <span class="mi">404</span> <span class="s">/404.html</span><span class="p">;</span>
+
+  <span class="c1"># redirect server error pages to the static page /50x.html</span>
+  <span class="c1">#</span>
+  <span class="kn">error_page</span> <span class="mi">500</span> <span class="mi">502</span> <span class="mi">503</span> <span class="mi">504</span> <span class="s">/50x.html</span><span class="p">;</span>
+  <span class="kn">location</span> <span class="p">=</span> <span class="s">/50x.html</span> <span class="p">{</span>
+    <span class="kn">root</span> <span class="s">/usr/share/nginx/html/</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="c1"># deny access to .htaccess files, if Apache&#39;s document root</span>
+  <span class="c1"># concurs with nginx&#39;s one</span>
+  <span class="c1">#</span>
+  <span class="kn">location</span> <span class="p">~</span> <span class="sr">/\.ht</span> <span class="p">{</span>
+    <span class="kn">deny</span> <span class="s">all</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></div>
+
+<p>Our role is now ready. We can now setup the tooling for our tests as explained in <a href="/testing-ansible-roles-part-2/">part 2</a></p>
+
+
+      <hr />
+      <footer role="contentinfo">
+        <div class="social-share">
+  <h4>Share on</h4>
+  <ul>
+    <li>
+      <a href="https://twitter.com/intent/tweet?text=http://leucos.github.io/testing-ansible-roles-part-1/" class="twitter" title="Share on Twitter"><i class="fa fa-twitter"></i><span> Twitter</span></a>
+    </li>
+    <li>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=http://leucos.github.io/testing-ansible-roles-part-1/" class="facebook" title="Share on Facebook"><i class="fa fa-facebook"></i><span> Facebook</span></a>
+    </li>
+    <li>
+      <a href="https://plus.google.com/share?url=http://leucos.github.io/testing-ansible-roles-part-1/" class="google-plus" title="Share on Google Plus"><i class="fa fa-google-plus"></i><span> Google+</span></a>
+    </li>
+  </ul>
+</div><!-- /.social-share -->
+        <p class="byline"><strong>Testing Ansible roles, part 1</strong> was published on <time datetime="2015-03-14T00:00:00+01:00">March 14, 2015</time>.</p>
+      </footer>
+    </div><!-- /.article-wrap -->
+  
+    <section id="disqus_thread"></section><!-- /#disqus_thread -->
+  
+  </article>
+</div><!-- /#main -->
+
+<div class="footer-wrap">
+  <div class="related-articles">
+  <h4>You might also enjoy <small class="pull-right">(<a href="http://leucos.github.io/posts/">View all posts</a>)</small></h4>
+    <ul>
+    
+      <li><a href="http://leucos.github.io/testing-ansible-roles-part-2/" title="Testing Ansible roles, part 2">Testing Ansible roles, part 2</a></li>
+    
+      <li><a href="http://leucos.github.io/expiring-redis-cache-from-ruby/" title="Invalidating REDIS cache from Ruby">Invalidating REDIS cache from Ruby</a></li>
+    
+      <li><a href="http://leucos.github.io/restoring-arch-bootloader/" title="Restoring Arch bootloader for the future self">Restoring Arch bootloader for the future self</a></li>
+    
+    </ul>
+    <hr />
+  </div><!-- /.related-articles -->
+  <footer>
+    
+
+<span>&copy; 2015 Michel Blanc. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> using the <a href="http://mademistakes.com/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a> theme.</span>
+
+  </footer>
+</div><!-- /.footer-wrap -->
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="http://leucos.github.io/assets/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+<script src="http://leucos.github.io/assets/js/scripts.min.js"></script>
+
+
+  
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'randomstuffonrandomstuff'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+	        
+
+</body>
+</html>

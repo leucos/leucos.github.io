@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://leucos.github.io/testing-ansible-roles-part-2/</loc>
+    <lastmod>2015-03-15T00:00:00+01:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>http://leucos.github.io/testing-ansible-roles-part-1/</loc>
+    <lastmod>2015-03-14T00:00:00+01:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>http://leucos.github.io/expiring-redis-cache-from-ruby/</loc>
     <lastmod>2015-03-01T00:00:00+01:00</lastmod>
     <priority>0.8</priority>
@@ -12,25 +22,25 @@
   </url>
   <url>
     <loc>http://leucos.github.io/</loc>
-    <lastmod>2015-03-15T16:37:50+01:00</lastmod>
+    <lastmod>2015-03-15T16:39:30+01:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>http://leucos.github.io/theme-setup/</loc>
-    <lastmod>2015-03-15T16:37:50+01:00</lastmod>
+    <lastmod>2015-03-15T16:39:30+01:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://leucos.github.io/posts/</loc>
-    <lastmod>2015-03-15T16:37:50+01:00</lastmod>
+    <lastmod>2015-03-15T16:39:30+01:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://leucos.github.io/about/</loc>
-    <lastmod>2015-03-15T16:37:50+01:00</lastmod>
+    <lastmod>2015-03-15T16:39:30+01:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
