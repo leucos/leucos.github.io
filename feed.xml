@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
-<title type="text">Random stuff on random stuff</title>
+<title type="text">Random stuff on stuff</title>
 <generator uri="https://github.com/jekyll/jekyll">Jekyll</generator>
 <link rel="self" type="application/atom+xml" href="http://leucos.github.io/feed.xml" />
 <link rel="alternate" type="text/html" href="http://leucos.github.io" />
-<updated>2015-03-15T19:27:29+01:00</updated>
+<updated>2015-03-15T19:43:35+01:00</updated>
 <id>http://leucos.github.io/</id>
 <author>
   <name>Michel Blanc</name>
   <uri>http://leucos.github.io/</uri>
-  <email>mb@mbnet.fr</email>
+  <email>mbREMOVE@REMOVEmbnet.fr</email>
 </author>
 
 
@@ -24,7 +24,7 @@
   <author>
     <name>Michel Blanc</name>
     <uri>http://leucos.github.io</uri>
-    <email>mb@mbnet.fr</email>
+    <email>mbREMOVE@REMOVEmbnet.fr</email>
   </author>
   <content type="html">
     &lt;p&gt;Now that we have created our basic role in &lt;a href=&quot;/testing-ansible-roles-part-1/&quot;&gt;part 1&lt;/a&gt;, we need to set-up a Vagrant machine and some tooling to run our tests.&lt;/p&gt;
@@ -196,7 +196,7 @@ it from the guard watch, the test will loop forever.&lt;/p&gt;
 &lt;p&gt;In the next part, we will add some more tests, and see what we can do with RoleSpec.&lt;/p&gt;
 
 
-    &lt;p&gt;&lt;a href=&quot;http://leucos.github.io/testing-ansible-roles-part-2/&quot;&gt;Testing Ansible roles, part 2&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;http://leucos.github.io&quot;&gt;Random stuff on random stuff&lt;/a&gt; on March 15, 2015.&lt;/p&gt;
+    &lt;p&gt;&lt;a href=&quot;http://leucos.github.io/testing-ansible-roles-part-2/&quot;&gt;Testing Ansible roles, part 2&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;http://leucos.github.io&quot;&gt;Random stuff on stuff&lt;/a&gt; on March 15, 2015.&lt;/p&gt;
   </content>
 </entry>
 
@@ -212,7 +212,7 @@ it from the guard watch, the test will loop forever.&lt;/p&gt;
   <author>
     <name>Michel Blanc</name>
     <uri>http://leucos.github.io</uri>
-    <email>mb@mbnet.fr</email>
+    <email>mbREMOVE@REMOVEmbnet.fr</email>
   </author>
   <content type="html">
     &lt;p&gt;&lt;a href=&quot;https://github.com/nickjj/rolespec/&quot;&gt;RoleSpec&lt;/a&gt; does a great job helping out
@@ -427,7 +427,7 @@ or not.&lt;/p&gt;
 &lt;p&gt;Our role is now ready. We can now setup the tooling for our tests as explained in &lt;a href=&quot;/testing-ansible-roles-part-2/&quot;&gt;part 2&lt;/a&gt;&lt;/p&gt;
 
 
-    &lt;p&gt;&lt;a href=&quot;http://leucos.github.io/testing-ansible-roles-part-1/&quot;&gt;Testing Ansible roles, part 1&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;http://leucos.github.io&quot;&gt;Random stuff on random stuff&lt;/a&gt; on March 14, 2015.&lt;/p&gt;
+    &lt;p&gt;&lt;a href=&quot;http://leucos.github.io/testing-ansible-roles-part-1/&quot;&gt;Testing Ansible roles, part 1&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;http://leucos.github.io&quot;&gt;Random stuff on stuff&lt;/a&gt; on March 14, 2015.&lt;/p&gt;
   </content>
 </entry>
 
@@ -444,7 +444,7 @@ or not.&lt;/p&gt;
   <author>
     <name>Michel Blanc</name>
     <uri>http://leucos.github.io</uri>
-    <email>mb@mbnet.fr</email>
+    <email>mbREMOVE@REMOVEmbnet.fr</email>
   </author>
   <content type="html">
     &lt;h2 id=&quot;redis-as-padrino-cache&quot;&gt;REDIS as Padrino cache&lt;/h2&gt;
@@ -631,7 +631,7 @@ monitor your Redis statistics for this.&lt;/p&gt;
   &lt;/ol&gt;
 &lt;/div&gt;
 
-    &lt;p&gt;&lt;a href=&quot;http://leucos.github.io/expiring-redis-cache-from-ruby/&quot;&gt;Invalidating REDIS cache from Ruby&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;http://leucos.github.io&quot;&gt;Random stuff on random stuff&lt;/a&gt; on March 01, 2015.&lt;/p&gt;
+    &lt;p&gt;&lt;a href=&quot;http://leucos.github.io/expiring-redis-cache-from-ruby/&quot;&gt;Invalidating REDIS cache from Ruby&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;http://leucos.github.io&quot;&gt;Random stuff on stuff&lt;/a&gt; on March 01, 2015.&lt;/p&gt;
   </content>
 </entry>
 
@@ -647,7 +647,7 @@ monitor your Redis statistics for this.&lt;/p&gt;
   <author>
     <name>Michel Blanc</name>
     <uri>http://leucos.github.io</uri>
-    <email>mb@mbnet.fr</email>
+    <email>mbREMOVE@REMOVEmbnet.fr</email>
   </author>
   <content type="html">
     &lt;ul&gt;
@@ -676,7 +676,7 @@ monitor your Redis statistics for this.&lt;/p&gt;
   &lt;/ol&gt;
 &lt;/div&gt;
 
-    &lt;p&gt;&lt;a href=&quot;http://leucos.github.io/restoring-arch-bootloader/&quot;&gt;Restoring Arch bootloader for the future self&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;http://leucos.github.io&quot;&gt;Random stuff on random stuff&lt;/a&gt; on February 14, 2015.&lt;/p&gt;
+    &lt;p&gt;&lt;a href=&quot;http://leucos.github.io/restoring-arch-bootloader/&quot;&gt;Restoring Arch bootloader for the future self&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;http://leucos.github.io&quot;&gt;Random stuff on stuff&lt;/a&gt; on February 14, 2015.&lt;/p&gt;
   </content>
 </entry>
 
