@@ -175,20 +175,22 @@ called with <code>--install</code>. This happens only at vagrant provisionning t
   <li>it can be called to run the test suite; to make invocation easier, it will copy itself to <code>/usr/local/bin/specs</code></li>
 </ol>
 
+<p>Create the <code>vagrant_specs.sh</code> with the following content:</p>
+
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#!/bin/bash</span>
 <span class="c">#</span>
 <span class="c"># Vagrant provisionning script</span>
 <span class="c">#</span>
 <span class="c"># Usage for provisionning VM &amp; running (in Vagrant file):</span>
 <span class="c"># </span>
-<span class="c"># script.sh --install &lt;role&gt; &lt;URL for test suite&gt;</span>
+<span class="c"># script.sh --install &lt;role&gt;</span>
 <span class="c">#</span>
 <span class="c"># e.g. : </span>
-<span class="c"># script.sh --install ansible-nginx https://github.com/erasme/erasme-roles-specs.git</span>
+<span class="c"># script.sh --install ansible-nginx</span>
 <span class="c"># </span>
 <span class="c"># Usage for running only (from host):</span>
 <span class="c">#</span>
-<span class="c"># vagrant ssh -c ./specs</span>
+<span class="c"># vagrant ssh -c specs</span>
 <span class="c">#</span>
 <span class="k">if</span> <span class="o">[</span> <span class="s2">&quot;x$1&quot;</span> <span class="o">==</span> <span class="s2">&quot;x--install&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
   mv ~vagrant/specs /usr/local/bin/specs
@@ -202,7 +204,7 @@ called with <code>--install</code>. This happens only at vagrant provisionning t
   <span class="nb">exit</span>
 <span class="k">fi</span>
 
-<span class="nb">cd</span> ~vagrant/testdir <span class="o">&amp;&amp;</span> rolespec -r <span class="k">$(</span>ls roles<span class="k">)</span> <span class="s2">&quot;$*&quot;</span></code></pre></div>
+<span class="nb">cd</span> ~vagrant/testdir <span class="o">&amp;&amp;</span> rolespec -r <span class="k">$(</span>ls roles<span class="k">)</span></code></pre></div>
 
 <p>Now, let’s check this ! It might take a while if you don’t already have the
 vagrant image on your box:</p>
@@ -231,7 +233,7 @@ $
 
 <p>This test file is simply a bash script, in whch we include some RoleSpec files to get ccess to its DSL.</p>
 
-<p>Let’s start with a simple one.</p>
+<p>Let’s start with a simple one, and create <code>tests/ansible-nginx/test</code> with the followjng content:</p>
 
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#!/bin/bash</span>
 <span class="c"># -*- bash -*-</span>
