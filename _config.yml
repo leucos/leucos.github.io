@@ -1,8 +1,7 @@
 # Site wide configuration
 
-title:            Random stuff on random stuff
+title:            Random stuff on stuff
 locale:           en_US
-#url:              http://localhost:4000
 url: http://leucos.github.io
 
 
@@ -29,8 +28,8 @@ kramdown:
 owner:
   name: Michel Blanc
   avatar: mb.jpg
-  bio: "Long time sysadmin with DevOps tendencies"
-  email: mb@mbnet.fr
+  bio: "Long time sysadmin with DevOpsy tendencies"
+  email: mbREMOVE@REMOVEmbnet.fr
   disqus-shortname: randomstuffonrandomstuff
   twitter: b9m
   facebook: #username
