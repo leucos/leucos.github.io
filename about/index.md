@@ -1,25 +1,41 @@
 ---
 layout: page
-title: About the Theme
-tags: [about, Jekyll, theme, responsive]
-modified: 2014-08-08T20:53:07.573882-04:00
-comments: true
+title: About
+tags: [about]
+modified: 2015-03-15T18:25:07.573882+01:00
+comments: false
 image:
-  feature: sample-image-2.jpg
-  credit: WeGraphics
-  creditlink: http://wegraphics.net/downloads/free-ultimate-blurred-background-pack/
+  feature: header_about.jpg
+#  credit: WeGraphics
+#  creditlink: http://wegraphics.net/downloads/free-ultimate-blurred-background-pack/
 ---
 
-Minimal Mistakes is responsive Jekyll theme with large featured images and solid typography. As the name implies the styling is fairly minimal to make it easier for you to build on top of.
+Witnessed linux being installed from (many) floppy discs (using GNU/Linux since
+the SLS days). I turned to Archlinux since then, not without testing every
+possible distro out there, with many dating from Pleistocene and now extinct.
 
-## Minimal Mistakes is all about:
+Ruby lover (I often use Padrino, Ramaze, Sinatra and soon Volt.rb), I also can
+play happily with perl, shell, python, and produce some C/C++ patches. I even
+can do some js or php when someone points a gun at me. Note that no gun,
+whatever it's size, will make me code some lisp or prolog again.
 
-* Responsive templates. Looking good on mobile, tablet, and desktop.
-* Gracefully degrading in older browsers. Compatible with Internet Explorer 8+ and all modern browsers. 
-* Minimal embellishments -- content first.
-* Optional large feature images for posts and pages.
-* Simple and clear permalink structure.
-* [Custom 404 page](http://mmistakes.github.io/minimal-mistakes/404.html) to get you started.
-* Support for Disqus Comments
+I had much fun working with digital electronics to build anything from museum
+oriented devices to electronic RFID cat doors (so we don't host cat "free
+parties" in our basement).
 
-<a markdown="0" href="{{ site.url }}/theme-setup" class="btn">Install Minimal Mistakes Theme</a>
+Deep knowledge of the TCP/IP stack: my next goal is to decode Ethernet frames up
+to the application level just looking at an hexadecimal frame dump (I won't
+decode SSL though). While I can talk CatOS or IOS (the one from Cisco), I really
+love iptables/iproute2.
+
+Worked extensively with various major web serving software (squid, apache,
+nginx, varnish, haproxy), sometimes in clustering or cloudified situations. I
+also _love_ Cyrus, Redis, Mysql/Percona/MariaDB and have good vibrations with
+postfix.
+
+Since I'm as lazy as a sysadmin can be, I have been focusing on Ansible starting
+in it's early days, writing deployment playbooks to blossom bare metal machines
+(or instances) into fully featured flowery clusters, and currently playing with Docker & Consul.
+
+I am pretty sold to CI/CD, microservices and MonitorAllTheThings™, as is my rubberdyno in the header.
+
