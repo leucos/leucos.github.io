@@ -2,7 +2,8 @@
 
 title:            Random stuff on random stuff
 locale:           en_US
-url:              http://localhost:4000
+#url:              http://localhost:4000
+url: http://leucos.github.io
 
 
 # Jekyll configuration
