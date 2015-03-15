@@ -195,7 +195,6 @@ it from the guard watch, the test will loop forever.
 
 Now run `guard`, change a file (.e.g. `touch tasks/main.yml`), and see what happens.
 
-In the next part, we will add TravicCI configuration so tests are run when we push
-our role on GitHub.
+In the next part, we will add some more tests, and see what we can do with RoleSpec.
 
 

@@ -34,9 +34,9 @@ mkdir -p ansible-nginx/{defaults,handlers,tasks,templates,tests/ansible-nginx/in
 
 The `tests` directory will be sued for our tests later.
 
-If you already have a role want to convert it, create `tests/ansible-
-nginx/inventory` and skip to 
-[Creating the Vagrant machine](#creating-the-vagrant-machine).
+If you already have a role want to convert it, create the `tests/ansible-
+nginx/inventory` file and skip straight to 
+[part 2]({% post_url 2015-03-15-testing-ansible-roles-part-2 %}).
 
 ### Defaults
 
