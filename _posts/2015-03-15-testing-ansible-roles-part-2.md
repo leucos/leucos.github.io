@@ -162,7 +162,7 @@ vagrant ssh -c 'specs'
 
 <script type="text/javascript" src="https://asciinema.org/a/17712.js" id="asciicast-17712" async></script>
 
-25 seconds only, we cut the runtime by twelve, not bad.
+25 seconds only, we cut the runtime by six, not bad.
 
 ## Local continuous integration
 
