@@ -1,43 +1,675 @@
----
-sitemap: false
----
-
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
-<title type="text">{{ site.title }}</title>
+<title type="text">Random stuff on random stuff</title>
 <generator uri="https://github.com/jekyll/jekyll">Jekyll</generator>
-<link rel="self" type="application/atom+xml" href="{{ site.url }}/feed.xml" />
-<link rel="alternate" type="text/html" href="{{ site.url }}" />
-<updated>{{ site.time | date_to_xmlschema }}</updated>
-<id>{{ site.url }}/</id>
+<link rel="self" type="application/atom+xml" href="//leucos.github.io/feed.xml" />
+<link rel="alternate" type="text/html" href="//leucos.github.io" />
+<updated>2015-03-15T11:02:26+01:00</updated>
+<id>//leucos.github.io/</id>
 <author>
-  <name>{{ site.owner.name }}</name>
-  <uri>{{ site.url }}/</uri>
-  {% if site.owner.email %}<email>{{ site.owner.email }}</email>{% endif %}
+  <name>Michel Blanc</name>
+  <uri>//leucos.github.io/</uri>
+  <email>mb@mbnet.fr</email>
 </author>
-{% for post in site.posts limit:20 %}
-{% if post.author %}
-  {% assign author = site.data.authors[post.author] %}
-{% else %}
-  {% assign author = site.owner %}
-{% endif %}
+
+
+  
+
 <entry>
-  <title type="html"><![CDATA[{{ post.title | cdata_escape }}]]></title>
-  <link rel="alternate" type="text/html" href="{{ site.url }}{{ post.url }}" />
-  <id>{{ site.url }}{{ post.id }}</id>
-  {% if post.modified %}<updated>{{ post.modified | to_xmlschema }}T00:00:00-00:00</updated>
-  <published>{{ post.date | date_to_xmlschema }}</published>
-  {% else %}<published>{{ post.date | date_to_xmlschema }}</published>
-  <updated>{{ post.date | date_to_xmlschema }}</updated>{% endif %}
+  <title type="html"><![CDATA[Testing Ansible roles, part 2]]></title>
+  <link rel="alternate" type="text/html" href="//leucos.github.io/testing-with-rolespec/" />
+  <id>//leucos.github.io/testing-with-rolespec</id>
+  <published>2015-03-15T00:00:00+01:00</published>
+  <updated>2015-03-15T00:00:00+01:00</updated>
   <author>
-    <name>{{ author.name }}</name>
-    <uri>{{ site.url }}</uri>
-    {% if author.email %}<email>{{ author.email }}</email>{% endif %}
+    <name>Michel Blanc</name>
+    <uri>//leucos.github.io</uri>
+    <email>mb@mbnet.fr</email>
   </author>
   <content type="html">
-    {{ post.content | xml_escape }}
-    {% include _feed-footer.html %}
+    &lt;p&gt;Now that we have created our basic role in &lt;a href=&quot;/testing-ansible-roles-rolespec-vagrant/&quot;&gt;part 1&lt;/a&gt;, we need to set-up a Vagrant machine and some tooling to run our tests.&lt;/p&gt;
+
+&lt;h2 id=&quot;creating-the-vagrant-machine&quot;&gt;Creating the Vagrant machine&lt;/h2&gt;
+
+&lt;p&gt;To run our tests in a Vagrant machine, we need to create a &lt;code&gt;Vagrantfile&lt;/code&gt;. We’ll create it in our role top directory:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;Vagrant&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;configure&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;box&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;ubuntu/trusty64&amp;quot;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;define&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;nginx&amp;quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nginx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;provision&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;shell&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;ss&quot;&gt;:path&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;vagrant_specs.sh&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;ss&quot;&gt;:upload_path&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;/home/vagrant/specs&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# change role name below&lt;/span&gt;
+    &lt;span class=&quot;ss&quot;&gt;:args&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;--install ansible-nginx&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;You can change &lt;code&gt;config.vm.box&lt;/code&gt; to another Vagrant box that better suits your
+needs. We’ll provision this machine with a shell script (not with Ansible, so we
+don’t end up in an inception style situation).&lt;/p&gt;
+
+&lt;p&gt;The provisionning script, &lt;code&gt;vagrant_specs.sh&lt;/code&gt; serves two purposes:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;it takes care of installing RoleSpec and setting up the test directory when
+called with &lt;code&gt;--install&lt;/code&gt;. This happens only at vagrant provisionning time (e.g.
+&lt;code&gt;vagrant up&lt;/code&gt; of &lt;code&gt;vagrant provision&lt;/code&gt;)&lt;/li&gt;
+  &lt;li&gt;it can be called to run the test suite; to make invocation easier, it will copy itself to &lt;code&gt;/usr/local/bin/specs&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/bash&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# Vagrant provisionning script&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# Usage for provisionning VM &amp;amp; running (in Vagrant file):&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# &lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# script.sh --install &amp;lt;role&amp;gt; &amp;lt;URL for test suite&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# e.g. : &lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# script.sh --install ansible-nginx https://github.com/erasme/erasme-roles-specs.git&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# &lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# Usage for running only (from host):&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# vagrant ssh -c ./specs&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;x$1&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;x--install&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt;
+  mv ~vagrant/specs /usr/local/bin/specs
+  chmod &lt;span class=&quot;m&quot;&gt;755&lt;/span&gt; /usr/local/bin/specs
+  sudo apt-get install -qqy git
+  su vagrant -c &lt;span class=&quot;s1&quot;&gt;&amp;#39;git clone --depth 1 https://github.com/nickjj/rolespec&amp;#39;&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; ~vagrant/rolespec &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; make install
+  su vagrant -c &lt;span class=&quot;s1&quot;&gt;&amp;#39;rolespec -i ~/testdir&amp;#39;&lt;/span&gt;
+  su vagrant -c &lt;span class=&quot;s2&quot;&gt;&amp;quot;ln -s /vagrant/ ~/testdir/roles/$2&amp;quot;&lt;/span&gt;
+  su vagrant -c &lt;span class=&quot;s2&quot;&gt;&amp;quot;ln -s /vagrant/tests/$2/ ~/testdir/tests/&amp;quot;&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;exit&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; ~vagrant/testdir &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; rolespec -r &lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;ls roles&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;$*&amp;quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Now, let’s check this ! It might take a while if you don’t already have the
+vagrant image on your box:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ vagrant up
+Bringing machine &#39;nginx&#39; up with &#39;virtualbox&#39; provider...
+==&amp;gt; nginx: Importing base box &#39;ubuntu/trusty64&#39;...
+==&amp;gt; nginx: Matching MAC address for NAT networking...
+==&amp;gt; nginx: Checking if box &#39;ubuntu/trusty64&#39; is up to date...
+==&amp;gt; nginx: Setting the name of the VM: ansible-nginx_nginx_1426331325901_88232
+...
+==&amp;gt; nginx: Cloning into &#39;rolespec&#39;...
+==&amp;gt; nginx: Installing RoleSpec scripts in /usr/local/bin ...
+==&amp;gt; nginx: Installing RoleSpec libs in /usr/local/lib/rolespec ...
+==&amp;gt; nginx: Initialized new RoleSpec directory in /home/vagrant/testdir
+$
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;creating-tests&quot;&gt;Creating tests&lt;/h2&gt;
+
+&lt;p&gt;We’re almost done. Only two files left to create. First, we RoleSpec needs an inventory. Nothing fancy here, we just need to create an inventory file with a single host, &lt;code&gt;placeholder_fqdn&lt;/code&gt;, RoleSpec will take care of the rest:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;placeholder_fqdn&amp;quot;&lt;/span&gt; &amp;gt; tests/ansible-nginx/inventory/hosts&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;And finally, we need a test file, where we can check if our playbook works. We can check the syntax, the idempotency, the resulting templates, etc…&lt;/p&gt;
+
+&lt;p&gt;This test file is simply a bash script, in whch we include some RoleSpec files to get ccess to its DSL.&lt;/p&gt;
+
+&lt;p&gt;Let’s start with a simple one.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/bash&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# -*- bash -*-&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# This gives you access to the custom DSL&lt;/span&gt;
+. &lt;span class=&quot;s2&quot;&gt;&amp;quot;${ROLESPEC_LIB}/main&amp;quot;&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# Install a specific version of Ansible&lt;/span&gt;
+install_ansible &lt;span class=&quot;s2&quot;&gt;&amp;quot;v1.8.3&amp;quot;&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# Check syntax first, and then that the playbook runs&lt;/span&gt;
+assert_playbook_runs
+
+&lt;span class=&quot;c&quot;&gt;# Check that the playbook is idempotent&lt;/span&gt;
+assert_playbook_idempotent&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;runing-tests&quot;&gt;Runing tests&lt;/h2&gt;
+
+&lt;p&gt;Our simple tests are setup. To run them, we need to execute
+&lt;code&gt;/usr/local/bin/specs&lt;/code&gt; in the Vagrant host.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;vagrant ssh -c &lt;span class=&quot;s1&quot;&gt;&amp;#39;specs&amp;#39;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;RoleSpecs will then download Ansible (version 1.8.3 since this is what we
+asked), install it, and run our test case.&lt;/p&gt;
+
+&lt;script type=&quot;text/javascript&quot; src=&quot;https://asciinema.org/a/17711.js&quot; id=&quot;asciicast-17711&quot; async=&quot;&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;As you can see in the recording, RoleSpec:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;installs Ansible (&lt;code&gt;ROLESPEC: [Install Ansible - v1.8.3]&lt;/code&gt;)&lt;/li&gt;
+  &lt;li&gt;executes the playbook with &lt;code&gt;assert_playbook_runs&lt;/code&gt; (&lt;code&gt;TEST: [Run playbook syntax check]&lt;/code&gt; and &lt;code&gt;TEST: [Run playbook]&lt;/code&gt;)&lt;/li&gt;
+  &lt;li&gt;check that the playbook is idempotent with &lt;code&gt;assert_playbook_idempotent&lt;/code&gt; (‘TEST: [Re-run playbook]’)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Pretty neat !&lt;/p&gt;
+
+&lt;p&gt;There is one downside though: it takes almost 3 minutes to run. However, you can
+speed up subsequent runs as long as you don’t have to change the Ansible
+version: since Ansible is already installed, there is no need to install it
+again every time. Using the &lt;code&gt;-p&lt;/code&gt; option will run in &lt;em&gt;playbook mode&lt;/em&gt;, which means
+it will only run &lt;code&gt;assert_playbook_runs&lt;/code&gt; test.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;vagrant ssh -c &lt;span class=&quot;s1&quot;&gt;&amp;#39;specs&amp;#39;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;script type=&quot;text/javascript&quot; src=&quot;https://asciinema.org/a/17712.js&quot; id=&quot;asciicast-17712&quot; async=&quot;&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;25 seconds only, we cut the runtime by twelve, not bad.&lt;/p&gt;
+
+&lt;h2 id=&quot;local-continuous-integration&quot;&gt;Local continuous integration&lt;/h2&gt;
+
+&lt;p&gt;Now that we have reasonable playbook test run time, we can add local continuous integration to our setup.
+We will use &lt;a href=&quot;https://github.com/guard/guard&quot;&gt;Guard&lt;/a&gt; for this.&lt;/p&gt;
+
+&lt;p&gt;Assuming you have a ruby environment setup, just install &lt;code&gt;guard&lt;/code&gt; and &lt;code&gt;guard-shell&lt;/code&gt; gems.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;gem install guard guard-shell --no-ri --no-rdoc&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Then create a &lt;code&gt;Guardfile&lt;/code&gt; in the roles top directory, with the following content:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# -- -*- mode: ruby; -*-&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;guard&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:shell&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;watch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;%r{^*/.*\.yml$}&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;vagrant ssh -c &amp;quot;specs -p&amp;quot;&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This file will ask &lt;code&gt;guard&lt;/code&gt; to execute &lt;code&gt;vagrant ssh -c &quot;specs -p&quot;&lt;/code&gt; everytime it
+detects a change in a file ending with &lt;code&gt;.yml&lt;/code&gt; in the project’s subdirectories.&lt;/p&gt;
+
+&lt;p&gt;Now run &lt;code&gt;guard&lt;/code&gt;, change a file, and see what happens.&lt;/p&gt;
+
+
+    &lt;p&gt;&lt;a href=&quot;//leucos.github.io/testing-with-rolespec/&quot;&gt;Testing Ansible roles, part 2&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;//leucos.github.io&quot;&gt;Random stuff on random stuff&lt;/a&gt; on March 15, 2015.&lt;/p&gt;
   </content>
 </entry>
-{% endfor %}
+
+
+  
+
+<entry>
+  <title type="html"><![CDATA[Testing Ansible roles, part 1]]></title>
+  <link rel="alternate" type="text/html" href="//leucos.github.io/testing-ansible-roles-rolespec-vagrant/" />
+  <id>//leucos.github.io/testing-ansible-roles-rolespec-vagrant</id>
+  <published>2015-03-14T00:00:00+01:00</published>
+  <updated>2015-03-14T00:00:00+01:00</updated>
+  <author>
+    <name>Michel Blanc</name>
+    <uri>//leucos.github.io</uri>
+    <email>mb@mbnet.fr</email>
+  </author>
+  <content type="html">
+    &lt;p&gt;&lt;a href=&quot;https://github.com/nickjj/rolespec/&quot;&gt;RoleSpec&lt;/a&gt; does a great job helping out
+testing your roles. It is maintained and used primarily to test the
+&lt;a href=&quot;https://github.com/debops/debops&quot;&gt;debops&lt;/a&gt; role suite. RoleSpec handles all the
+boiler plate to run tests (installing the right version of Ansible, adjusting
+paths, taking care of the inventory, wrapping your role in a playbook, …) and
+privides a simple DSL to write tests.&lt;/p&gt;
+
+&lt;p&gt;However, in its current state, RoleSpec is mostly intended to run a test suite
+on travis. And this test suite is separated from your role.&lt;/p&gt;
+
+&lt;p&gt;I personally prefer to have my role tests along the Ansible role, in a &lt;code&gt;tests&lt;/code&gt; directory.&lt;/p&gt;
+
+&lt;p&gt;We see below how we can achieve this with RoleSpec, and will leverage Vagrant
+for this. We’ll also use Guard to continuously test our role while writing it.&lt;/p&gt;
+
+&lt;h2 id=&quot;a-simple-role&quot;&gt;A simple role&lt;/h2&gt;
+
+&lt;p&gt;Let’s start by creating a simple nginx role:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;mkdir -p ansible-nginx/&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;defaults,handlers,tasks,templates,tests/ansible-nginx/inventory&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The &lt;code&gt;tests&lt;/code&gt; directory will be sued for our tests later.&lt;/p&gt;
+
+&lt;p&gt;If you already have a role want to convert it, create &lt;code&gt;tests/ansible-
+nginx/inventory&lt;/code&gt; and skip to 
+&lt;a href=&quot;#creating-the-vagrant-machine&quot;&gt;Creating the Vagrant machine&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;defaults&quot;&gt;Defaults&lt;/h3&gt;
+
+&lt;p&gt;In &lt;code&gt;default/main.yml&lt;/code&gt;, we’ll declare a few default values for our role. We won’t do much,
+in our role, just install nginx and set a few variables, so let’s keep this
+simple:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span class=&quot;l-Scalar-Plain&quot;&gt;nginx_root&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;/var/lib/nginx/&lt;/span&gt;
+&lt;span class=&quot;l-Scalar-Plain&quot;&gt;nginx_worker_connections&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;1024&lt;/span&gt;
+&lt;span class=&quot;l-Scalar-Plain&quot;&gt;nginx_ie8_support&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;yes&lt;/span&gt;
+&lt;span class=&quot;l-Scalar-Plain&quot;&gt;nginx_port&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;80&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;handlers&quot;&gt;Handlers&lt;/h3&gt;
+
+&lt;p&gt;For the handlers part, &lt;code&gt;handlers/main.yml&lt;/code&gt; will contain a basic restart handler, followed by a port check for good measure:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;Restart nginx&lt;/span&gt;
+  &lt;span class=&quot;l-Scalar-Plain&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;service name=nginx state=restarted&lt;/span&gt;
+  &lt;span class=&quot;l-Scalar-Plain&quot;&gt;notify&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;Check nginx&lt;/span&gt;
+
+&lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;Check nginx&lt;/span&gt;
+  &lt;span class=&quot;l-Scalar-Plain&quot;&gt;wait_for&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;port={{ nginx_port }} delay=5 timeout=10&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;tasks&quot;&gt;Tasks&lt;/h3&gt;
+
+&lt;p&gt;Now the task part. I always put my tasks in a separate file, and include this
+file from &lt;code&gt;main.yml&lt;/code&gt;. This trick will allow you to set a tag for the whole
+included file, like so:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;include&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;nginx.yml tags=nginx&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;And then, in &lt;code&gt;nginx.yml&lt;/code&gt;, put the real tasks:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;Adds nginx ppa&lt;/span&gt;
+  &lt;span class=&quot;l-Scalar-Plain&quot;&gt;apt_repository&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;repo=ppa:nginx/stable&lt;/span&gt;
+
+&lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;Adds PPA key&lt;/span&gt;
+  &lt;span class=&quot;l-Scalar-Plain&quot;&gt;apt_key&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; 
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;url=http://keyserver.ubuntu.com:11371/pks/lookup?op=get&amp;amp;search=0x00A6F0A3C300EE8C&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;state=present&lt;/span&gt;
+
+&lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;Installs nginx&lt;/span&gt;
+  &lt;span class=&quot;l-Scalar-Plain&quot;&gt;apt&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;pkg=nginx-full&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;state=latest&lt;/span&gt;
+
+&lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;Writes nginx.conf&lt;/span&gt;
+  &lt;span class=&quot;l-Scalar-Plain&quot;&gt;template&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; 
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;src=&amp;quot;../templates/nginx.conf.j2&amp;quot;&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;dest=/etc/nginx/nginx.conf&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;validate=&amp;#39;nginx -tc %s&amp;#39;&lt;/span&gt;
+  &lt;span class=&quot;l-Scalar-Plain&quot;&gt;notify&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;Restart nginx&lt;/span&gt;
+
+&lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;Replaces nginx default server&lt;/span&gt;
+  &lt;span class=&quot;l-Scalar-Plain&quot;&gt;template&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;src=&amp;quot;../templates/default.j2&amp;quot;&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;dest=/etc/nginx/sites-available/default&lt;/span&gt;
+  &lt;span class=&quot;l-Scalar-Plain&quot;&gt;notify&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;Restart nginx&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;templates&quot;&gt;Templates&lt;/h3&gt;
+
+&lt;p&gt;We just need to add 2 templates, and our role will be ready. The first one is the main &lt;code&gt;nginx.conf.j2&lt;/code&gt; file:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span class=&quot;l-Scalar-Plain&quot;&gt;user www-data;&lt;/span&gt;
+&lt;span class=&quot;l-Scalar-Plain&quot;&gt;worker_processes {{ ansible_processor_count }};&lt;/span&gt;
+
+&lt;span class=&quot;l-Scalar-Plain&quot;&gt;pid         /var/run/nginx.pid;&lt;/span&gt;
+
+&lt;span class=&quot;l-Scalar-Plain&quot;&gt;events {&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;worker_connections {{ nginx_worker_connections }};&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;# multi_accept on;&lt;/span&gt;
+&lt;span class=&quot;l-Scalar-Plain&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;l-Scalar-Plain&quot;&gt;http {&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;##&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;# Basic Settings&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;##&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;sendfile    on;&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;tcp_nopush  on;&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;tcp_nodelay on;&lt;/span&gt;
+
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;# SSL stuff&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;ssl_protocols TLSv1 TLSv1.1 TLSv1.2;&lt;/span&gt;
+
+&lt;span class=&quot;l-Scalar-Plain&quot;&gt;{% if nginx_ie8_support %}&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;ssl_ciphers &amp;quot;ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4&amp;quot;;&lt;/span&gt;
+&lt;span class=&quot;l-Scalar-Plain&quot;&gt;{% else %}&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;ssl_ciphers &amp;quot;EECDH+ECDSA+AESGCM:EECDH+aRSA+AESGCM:EECDH+ECDSA+SHA384:EECDH+ECDSA+SHA256:EECDH+aRSA+SHA384:EECDH+aRSA+SHA256:EECDH+aRSA+RC4:EECDH:EDH+aRSA:!RC4:!aNULL:!eNULL:!LOW:!3DES:!MD5:!EXPORT:!PSK:!SRP:!DSS&amp;quot;;&lt;/span&gt;
+&lt;span class=&quot;l-Scalar-Plain&quot;&gt;{% endif %}&lt;/span&gt;
+
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;ssl_session_cache shared:SSL:32m;&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;ssl_buffer_size 8k;&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;ssl_session_timeout 10m;&lt;/span&gt;
+
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;keepalive_timeout     65;&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;types_hash_max_size 2048;&lt;/span&gt;
+
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;server_tokens off;&lt;/span&gt;
+
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;include       /etc/nginx/mime.types;&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;default_type  application/octet-stream;&lt;/span&gt;
+
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;##&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;# Logging Settings&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;##&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;access_log /var/log/nginx/access.log;&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;error_log /var/log/nginx/error.log;&lt;/span&gt;
+
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;##&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;# Gzip Settings&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;##&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;gzip on;&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;gzip_disable &amp;quot;msie6&amp;quot;;&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;gzip_comp_level 6;&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;gzip_buffers 16 8k;&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;gzip_types  application/javascript&lt;/span&gt; 
+                &lt;span class=&quot;l-Scalar-Plain&quot;&gt;application/json&lt;/span&gt; 
+                &lt;span class=&quot;l-Scalar-Plain&quot;&gt;application/x-javascript&lt;/span&gt; 
+                &lt;span class=&quot;l-Scalar-Plain&quot;&gt;application/xml&lt;/span&gt; 
+                &lt;span class=&quot;l-Scalar-Plain&quot;&gt;application/xml+rss&lt;/span&gt; 
+                &lt;span class=&quot;l-Scalar-Plain&quot;&gt;image/svg+xml&lt;/span&gt;
+                &lt;span class=&quot;l-Scalar-Plain&quot;&gt;text/css&lt;/span&gt; 
+                &lt;span class=&quot;l-Scalar-Plain&quot;&gt;text/plain&lt;/span&gt;
+                &lt;span class=&quot;l-Scalar-Plain&quot;&gt;text/xml&lt;/span&gt; 
+                &lt;span class=&quot;l-Scalar-Plain&quot;&gt;text/javascript;&lt;/span&gt;
+
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;##&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;# If HTTPS, then set a variable so it can be passed along.&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;##&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;map $scheme $server_https {&lt;/span&gt;
+        &lt;span class=&quot;l-Scalar-Plain&quot;&gt;default off;&lt;/span&gt;
+        &lt;span class=&quot;l-Scalar-Plain&quot;&gt;https on;&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;##&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;# Virtual Host Configs&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;##&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;include /etc/nginx/conf.d/*.conf;&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;include /etc/nginx/sites-enabled/*;&lt;/span&gt;
+&lt;span class=&quot;l-Scalar-Plain&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The file is a bit long, but it just contains basic settings. Note that we’re
+aligning the number of worker processes to the number of processors reported by
+Ansible for the host.&lt;/p&gt;
+
+&lt;p&gt;We are also switching cipher suites depending on whether we want to support IE8
+or not.&lt;/p&gt;
+
+&lt;p&gt;Then, we just add a default virtualhost on our server:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-nginx&quot; data-lang=&quot;nginx&quot;&gt;&lt;span class=&quot;k&quot;&gt;server&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;kn&quot;&gt;listen&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;kn&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;nginx_port&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;}}&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;## listen for ipv4; this line is default and implied&lt;/span&gt;
+
+  &lt;span class=&quot;kn&quot;&gt;root&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;kn&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;nginx_root&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;}}&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;kn&quot;&gt;index&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;index.html&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;index.htm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;c1&quot;&gt;# Make site accessible from http://localhost/&lt;/span&gt;
+  &lt;span class=&quot;kn&quot;&gt;server_name&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;kn&quot;&gt;location&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kn&quot;&gt;try_files&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$uri&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$uri/&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;/index.php?q=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$uri&amp;amp;$args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;kn&quot;&gt;error_page&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;404&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;/404.html&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;c1&quot;&gt;# redirect server error pages to the static page /50x.html&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+  &lt;span class=&quot;kn&quot;&gt;error_page&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;500&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;502&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;503&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;504&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;/50x.html&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;kn&quot;&gt;location&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;/50x.html&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kn&quot;&gt;root&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;/usr/share/nginx/html/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;c1&quot;&gt;# deny access to .htaccess files, if Apache&amp;#39;s document root&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# concurs with nginx&amp;#39;s one&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+  &lt;span class=&quot;kn&quot;&gt;location&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;~&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/\.ht&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kn&quot;&gt;deny&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Our role is now ready. We can now setup the tooling for our tests as explained in &lt;a href=&quot;/testing-with-rolespec/&quot;&gt;part 2&lt;/a&gt;&lt;/p&gt;
+
+
+    &lt;p&gt;&lt;a href=&quot;//leucos.github.io/testing-ansible-roles-rolespec-vagrant/&quot;&gt;Testing Ansible roles, part 1&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;//leucos.github.io&quot;&gt;Random stuff on random stuff&lt;/a&gt; on March 14, 2015.&lt;/p&gt;
+  </content>
+</entry>
+
+
+  
+
+<entry>
+  <title type="html"><![CDATA[Invalidating REDIS cache from Ruby]]></title>
+  <link rel="alternate" type="text/html" href="//leucos.github.io/expiring-redis-cache-from-ruby/" />
+  <id>//leucos.github.io/expiring-redis-cache-from-ruby</id>
+  <updated>2015-03-01T00:00:00-00:00</updated>
+  <published>2015-03-01T00:00:00+01:00</published>
+  
+  <author>
+    <name>Michel Blanc</name>
+    <uri>//leucos.github.io</uri>
+    <email>mb@mbnet.fr</email>
+  </author>
+  <content type="html">
+    &lt;h2 id=&quot;redis-as-padrino-cache&quot;&gt;REDIS as Padrino cache&lt;/h2&gt;
+
+&lt;p&gt;Using REDIS as and application cache is very handy. You can easily use
+it in, say, &lt;a href=&quot;http://www.padrinorb.com/&quot;&gt;Padrino&lt;/a&gt; like this:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;MyApp&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;App&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Padrino&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Application&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;enable&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:caching&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:cache&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Padrino&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Cache&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:Redis&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+                                    &lt;span class=&quot;ss&quot;&gt;:host&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ENV&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;REDIS_SERVER&amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                                    &lt;span class=&quot;ss&quot;&gt;:port&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ENV&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;REDIS_PORT&amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                                    &lt;span class=&quot;ss&quot;&gt;:db&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;MyApp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;App&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;controllers&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:test&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;get&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:cache&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;cache_key&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;current_account&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;email&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;:test:index&amp;quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;expires&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3600&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@title&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;Some page with expensively computed values&amp;quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;render&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;test/index&amp;#39;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Note that we have a specific cache entry for each user
+(&lt;code&gt;current_account.email&lt;/code&gt;). For instance, a user with email &lt;code&gt;foo@bar.com&lt;/code&gt;
+will have this entry cached at &lt;code&gt;foo@bar.com:test:index&lt;/code&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;cache-invalidation&quot;&gt;Cache invalidation&lt;/h2&gt;
+
+&lt;p&gt;Now, sometimes you need to expire the cache forcibly. For instance,
+let’s say you know you’ve changed something in the database and that you
+don’t want stale data to be served, you can invalidate the cache
+manually. Or may be you want to invalidate a complete user cache at
+login time.&lt;/p&gt;
+
+&lt;p&gt;However, this is not easy in our case, since we want to remove all
+entries matching &lt;code&gt;*:test:index&lt;/code&gt; (or &lt;code&gt;foo@bar.com:*&lt;/code&gt; if we want to
+completely wipe out the user cache).&lt;/p&gt;
+
+&lt;p&gt;The first idea that comes to mind is to use the Redis &lt;code&gt;KEYS&lt;/code&gt; command that can
+accept globs to match key names, like &lt;code&gt;KEYS foo@bar.com:*&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;But in the documentation&lt;sup id=&quot;fnref:1&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;, you’ll find a big fat warning about KEYS: &lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Warning: consider KEYS as a command that should only be used in production
+environments with extreme care. It may ruin performance when it is executed
+against large databases. This command is intended for debugging and special
+operations, such as changing your keyspace layout. Don’t use KEYS in your
+regular application code. If you’re looking for a way to find keys in a 
+subset of your keyspace, consider using SCAN or sets.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Scary as it sounds.&lt;/p&gt;
+
+&lt;h2 id=&quot;cursors-to-the-rescue&quot;&gt;Cursors to the rescue&lt;/h2&gt;
+
+&lt;p&gt;REDIS comes with a nice, but not very known feature since v2.8: SCAN. The SCAN
+command is a cursor based iterator. You give him a key pattern, and every time
+you call it, it will return the next set of matching keys, and an index for the
+next call.&lt;/p&gt;
+
+&lt;p&gt;Here is a piece of code that can invalidate key wildcards from padrino :&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;MyApp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;App&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;controllers&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:test&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;define_method&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:invalidate_cache_like&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;wildcard&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;r&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Redis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:host&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ENV&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;REDIS_SERVER&amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:port&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ENV&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;REDIS_PORT&amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;0&amp;quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;keys&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;scan&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;match&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wildcard&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+
+      &lt;span class=&quot;n&quot;&gt;keys&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;del&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;You can not easily invalidate a cache wildcard calling
+&lt;code&gt;invalidate_cache_like&lt;/code&gt;. &lt;/p&gt;
+
+&lt;p&gt;For instance, at user login, you could call :&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;sb&quot;&gt;`invalidate_cache_like &amp;quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;current_account&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;:test:index&amp;quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;and the user cache is now cleared.&lt;/p&gt;
+
+&lt;h2 id=&quot;benchmarking&quot;&gt;Benchmarking&lt;/h2&gt;
+
+&lt;p&gt;Let’s play with &lt;code&gt;Benchmark&lt;/code&gt; a bit to compare &lt;code&gt;SCAN&lt;/code&gt; and &lt;code&gt;KEYS&lt;/code&gt; performance on a
+moderately sized database. While we’re at it, we’ll also check these commands using &lt;code&gt;redis&lt;/code&gt; and &lt;code&gt;hiredis&lt;/code&gt; drivers, to see if it makes any difference.&lt;/p&gt;
+
+&lt;p&gt;I used the following piece of code for that:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;#!/bin/env ruby&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;hiredis&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;em-synchrony&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;redis&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;benchmark&amp;#39;&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;build_cache&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;redis&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;aaaa&amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;zzzz&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;redis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;invalidate_cache_cursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;redis&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wildcard&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;0&amp;quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;keys&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;redis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;scan&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;match&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wildcard&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;keys&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;redis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;del&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;invalidate_cache_keys&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;redis&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wildcard&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;redis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;keys&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;wildcard&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;redis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;del&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;hiredis&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Redis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:driver&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:hiredis&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;redis&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Redis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;Benchmark&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;22&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:ruby&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:hiredis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;r&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Redis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:driver&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;build_cache&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;report&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;looping (&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;):&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;aaa&amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;aaz&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;l&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;invalidate_cache_keys&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;l&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;*&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;build_cache&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;report&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;scanning (&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;):&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;aaa&amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;aaz&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;l&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;invalidate_cache_cursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;l&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;*&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;After a few minutes running, I got those surprising results:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ ./redis-expire-wildcard.rb 
+                            user     system      total        real
+looping (ruby):          0.040000   0.010000   0.050000 (  1.059056)
+scanning (ruby):        49.000000  11.490000  60.490000 ( 61.113561)
+looping (hiredis):       0.020000   0.010000   0.030000 (  1.073681)
+scanning (hiredis):     19.680000  12.880000  32.560000 ( 44.972220)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;First, there is no much improvements using &lt;code&gt;hiredis&lt;/code&gt; over &lt;code&gt;redis&lt;/code&gt; when looping
+in our case. This sounds legit, since we loop only 26 times here and the
+&lt;code&gt;hiredis&lt;/code&gt; performance benefit doesn’t rise with so few commands (&lt;code&gt;hiredis&lt;/code&gt; does
+a much more better job if you change the tested range so more commands are
+issued).&lt;/p&gt;
+
+&lt;p&gt;Second, using &lt;code&gt;SCAN&lt;/code&gt; here is &lt;em&gt;much&lt;/em&gt; slower than using &lt;code&gt;KEYS&lt;/code&gt; !&lt;/p&gt;
+
+&lt;p&gt;So why use &lt;code&gt;SCAN&lt;/code&gt; instead of &lt;code&gt;KEYS&lt;/code&gt; ? The problem with &lt;code&gt;KEYS&lt;/code&gt; is that it will block your server while retrieving all the keys. The cursor based approach will return small chunks of keys and won’t block the server for the time of a whole key scan.&lt;/p&gt;
+
+&lt;p&gt;However, handling cursor based expiration can be tricky in a web application.
+Since it takes so much longer (but is friendlier to Redis), you might have to
+handle it in a separate task from your application process (in Sidekiq for instance).&lt;/p&gt;
+
+&lt;p&gt;It all depends on your app. You can start using simply &lt;code&gt;KEYS&lt;/code&gt;, but will have to
+keep in mind that cursors will be needed if usage or concurrent trafic rises and
+monitor your Redis statistics for this.&lt;/p&gt;
+
+&lt;div class=&quot;footnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:1&quot;&gt;
+      &lt;p&gt;&lt;a href=&quot;http://redis.io/commands/KEYS&quot;&gt;http://redis.io/commands/KEYS&lt;/a&gt; &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;
+
+    &lt;p&gt;&lt;a href=&quot;//leucos.github.io/expiring-redis-cache-from-ruby/&quot;&gt;Invalidating REDIS cache from Ruby&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;//leucos.github.io&quot;&gt;Random stuff on random stuff&lt;/a&gt; on March 01, 2015.&lt;/p&gt;
+  </content>
+</entry>
+
+
+  
+
+<entry>
+  <title type="html"><![CDATA[Restoring Arch bootloader for the future self]]></title>
+  <link rel="alternate" type="text/html" href="//leucos.github.io/restoring-arch-bootloader/" />
+  <id>//leucos.github.io/restoring-arch-bootloader</id>
+  <published>2015-02-14T00:00:00+01:00</published>
+  <updated>2015-02-14T00:00:00+01:00</updated>
+  <author>
+    <name>Michel Blanc</name>
+    <uri>//leucos.github.io</uri>
+    <email>mb@mbnet.fr</email>
+  </author>
+  <content type="html">
+    &lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Grab latest Arch, create a bootable key (do this before you’re doomed)&lt;sup id=&quot;fnref:1&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;. &lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Press F2 at boot, change the boot order to start on the key in &lt;strong&gt;UEFI&lt;/strong&gt; mode&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Boot on Arch, then&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;script src=&quot;https://gist.github.com/leucos/3f63c07d8326309d7fb1.js&quot;&gt; &lt;/script&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Cross fingers…&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;footnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:1&quot;&gt;
+      &lt;p&gt;Multisystem is pretty handy for this. You can put several OSes on the key, and choose what to boot. &lt;a href=&quot;http://liveusb.info/dotclear/&quot;&gt;http://liveusb.info/dotclear/&lt;/a&gt; &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;
+
+    &lt;p&gt;&lt;a href=&quot;//leucos.github.io/restoring-arch-bootloader/&quot;&gt;Restoring Arch bootloader for the future self&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;//leucos.github.io&quot;&gt;Random stuff on random stuff&lt;/a&gt; on February 14, 2015.&lt;/p&gt;
+  </content>
+</entry>
+
 </feed>

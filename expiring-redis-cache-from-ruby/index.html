@@ -1,0 +1,406 @@
+<!doctype html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if (IE 7)&!(IEMobile)]><html class="no-js lt-ie9 lt-ie8" lang="en"><![endif]-->
+<!--[if (IE 8)&!(IEMobile)]><html class="no-js lt-ie9" lang="en"><![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"><!--<![endif]-->
+<head>
+<meta charset="utf-8">
+<title>Invalidating REDIS cache from Ruby &#8211; Random stuff on random stuff</title>
+<meta name="description" content="Using REDIS cursors for cache invalidation">
+<meta name="keywords" content="redis, ruby, padrino">
+
+
+
+<!-- Twitter Cards -->
+<meta name="twitter:title" content="Invalidating REDIS cache from Ruby">
+<meta name="twitter:description" content="Using REDIS cursors for cache invalidation">
+<meta name="twitter:site" content="@b9m">
+<meta name="twitter:creator" content="@b9m">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="//leucos.github.io/images/default-thumb.png">
+
+<!-- Open Graph -->
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Invalidating REDIS cache from Ruby">
+<meta property="og:description" content="Using REDIS cursors for cache invalidation">
+<meta property="og:url" content="//leucos.github.io/expiring-redis-cache-from-ruby/">
+<meta property="og:site_name" content="Random stuff on random stuff">
+
+
+
+
+
+<link rel="canonical" href="//leucos.github.io/expiring-redis-cache-from-ruby/">
+<link href="//leucos.github.io/feed.xml" type="application/atom+xml" rel="alternate" title="Random stuff on random stuff Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="//leucos.github.io/assets/css/main.css">
+
+<meta http-equiv="cleartype" content="on">
+
+<!-- HTML5 Shiv and Media Query Support -->
+<!--[if lt IE 9]>
+	<script src="//leucos.github.io/assets/js/vendor/html5shiv.min.js"></script>
+	<script src="//leucos.github.io/assets/js/vendor/respond.min.js"></script>
+<![endif]-->
+
+<!-- Modernizr -->
+<script src="//leucos.github.io/assets/js/vendor/modernizr-2.7.1.custom.min.js"></script>
+
+<link href='//fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700%7CPT+Serif:400,700,400italic' rel='stylesheet' type='text/css'>
+
+<!-- Icons -->
+<!-- 16x16 -->
+<link rel="shortcut icon" href="//leucos.github.io/favicon.ico">
+<!-- 32x32 -->
+<link rel="shortcut icon" href="//leucos.github.io/favicon.png">
+<!-- 57x57 (precomposed) for iPhone 3GS, pre-2011 iPod Touch and older Android devices -->
+<link rel="apple-touch-icon-precomposed" href="//leucos.github.io/images/apple-touch-icon-precomposed.png">
+<!-- 72x72 (precomposed) for 1st generation iPad, iPad 2 and iPad mini -->
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="//leucos.github.io/images/apple-touch-icon-72x72-precomposed.png">
+<!-- 114x114 (precomposed) for iPhone 4, 4S, 5 and post-2011 iPod Touch -->
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="//leucos.github.io/images/apple-touch-icon-114x114-precomposed.png">
+<!-- 144x144 (precomposed) for iPad 3rd and 4th generation -->
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="//leucos.github.io/images/apple-touch-icon-144x144-precomposed.png">
+
+</head>
+
+<body class="post">
+
+<!--[if lt IE 9]><div class="browser-upgrade alert alert-info">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</div><![endif]-->
+
+<div class="navigation-wrapper">
+	<div class="site-name">
+		<a href="//leucos.github.io/">Random stuff on random stuff</a>
+	</div><!-- /.site-name -->
+	<div class="top-navigation">
+		<nav role="navigation" id="site-nav" class="nav">
+		    <ul>
+		        
+				    
+				        
+				    
+				    <li><a href="//leucos.github.io/about/" >About</a></li>
+				
+				    
+				        
+				    
+				    <li><a href="//leucos.github.io/posts/" >Posts</a></li>
+				
+		    </ul>
+		</nav>
+	</div><!-- /.top-navigation -->
+</div><!-- /.navigation-wrapper -->
+
+
+
+<div id="main" role="main">
+  <div class="article-author-side">
+    
+
+
+<div itemscope itemtype="http://schema.org/Person">
+
+
+	<img src="//leucos.github.io/images/bio-photo.jpg" class="bio-photo" alt="Michel Blanc bio photo">
+
+
+  <h3 itemprop="name">Michel Blanc</h3>
+  <p>Long time sysadmin with DevOps tendencies</p>
+  <a href="mailto:mb@mbnet.fr" class="author-social" target="_blank"><i class="fa fa-fw fa-envelope-square"></i>Email</a>
+  <a href="http://twitter.com/b9m" class="author-social" target="_blank"><i class="fa fa-fw fa-twitter-square"></i> Twitter</a>
+  
+  
+  <a href="http://linkedin.com/in/michelblanc" class="author-social" target="_blank"><i class="fa fa-fw fa-linkedin-square"></i> LinkedIn</a>
+  
+  
+  <a href="http://github.com/leucos" class="author-social" target="_blank"><i class="fa fa-fw fa-github"></i> Github</a>
+  <a href="http://stackoverflow.com/users/467722/leucos" class="author-social" target="_blank"><i class="fa fa-fw fa-stack-overflow"></i> Stackoverflow</a>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+</div>
+  </div>
+  <article class="post">
+    <div class="headline-wrap">
+      
+        <h1><a href="//leucos.github.io/expiring-redis-cache-from-ruby/" rel="bookmark" title="Invalidating REDIS cache from Ruby">Invalidating REDIS cache from Ruby</a></h1>
+      
+    </div><!--/ .headline-wrap -->
+    <div class="article-wrap">
+      <h2 id="redis-as-padrino-cache">REDIS as Padrino cache</h2>
+
+<p>Using REDIS as and application cache is very handy. You can easily use
+it in, say, <a href="http://www.padrinorb.com/">Padrino</a> like this:</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">module</span> <span class="nn">MyApp</span>
+  <span class="k">class</span> <span class="nc">App</span> <span class="o">&lt;</span> <span class="no">Padrino</span><span class="o">::</span><span class="no">Application</span>
+    <span class="n">enable</span> <span class="ss">:caching</span>
+    <span class="n">set</span> <span class="ss">:cache</span><span class="p">,</span> <span class="no">Padrino</span><span class="o">::</span><span class="no">Cache</span><span class="o">.</span><span class="n">new</span><span class="p">(</span> <span class="ss">:Redis</span><span class="p">,</span> 
+                                    <span class="ss">:host</span> <span class="o">=&gt;</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;REDIS_SERVER&#39;</span><span class="o">]</span><span class="p">,</span>
+                                    <span class="ss">:port</span> <span class="o">=&gt;</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;REDIS_PORT&#39;</span><span class="o">]</span><span class="p">,</span>
+                                    <span class="ss">:db</span> <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="no">MyApp</span><span class="o">::</span><span class="no">App</span><span class="o">.</span><span class="n">controllers</span> <span class="ss">:test</span> <span class="k">do</span>
+  <span class="n">get</span> <span class="ss">:index</span><span class="p">,</span> <span class="ss">:cache</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="k">do</span>
+    <span class="n">cache_key</span> <span class="p">{</span> <span class="n">current_account</span><span class="o">.</span><span class="n">email</span> <span class="o">+</span> <span class="s2">&quot;:test:index&quot;</span> <span class="p">}</span>
+    <span class="n">expires</span> <span class="mi">3600</span>
+    <span class="vi">@title</span> <span class="o">=</span> <span class="s2">&quot;Some page with expensively computed values&quot;</span>
+    <span class="n">render</span> <span class="s1">&#39;test/index&#39;</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></div>
+
+<p>Note that we have a specific cache entry for each user
+(<code>current_account.email</code>). For instance, a user with email <code>foo@bar.com</code>
+will have this entry cached at <code>foo@bar.com:test:index</code></p>
+
+<h2 id="cache-invalidation">Cache invalidation</h2>
+
+<p>Now, sometimes you need to expire the cache forcibly. For instance,
+let’s say you know you’ve changed something in the database and that you
+don’t want stale data to be served, you can invalidate the cache
+manually. Or may be you want to invalidate a complete user cache at
+login time.</p>
+
+<p>However, this is not easy in our case, since we want to remove all
+entries matching <code>*:test:index</code> (or <code>foo@bar.com:*</code> if we want to
+completely wipe out the user cache).</p>
+
+<p>The first idea that comes to mind is to use the Redis <code>KEYS</code> command that can
+accept globs to match key names, like <code>KEYS foo@bar.com:*</code>.</p>
+
+<p>But in the documentation<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup>, you’ll find a big fat warning about KEYS: </p>
+
+<blockquote>
+  <p>Warning: consider KEYS as a command that should only be used in production
+environments with extreme care. It may ruin performance when it is executed
+against large databases. This command is intended for debugging and special
+operations, such as changing your keyspace layout. Don’t use KEYS in your
+regular application code. If you’re looking for a way to find keys in a 
+subset of your keyspace, consider using SCAN or sets.</p>
+</blockquote>
+
+<p>Scary as it sounds.</p>
+
+<h2 id="cursors-to-the-rescue">Cursors to the rescue</h2>
+
+<p>REDIS comes with a nice, but not very known feature since v2.8: SCAN. The SCAN
+command is a cursor based iterator. You give him a key pattern, and every time
+you call it, it will return the next set of matching keys, and an index for the
+next call.</p>
+
+<p>Here is a piece of code that can invalidate key wildcards from padrino :</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">MyApp</span><span class="o">::</span><span class="no">App</span><span class="o">.</span><span class="n">controllers</span> <span class="ss">:test</span> <span class="k">do</span>
+  <span class="n">define_method</span> <span class="ss">:invalidate_cache_like</span> <span class="k">do</span> <span class="o">|</span><span class="n">wildcard</span><span class="o">|</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="no">Redis</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:host</span> <span class="o">=&gt;</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;REDIS_SERVER&#39;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:port</span> <span class="o">=&gt;</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;REDIS_PORT&#39;</span><span class="o">]</span><span class="p">)</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="kp">nil</span>
+
+    <span class="k">while</span> <span class="n">cursor</span> <span class="o">!=</span> <span class="s2">&quot;0&quot;</span> <span class="k">do</span>
+      <span class="n">cursor</span><span class="p">,</span> <span class="n">keys</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">scan</span><span class="p">(</span><span class="n">cursor</span><span class="o">||</span><span class="n">e</span><span class="p">,</span> <span class="p">{</span> <span class="ss">match</span><span class="p">:</span> <span class="n">wildcard</span><span class="p">})</span>
+
+      <span class="n">keys</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">k</span><span class="o">|</span>
+        <span class="n">r</span><span class="o">.</span><span class="n">del</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></div>
+
+<p>You can not easily invalidate a cache wildcard calling
+<code>invalidate_cache_like</code>. </p>
+
+<p>For instance, at user login, you could call :</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="sb">`invalidate_cache_like &quot;</span><span class="si">#{</span><span class="n">current_account</span><span class="o">.</span><span class="n">email</span><span class="si">}</span><span class="sb">:test:index&quot;</span></code></pre></div>
+
+<p>and the user cache is now cleared.</p>
+
+<h2 id="benchmarking">Benchmarking</h2>
+
+<p>Let’s play with <code>Benchmark</code> a bit to compare <code>SCAN</code> and <code>KEYS</code> performance on a
+moderately sized database. While we’re at it, we’ll also check these commands using <code>redis</code> and <code>hiredis</code> drivers, to see if it makes any difference.</p>
+
+<p>I used the following piece of code for that:</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1">#!/bin/env ruby</span>
+
+<span class="nb">require</span> <span class="s1">&#39;hiredis&#39;</span>
+<span class="nb">require</span> <span class="s1">&#39;em-synchrony&#39;</span>
+<span class="nb">require</span> <span class="s1">&#39;redis&#39;</span>
+<span class="nb">require</span> <span class="s1">&#39;benchmark&#39;</span>
+
+<span class="k">def</span> <span class="nf">build_cache</span><span class="p">(</span><span class="n">redis</span><span class="p">)</span>
+  <span class="p">(</span><span class="s1">&#39;aaaa&#39;</span><span class="o">.</span><span class="n">.</span><span class="s1">&#39;zzzz&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">s</span><span class="o">|</span>
+    <span class="n">redis</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">def</span> <span class="nf">invalidate_cache_cursor</span><span class="p">(</span><span class="n">redis</span><span class="p">,</span> <span class="n">wildcard</span><span class="p">)</span>
+  <span class="n">cursor</span> <span class="o">=</span> <span class="kp">nil</span>
+
+  <span class="k">while</span> <span class="n">cursor</span> <span class="o">!=</span> <span class="s2">&quot;0&quot;</span> <span class="k">do</span>
+    <span class="n">cursor</span><span class="p">,</span> <span class="n">keys</span> <span class="o">=</span> <span class="n">redis</span><span class="o">.</span><span class="n">scan</span><span class="p">(</span><span class="n">cursor</span><span class="o">||</span><span class="mi">0</span><span class="p">,</span> <span class="p">{</span> <span class="ss">match</span><span class="p">:</span> <span class="n">wildcard</span><span class="p">})</span>
+
+    <span class="n">keys</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">k</span><span class="o">|</span>
+      <span class="n">redis</span><span class="o">.</span><span class="n">del</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">def</span> <span class="nf">invalidate_cache_keys</span><span class="p">(</span><span class="n">redis</span><span class="p">,</span> <span class="n">wildcard</span><span class="p">)</span>
+  <span class="n">redis</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="n">wildcard</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">k</span><span class="o">|</span>
+    <span class="n">redis</span><span class="o">.</span><span class="n">del</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="n">hiredis</span> <span class="o">=</span> <span class="no">Redis</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:driver</span> <span class="o">=&gt;</span> <span class="ss">:hiredis</span><span class="p">)</span>
+<span class="n">redis</span> <span class="o">=</span> <span class="no">Redis</span><span class="o">.</span><span class="n">new</span><span class="p">()</span>
+
+<span class="no">Benchmark</span><span class="o">.</span><span class="n">bm</span><span class="p">(</span><span class="mi">22</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+  <span class="o">[</span><span class="ss">:ruby</span><span class="p">,</span> <span class="ss">:hiredis</span><span class="o">].</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">d</span><span class="o">|</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="no">Redis</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:driver</span> <span class="o">=&gt;</span> <span class="n">d</span><span class="p">)</span>
+    <span class="n">build_cache</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+    <span class="n">x</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;looping (</span><span class="si">#{</span><span class="n">d</span><span class="si">}</span><span class="s2">):&quot;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="p">(</span><span class="s1">&#39;aaa&#39;</span><span class="o">.</span><span class="n">.</span><span class="s1">&#39;aaz&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">l</span><span class="o">|</span>
+        <span class="n">invalidate_cache_keys</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">l</span><span class="si">}</span><span class="s2">*&quot;</span><span class="p">)</span>
+      <span class="k">end</span>
+    <span class="p">}</span>
+    <span class="n">build_cache</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+    <span class="n">x</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;scanning (</span><span class="si">#{</span><span class="n">d</span><span class="si">}</span><span class="s2">):&quot;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="p">(</span><span class="s1">&#39;aaa&#39;</span><span class="o">.</span><span class="n">.</span><span class="s1">&#39;aaz&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">l</span><span class="o">|</span>
+        <span class="n">invalidate_cache_cursor</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">l</span><span class="si">}</span><span class="s2">*&quot;</span><span class="p">)</span>
+      <span class="k">end</span>
+    <span class="p">}</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></div>
+
+<p>After a few minutes running, I got those surprising results:</p>
+
+<pre><code>$ ./redis-expire-wildcard.rb 
+                            user     system      total        real
+looping (ruby):          0.040000   0.010000   0.050000 (  1.059056)
+scanning (ruby):        49.000000  11.490000  60.490000 ( 61.113561)
+looping (hiredis):       0.020000   0.010000   0.030000 (  1.073681)
+scanning (hiredis):     19.680000  12.880000  32.560000 ( 44.972220)
+</code></pre>
+
+<p>First, there is no much improvements using <code>hiredis</code> over <code>redis</code> when looping
+in our case. This sounds legit, since we loop only 26 times here and the
+<code>hiredis</code> performance benefit doesn’t rise with so few commands (<code>hiredis</code> does
+a much more better job if you change the tested range so more commands are
+issued).</p>
+
+<p>Second, using <code>SCAN</code> here is <em>much</em> slower than using <code>KEYS</code> !</p>
+
+<p>So why use <code>SCAN</code> instead of <code>KEYS</code> ? The problem with <code>KEYS</code> is that it will block your server while retrieving all the keys. The cursor based approach will return small chunks of keys and won’t block the server for the time of a whole key scan.</p>
+
+<p>However, handling cursor based expiration can be tricky in a web application.
+Since it takes so much longer (but is friendlier to Redis), you might have to
+handle it in a separate task from your application process (in Sidekiq for instance).</p>
+
+<p>It all depends on your app. You can start using simply <code>KEYS</code>, but will have to
+keep in mind that cursors will be needed if usage or concurrent trafic rises and
+monitor your Redis statistics for this.</p>
+
+<div class="footnotes">
+  <ol>
+    <li id="fn:1">
+      <p><a href="http://redis.io/commands/KEYS">http://redis.io/commands/KEYS</a> <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+      <hr />
+      <footer role="contentinfo">
+        <div class="social-share">
+  <h4>Share on</h4>
+  <ul>
+    <li>
+      <a href="https://twitter.com/intent/tweet?text=//leucos.github.io/expiring-redis-cache-from-ruby/" class="twitter" title="Share on Twitter"><i class="fa fa-twitter"></i><span> Twitter</span></a>
+    </li>
+    <li>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=//leucos.github.io/expiring-redis-cache-from-ruby/" class="facebook" title="Share on Facebook"><i class="fa fa-facebook"></i><span> Facebook</span></a>
+    </li>
+    <li>
+      <a href="https://plus.google.com/share?url=//leucos.github.io/expiring-redis-cache-from-ruby/" class="google-plus" title="Share on Google Plus"><i class="fa fa-google-plus"></i><span> Google+</span></a>
+    </li>
+  </ul>
+</div><!-- /.social-share -->
+        <p class="byline"><strong>Invalidating REDIS cache from Ruby</strong> was published on <time datetime="2015-03-01T00:00:00+01:00">March 01, 2015</time> and last modified on <time datetime="2015-03-01">March 01, 2015</time>.</p>
+      </footer>
+    </div><!-- /.article-wrap -->
+  
+    <section id="disqus_thread"></section><!-- /#disqus_thread -->
+  
+  </article>
+</div><!-- /#main -->
+
+<div class="footer-wrap">
+  <div class="related-articles">
+  <h4>You might also enjoy <small class="pull-right">(<a href="//leucos.github.io/posts/">View all posts</a>)</small></h4>
+    <ul>
+    
+      <li><a href="//leucos.github.io/testing-with-rolespec/" title="Testing Ansible roles, part 2">Testing Ansible roles, part 2</a></li>
+    
+      <li><a href="//leucos.github.io/testing-ansible-roles-rolespec-vagrant/" title="Testing Ansible roles, part 1">Testing Ansible roles, part 1</a></li>
+    
+      <li><a href="//leucos.github.io/restoring-arch-bootloader/" title="Restoring Arch bootloader for the future self">Restoring Arch bootloader for the future self</a></li>
+    
+    </ul>
+    <hr />
+  </div><!-- /.related-articles -->
+  <footer>
+    
+
+<span>&copy; 2015 Michel Blanc. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> using the <a href="http://mademistakes.com/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a> theme.</span>
+
+  </footer>
+</div><!-- /.footer-wrap -->
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="//leucos.github.io/assets/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+<script src="//leucos.github.io/assets/js/scripts.min.js"></script>
+
+
+  
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'randomstuffonrandomstuff'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+	        
+
+</body>
+</html>
