@@ -4,7 +4,7 @@
 <generator uri="https://github.com/jekyll/jekyll">Jekyll</generator>
 <link rel="self" type="application/atom+xml" href="http://leucos.github.io/feed.xml" />
 <link rel="alternate" type="text/html" href="http://leucos.github.io" />
-<updated>2015-03-15T17:19:55+01:00</updated>
+<updated>2015-03-15T17:30:15+01:00</updated>
 <id>http://leucos.github.io/</id>
 <author>
   <name>Michel Blanc</name>
@@ -164,7 +164,7 @@ it will only run &lt;code&gt;assert_playbook_runs&lt;/code&gt; test.&lt;/p&gt;
 
 &lt;script type=&quot;text/javascript&quot; src=&quot;https://asciinema.org/a/17712.js&quot; id=&quot;asciicast-17712&quot; async=&quot;&quot;&gt;&lt;/script&gt;
 
-&lt;p&gt;25 seconds only, we cut the runtime by twelve, not bad.&lt;/p&gt;
+&lt;p&gt;25 seconds only, we cut the runtime by six, not bad.&lt;/p&gt;
 
 &lt;h2 id=&quot;local-continuous-integration&quot;&gt;Local continuous integration&lt;/h2&gt;
 
@@ -193,8 +193,7 @@ it from the guard watch, the test will loop forever.&lt;/p&gt;
 
 &lt;p&gt;Now run &lt;code&gt;guard&lt;/code&gt;, change a file (.e.g. &lt;code&gt;touch tasks/main.yml&lt;/code&gt;), and see what happens.&lt;/p&gt;
 
-&lt;p&gt;In the next part, we will add TravicCI configuration so tests are run when we push
-our role on GitHub.&lt;/p&gt;
+&lt;p&gt;In the next part, we will add some more tests, and see what we can do with RoleSpec.&lt;/p&gt;
 
 
     &lt;p&gt;&lt;a href=&quot;http://leucos.github.io/testing-ansible-roles-part-2/&quot;&gt;Testing Ansible roles, part 2&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;http://leucos.github.io&quot;&gt;Random stuff on random stuff&lt;/a&gt; on March 15, 2015.&lt;/p&gt;
@@ -239,9 +238,9 @@ for this. We’ll also use Guard to continuously test our role while writing it.
 
 &lt;p&gt;The &lt;code&gt;tests&lt;/code&gt; directory will be sued for our tests later.&lt;/p&gt;
 
-&lt;p&gt;If you already have a role want to convert it, create &lt;code&gt;tests/ansible-
-nginx/inventory&lt;/code&gt; and skip to 
-&lt;a href=&quot;#creating-the-vagrant-machine&quot;&gt;Creating the Vagrant machine&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;If you already have a role want to convert it, create the &lt;code&gt;tests/ansible-
+nginx/inventory&lt;/code&gt; file and skip straight to 
+&lt;a href=&quot;/testing-ansible-roles-part-2/&quot;&gt;part 2&lt;/a&gt;.&lt;/p&gt;
 
 &lt;h3 id=&quot;defaults&quot;&gt;Defaults&lt;/h3&gt;
 
