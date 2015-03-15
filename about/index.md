@@ -39,3 +39,10 @@ in it's early days, writing deployment playbooks to blossom bare metal machines
 
 I am pretty sold to CI/CD, microservices and MonitorAllTheThings™, as is my rubberdyno in the header.
 
+## Links !
+
+- [GitHub profile](https://github.com/leucos)
+- [HopWork](https://www.hopwork.com/profile/michelblanc)
+- [Zuzur's blog](http://arzur.net/)
+- [All the rest](https://delicious.com/leucos)
+
