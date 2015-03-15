@@ -41,6 +41,8 @@ called with `--install`. This happens only at vagrant provisionning time (e.g.
 `vagrant up` of `vagrant provision`)
 2. it can be called to run the test suite; to make invocation easier, it will copy itself to `/usr/local/bin/specs`
 
+Create the `vagrant_specs.sh` with the following content:
+
 {% highlight bash %}
 
 #!/bin/bash
@@ -49,14 +51,14 @@ called with `--install`. This happens only at vagrant provisionning time (e.g.
 #
 # Usage for provisionning VM & running (in Vagrant file):
 # 
-# script.sh --install <role> <URL for test suite>
+# script.sh --install <role>
 #
 # e.g. : 
-# script.sh --install ansible-nginx https://github.com/erasme/erasme-roles-specs.git
+# script.sh --install ansible-nginx
 # 
 # Usage for running only (from host):
 #
-# vagrant ssh -c ./specs
+# vagrant ssh -c specs
 #
 if [ "x$1" == "x--install" ]; then
   mv ~vagrant/specs /usr/local/bin/specs
@@ -70,7 +72,7 @@ if [ "x$1" == "x--install" ]; then
   exit
 fi
 
-cd ~vagrant/testdir && rolespec -r $(ls roles) "$*"
+cd ~vagrant/testdir && rolespec -r $(ls roles)
 
 {% endhighlight %}
 
@@ -106,7 +108,7 @@ And finally, we need a test file, where we can check if our playbook works. We c
 
 This test file is simply a bash script, in whch we include some RoleSpec files to get ccess to its DSL.
 
-Let's start with a simple one.
+Let's start with a simple one, and create `tests/ansible-nginx/test` with the followjng content:
 
 {% highlight bash %}
 #!/bin/bash
