@@ -1,9 +1,16 @@
 source 'https://rubygems.org'
 
 gem 'jekyll'
-gem "jekyll-sitemap"
-gem 'octopress', '~> 3.0.0.rc.12'
+gem 'kramdown'
+gem 'coderay'
 gem 'rake'
+gem 'thor'
+gem 'activesupport'
+gem 'stringex'
 gem 'link-checker'
+gem 'mini_magick'
+gem 'guard'
+gem 'guard-shell'
+
 gem 'jgd'
 
