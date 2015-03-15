@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Testing Ansible roles
+title: Testing Ansible roles, part 1
 excerpt: "Testing Ansible roles, TDD style, with rolespec, Vagrant and Guard"
 tags: [ansible, tdd, rolespec, guard, vagrant]
 modified: 
@@ -9,7 +9,10 @@ comments: true
 
 [RoleSpec](https://github.com/nickjj/rolespec/) does a great job helping out
 testing your roles. It is maintained and used primarily to test the
-[debops](https://github.com/debops/debops) role suite.
+[debops](https://github.com/debops/debops) role suite. RoleSpec handles all the
+boiler plate to run tests (installing the right version of Ansible, adjusting
+paths, taking care of the inventory, wrapping your role in a playbook, ...) and
+privides a simple DSL to write tests.
 
 However, in its current state, RoleSpec is mostly intended to run a test suite
 on travis. And this test suite is separated from your role.
@@ -25,9 +28,15 @@ Let's start by creating a simple nginx role:
 
 {% highlight bash %}
 
-mkdir -p ansible-nginx/{defaults,handlers,tasks,templates}
+mkdir -p ansible-nginx/{defaults,handlers,tasks,templates,tests/ansible-nginx/inventory}
 
 {% endhighlight %}
+
+The `tests` directory will be sued for our tests later.
+
+If you already have a role want to convert it, create `tests/ansible-
+nginx/inventory` and skip to 
+[Creating the Vagrant machine](#creating-the-vagrant-machine).
 
 ### Defaults
 
@@ -106,7 +115,6 @@ And then, in `nginx.yml`, put the real tasks:
   template:
     src="../templates/default.j2"
     dest=/etc/nginx/sites-available/default
-  when: nginx_add_default
   notify:
     - Restart nginx
 
@@ -210,7 +218,7 @@ or not.
 
 Then, we just add a default virtualhost on our server:
 
-{% highlight yaml %}
+{% highlight nginx %}
 {% raw %}
 
 server {
@@ -245,3 +253,7 @@ server {
 
 {% endraw %}
 {% endhighlight %}
+
+Our role is now ready. We can now setup the tooling for our tests as explained in [part 2]({% post_url 2015-03-15-testing-with-rolespec %})
+
+
