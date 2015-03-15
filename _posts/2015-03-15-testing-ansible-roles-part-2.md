@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Testing Ansible roles, part 2
-excerpt: "Testing Ansible roles, TDD style, with rolespec, Vagrant and Guard"
+excerpt: "Testing Ansible roles, TDD style, with rolespec, Vagrant and Guard: setting up Vagrant,RoleSpec and Guard."
 tags: [ansible, tdd, rolespec, guard, vagrant]
 modified: 
 comments: true
