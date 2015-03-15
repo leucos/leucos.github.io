@@ -4,7 +4,7 @@
 <generator uri="https://github.com/jekyll/jekyll">Jekyll</generator>
 <link rel="self" type="application/atom+xml" href="http://leucos.github.io/feed.xml" />
 <link rel="alternate" type="text/html" href="http://leucos.github.io" />
-<updated>2015-03-15T19:08:31+01:00</updated>
+<updated>2015-03-15T19:27:29+01:00</updated>
 <id>http://leucos.github.io/</id>
 <author>
   <name>Michel Blanc</name>
@@ -218,17 +218,17 @@ it from the guard watch, the test will loop forever.&lt;/p&gt;
     &lt;p&gt;&lt;a href=&quot;https://github.com/nickjj/rolespec/&quot;&gt;RoleSpec&lt;/a&gt; does a great job helping out
 testing your roles. It is maintained and used primarily to test the
 &lt;a href=&quot;https://github.com/debops/debops&quot;&gt;debops&lt;/a&gt; role suite. RoleSpec handles all the
-boiler plate to run tests (installing the right version of Ansible, adjusting
-paths, taking care of the inventory, wrapping your role in a playbook, …) and
-privides a simple DSL to write tests.&lt;/p&gt;
+boilerplate stuff to run tests (installing the right version of Ansible,
+adjusting paths, taking care of the inventory, wrapping your role in a playbook,
+…) and provides a simple DSL to write tests.&lt;/p&gt;
 
 &lt;p&gt;However, in its current state, RoleSpec is mostly intended to run a test suite
 on travis. And this test suite is separated from your role.&lt;/p&gt;
 
 &lt;p&gt;I personally prefer to have my role tests along the Ansible role, in a &lt;code&gt;tests&lt;/code&gt; directory.&lt;/p&gt;
 
-&lt;p&gt;We see below how we can achieve this with RoleSpec, and will leverage Vagrant
-for this. We’ll also use Guard to continuously test our role while writing it.&lt;/p&gt;
+&lt;p&gt;We’ll see below how we can achieve this with RoleSpec, and will leverage Vagrant
+for this and also use Guard to continuously test our role while writing it.&lt;/p&gt;
 
 &lt;h2 id=&quot;a-simple-role&quot;&gt;A simple role&lt;/h2&gt;
 
@@ -236,7 +236,7 @@ for this. We’ll also use Guard to continuously test our role while writing it.
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;mkdir -p ansible-nginx/&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;defaults,handlers,tasks,templates,tests/ansible-nginx/inventory&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;The &lt;code&gt;tests&lt;/code&gt; directory will be sued for our tests later.&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;tests&lt;/code&gt; directory will be used for our tests later.&lt;/p&gt;
 
 &lt;p&gt;If you already have a role want to convert it, create the &lt;code&gt;tests/ansible-
 nginx/inventory&lt;/code&gt; file and skip straight to 

@@ -54,7 +54,8 @@
 <!-- Modernizr -->
 <script src="http://leucos.github.io/assets/js/vendor/modernizr-2.7.1.custom.min.js"></script>
 
-<link href='//fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700%7CPT+Serif:400,700,400italic' rel='stylesheet' type='text/css'>
+<!-- <link href='//fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700%7CPT+Serif:400,700,400italic' rel='stylesheet' type='text/css'> -->
+<link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
 
 <!-- Icons -->
 <!-- 16x16 -->
@@ -148,17 +149,17 @@
       <p><a href="https://github.com/nickjj/rolespec/">RoleSpec</a> does a great job helping out
 testing your roles. It is maintained and used primarily to test the
 <a href="https://github.com/debops/debops">debops</a> role suite. RoleSpec handles all the
-boiler plate to run tests (installing the right version of Ansible, adjusting
-paths, taking care of the inventory, wrapping your role in a playbook, …) and
-privides a simple DSL to write tests.</p>
+boilerplate stuff to run tests (installing the right version of Ansible,
+adjusting paths, taking care of the inventory, wrapping your role in a playbook,
+…) and provides a simple DSL to write tests.</p>
 
 <p>However, in its current state, RoleSpec is mostly intended to run a test suite
 on travis. And this test suite is separated from your role.</p>
 
 <p>I personally prefer to have my role tests along the Ansible role, in a <code>tests</code> directory.</p>
 
-<p>We see below how we can achieve this with RoleSpec, and will leverage Vagrant
-for this. We’ll also use Guard to continuously test our role while writing it.</p>
+<p>We’ll see below how we can achieve this with RoleSpec, and will leverage Vagrant
+for this and also use Guard to continuously test our role while writing it.</p>
 
 <h2 id="a-simple-role">A simple role</h2>
 
@@ -166,7 +167,7 @@ for this. We’ll also use Guard to continuously test our role while writing it.
 
 <div class="highlight"><pre><code class="language-bash" data-lang="bash">mkdir -p ansible-nginx/<span class="o">{</span>defaults,handlers,tasks,templates,tests/ansible-nginx/inventory<span class="o">}</span></code></pre></div>
 
-<p>The <code>tests</code> directory will be sued for our tests later.</p>
+<p>The <code>tests</code> directory will be used for our tests later.</p>
 
 <p>If you already have a role want to convert it, create the <code>tests/ansible-
 nginx/inventory</code> file and skip straight to 
