@@ -32,7 +32,7 @@ theme:
   disqus_shortname: randomstuffonrandomstuff
 
   # Google Analytics/Webmaster key, leave blank to ignore
-  google_analytics_key: 
+  google_analytics_key: UA-60810209-1
   google_webmaster_key: 
 
 # Build settings
