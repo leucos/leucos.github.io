@@ -73,7 +73,7 @@
 
 <h2 id="creating-the-vagrant-machine">Creating the Vagrant machine</h2>
 
-<p>To run our tests in a Vagrant machine, we need to create a <code>Vagrantfile</code>. We’ll create it in our role top directory:</p>
+<p>Spin up a Vagrant machine, we need to create a <code>Vagrantfile</code>. We’ll create it in our role top directory:</p>
 
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Vagrant</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
   <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s2">&quot;ubuntu/trusty64&quot;</span>
@@ -87,8 +87,9 @@
 <span class="k">end</span></code></pre></div>
 
 <p>You can change <code>config.vm.box</code> to another Vagrant box that better suits your
-needs. We’ll provision this machine with a shell script (not with Ansible, so we
-don’t end up in an inception style situation).</p>
+needs, but keep in mind RoleSpec is very Debian/Ubuntu inclined. We’ll provision
+this machine with a shell script (not with Ansible, so we don’t end up in an
+inception style situation).</p>
 
 <p>The provisionning script, <code>vagrant_specs.sh</code> serves two purposes:</p>
 
@@ -155,9 +156,9 @@ $
 
 <p>And finally, we need a test file, where we can check if our playbook works. We can check the syntax, the idempotency, the resulting templates, etc…</p>
 
-<p>This test file is simply a bash script, in whch we include some RoleSpec files to get ccess to its DSL.</p>
+<p>This test file is simply a bash script, in which we include some RoleSpec files to get access to its DSL.</p>
 
-<p>Let’s start with a simple one, and create <code>tests/ansible-nginx/test</code> with the followjng content:</p>
+<p>Let’s start with a simple one, and create <code>tests/ansible-nginx/test</code> with the following content:</p>
 
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#!/bin/bash</span>
 <span class="c"># -*- bash -*-</span>
@@ -182,7 +183,7 @@ assert_playbook_idempotent</code></pre></div>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash">vagrant ssh -c <span class="s1">&#39;specs&#39;</span></code></pre></div>
 
 <p>RoleSpecs will then download Ansible (version 1.8.3 since this is what we
-asked), install it, and run our test case.</p>
+asked for), install it, and run our test case.</p>
 
 <script type="text/javascript" src="https://asciinema.org/a/17711.js" id="asciicast-17711" async=""></script>
 
@@ -235,7 +236,7 @@ it from the guard watch, the test will loop forever.</p>
 
 <p>Now run <code>guard</code>, change a file (.e.g. <code>touch tasks/main.yml</code>), and see what happens.</p>
 
-<p>In the next part, we will add some more tests, and see what we can do with RoleSpec.</p>
+<p>In the next part, we will add some more tests, and see what we can do with <a href="rolespec">RoleSpec</a>.</p>
 
     
   </article>

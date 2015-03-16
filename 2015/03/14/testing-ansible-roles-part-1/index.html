@@ -69,20 +69,21 @@
   </header>
 
   <article class="post-content">
-    <p><a href="https://github.com/nickjj/rolespec/">RoleSpec</a> does a great job helping out
-testing your roles. It is maintained and used primarily to test the
-<a href="https://github.com/debops/debops">debops</a> role suite. RoleSpec handles all the
-boilerplate stuff to run tests (installing the right version of Ansible,
-adjusting paths, taking care of the inventory, wrapping your role in a playbook,
-…) and provides a simple DSL to write tests.</p>
+    <p><a href="rolespec">RoleSpec</a> does a great job helping out testing your roles. It is
+maintained and used primarily to test the <a href="debops">DebOps</a> role suite by the
+fine folks hanging out in <a href="irc://irc.freenode.net/debops">#debops</a> IRC channel.
+RoleSpec handles all the boiler plate to run tests (installing the right version
+of Ansible, adjusting paths, taking care of the inventory, wrapping your role in
+a playbook, …) and privides a simple DSL to write tests.</p>
 
 <p>However, in its current state, RoleSpec is mostly intended to run a test suite
 on travis. And this test suite is separated from your role.</p>
 
-<p>I personally prefer to have my role tests along the Ansible role, in a <code>tests</code> directory.</p>
+<p>I personally prefer to have my role tests along the Ansible role, in a <code>tests</code>
+directory.</p>
 
-<p>We’ll see below how we can achieve this with RoleSpec, and will leverage Vagrant
-for this and also use Guard to continuously test our role while writing it.</p>
+<p>We see below how we can achieve this with RoleSpec, and will leverage Vagrant
+for this. We’ll also use Guard to continuously test our role while writing it.</p>
 
 <h2 id="a-simple-role">A simple role</h2>
 
@@ -93,7 +94,7 @@ for this and also use Guard to continuously test our role while writing it.</p>
 <p>The <code>tests</code> directory will be used for our tests later.</p>
 
 <p>If you already have a role want to convert it, create the <code>tests/ansible-
-nginx/inventory</code> file and skip straight to 
+nginx/</code> directory and skip straight to 
 <a href="/2015/03/15/testing-ansible-roles-part-2/">part 2</a>.</p>
 
 <h3 id="defaults">Defaults</h3>
@@ -249,7 +250,7 @@ or not.</p>
 <p>Then, we just add a default virtualhost on our server:</p>
 
 <div class="highlight"><pre><code class="language-nginx" data-lang="nginx"><span class="k">server</span> <span class="p">{</span>
-  <span class="kn">listen</span> <span class="p">{</span><span class="kn">{</span> <span class="s">nginx_port</span> <span class="err">}}</span><span class="p">;</span> <span class="c1">## listen for ipv4; this line is default and implied</span>
+  <span class="kn">listen</span> <span class="p">{</span><span class="kn">{</span> <span class="s">nginx_port</span> <span class="err">}}</span><span class="p">;</span>
 
   <span class="kn">root</span> <span class="p">{</span><span class="kn">{</span> <span class="s">nginx_root</span> <span class="err">}}</span><span class="p">;</span>
   <span class="kn">index</span> <span class="s">index.html</span> <span class="s">index.htm</span><span class="p">;</span>
