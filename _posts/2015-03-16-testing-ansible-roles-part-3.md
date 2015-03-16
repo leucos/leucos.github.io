@@ -16,3 +16,8 @@ We will now improve it a bit and test other RoleSpec assertions.
 ## Ansible version
 
 In the [next part]({% post_url 2015-03-17-testing-ansible-roles-part-4 %}), we will add TravisCI support, so we can test our role when it is pushed on GitHub.
+
+
+
+Note: see stuff at https://github.com/debops/test-suite/blob/master/defaults.conf
+Can be used to add custom assertions
