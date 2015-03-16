@@ -10,10 +10,10 @@
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Random stuff</title>
+    <title>Restoring Arch bootloader for the future self - Random stuff</title>
     <meta name="description" content="Long time sysadmin with DevOpsy tendencies
 ">
-    <meta property="og:locale" content="en_US"><meta property="og:type" content="website"><meta property="og:site_name" content="Random stuff"><meta property="og:description" content="Long time sysadmin with DevOpsy tendencies"><meta property="og:url" content="http://leucos.github.io/"><meta property="article:author" content="http://leucos.github.io/about">
+    <meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Restoring Arch bootloader for the future self - Random stuff"><meta property="og:site_name" content="Random stuff"><meta property="og:description" content="Long time sysadmin with DevOpsy tendencies"><meta property="og:url" content="http://leucos.github.io/2015/02/14/restoring-arch-bootloader/"><meta property="article:published_time" content="2015-02-14T00:00:00+01:00"><meta property="article:author" content="http://leucos.github.io/about">
   
     
 
@@ -22,7 +22,7 @@
     <link rel="alternate" type="application/rss+xml" href="http://leucos.github.io/feed.xml">
     <link rel="shortcut icon" href="http://leucos.github.io/favicon.ico">
     <link rel="prefetch" href="http://leucos.github.io">
-    <link rel="canonical" href="http://leucos.github.io/">
+    <link rel="canonical" href="http://leucos.github.io/2015/02/14/restoring-arch-bootloader/">
     <link rel="stylesheet" 
     href="http://leucos.github.io/assets/css/main.css">
 
@@ -52,100 +52,100 @@
       </div>
       
       <div class="container content">
-          <div class="posts">
+          <div class="post">
+
   
-  <article class="post">
 
-    
-
-    <h1 class="post-title">
-      <a href="http://leucos.github.io/2015/03/15/testing-ansible-roles-part-2/">
-        Testing Ansible roles, part 2
-      </a>
-    </h1>
-
-    <p class="post-meta">
-    
-    <span class="post-date">
-    Mar 15, 2015  
-    </span>
-    </p>
-
-    Testing Ansible roles, TDD style, with rolespec, Vagrant and Guard: setting up Vagrant,RoleSpec and Guard.
-  </article>
   
-  <article class="post">
 
-    
-
-    <h1 class="post-title">
-      <a href="http://leucos.github.io/2015/03/14/testing-ansible-roles-part-1/">
-        Testing Ansible roles, part 1
-      </a>
-    </h1>
-
-    <p class="post-meta">
-    
-    <span class="post-date">
-    Mar 14, 2015  
-    </span>
-    </p>
-
-    Testing Ansible roles, TDD style, with rolespec, Vagrant and Guard: creating a basic nginx role
-  </article>
-  
-  <article class="post">
-
-    
-
-    <h1 class="post-title">
-      <a href="http://leucos.github.io/2015/03/01/expiring-redis-cache-from-ruby/">
-        Invalidating REDIS cache from Ruby
-      </a>
-    </h1>
-
-    <p class="post-meta">
-    
-    <span class="post-date">
-    Mar 1, 2015  
-    </span>
-    </p>
-
-    Using REDIS cursors for cache invalidation
-  </article>
-  
-  <article class="post">
-
-    
-
-    <h1 class="post-title">
-      <a href="http://leucos.github.io/2015/02/14/restoring-arch-bootloader/">
-        Restoring Arch bootloader for the future self
-      </a>
-    </h1>
-
+  <header class="post-header">
+    <h1 class="post-title">Restoring Arch bootloader for the future self</h1>
     <p class="post-meta">
     
     <span class="post-date">
     Feb 14, 2015  
     </span>
     </p>
+  </header>
 
-    Quick note on restoring the bootloaded on Asus UX51VZA
+  <article class="post-content">
+    <ul>
+  <li>
+    <p>Grab latest Arch, create a bootable key (do this before you’re doomed)<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup>. </p>
+  </li>
+  <li>
+    <p>Press F2 at boot, change the boot order to start on the key in <strong>UEFI</strong> mode</p>
+  </li>
+  <li>
+    <p>Boot on Arch, then</p>
+  </li>
+</ul>
+
+<script src="https://gist.github.com/leucos/3f63c07d8326309d7fb1.js"> </script>
+
+<ul>
+  <li>Cross fingers…</li>
+</ul>
+
+<div class="footnotes">
+  <ol>
+    <li id="fn:1">
+      <p>Multisystem is pretty handy for this. You can put several OSes on the key, and choose what to boot. <a href="http://liveusb.info/dotclear/">http://liveusb.info/dotclear/</a> <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+    
   </article>
+
+  
+    <div class="related-posts">
+      <h4>Related Posts</h4>
+      <ul>
+        
+          <li>
+            <h5>
+              <a href="http://leucos.github.io/2015/03/15/testing-ansible-roles-part-2/">
+                Testing Ansible roles, part 2
+                <small>15 Mar 2015</small>
+              </a>
+            </h5>
+          </li>
+        
+          <li>
+            <h5>
+              <a href="http://leucos.github.io/2015/03/14/testing-ansible-roles-part-1/">
+                Testing Ansible roles, part 1
+                <small>14 Mar 2015</small>
+              </a>
+            </h5>
+          </li>
+        
+          <li>
+            <h5>
+              <a href="http://leucos.github.io/2015/03/01/expiring-redis-cache-from-ruby/">
+                Invalidating REDIS cache from Ruby
+                <small>01 Mar 2015</small>
+              </a>
+            </h5>
+          </li>
+        
+      </ul>
+    </div>
+  
+
+  <div class="author-info">
+    
+      <div class="author">   <a href="http://leucos.github.io/about">    <img       src="http://leucos.github.io/assets/images/mb.jpg"      alt="Random stuff" width="60" height="60" />  </a>    <h5>Author</h4>  <h6>    <a href="http://leucos.github.io/about">      Michel blanc    </a>  </h5>  <p>    Find me on            <a title="b9m on Twitter"             href="https://twitter.com/b9m"             class="twitter" target="_blank">Twitter</a>        /         /      </p></div>
+    
+  
+    
+      <div class="share-buttons">  <h5>Share this post on</h5>  <ul class="social-media">    <li>        <a title="b9m on Twitter"           href="https://twitter.com/intent/tweet?original_referer=http://leucos.github.io/2015/02/14/restoring-arch-bootloader/&amp;text=Restoring Arch bootloader for the future self&amp;url=http://leucos.github.io/2015/02/14/restoring-arch-bootloader/" class="twitter wc-img-replace" target="_blank">          Twitter        </a>    </li>       <li>        <a title=" on Google Plus"             href="https://plus.google.com/share?url=http://leucos.github.io/2015/02/14/restoring-arch-bootloader/"             class="google wc-img-replace" target="_blank">Google</a>    </li>    <li>        <a title=" on Facebook"             href="https://www.facebook.com/sharer/sharer.php?u=http://leucos.github.io/2015/02/14/restoring-arch-bootloader/&amp;t=Restoring Arch bootloader for the future self"             class="facebook wc-img-replace" target="_blank">Facebook</a>    </li>  </ul></div>
+      
+  </div>
+  
   
 </div>
 
-
-
-<script type="application/ld+json">
-{
-    "@context": "http://schema.org",
-    "@type": "WebSite",
-    "url": "http://leucos.github.io/"
-    }
-}
-</script>
       </div>
       <a href="#0" class="wc-top">Top</a>
       
