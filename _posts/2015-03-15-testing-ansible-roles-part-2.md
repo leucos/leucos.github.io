@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Testing Ansible roles, part 2
-excerpt: "Testing Ansible roles, TDD style, with rolespec, Vagrant and Guard: setting up Vagrant,RoleSpec and Guard."
+excerpt: "Testing Ansible roles, TDD style, with rolespec, Vagrant and Guard"
 tags: [ansible, tdd, rolespec, guard, vagrant]
 modified: 
 comments: true
@@ -11,7 +11,7 @@ Now that we have created our basic role in [part 1]({% post_url 2015-03-14-testi
 
 ## Creating the Vagrant machine
 
-To run our tests in a Vagrant machine, we need to create a `Vagrantfile`. We'll create it in our role top directory:
+Spin up a Vagrant machine, we need to create a `Vagrantfile`. We'll create it in our role top directory:
 
 {% highlight ruby %}
 {% raw %}
@@ -31,8 +31,9 @@ end
 {% endhighlight %}
 
 You can change `config.vm.box` to another Vagrant box that better suits your
-needs. We'll provision this machine with a shell script (not with Ansible, so we
-don't end up in an inception style situation).
+needs, but keep in mind RoleSpec is very Debian/Ubuntu inclined. We'll provision
+this machine with a shell script (not with Ansible, so we don't end up in an
+inception style situation).
 
 The provisionning script, `vagrant_specs.sh` serves two purposes:
 
@@ -106,9 +107,9 @@ $ echo "placeholder_fqdn" > tests/ansible-nginx/inventory/hosts
 
 And finally, we need a test file, where we can check if our playbook works. We can check the syntax, the idempotency, the resulting templates, etc...
 
-This test file is simply a bash script, in whch we include some RoleSpec files to get ccess to its DSL.
+This test file is simply a bash script, in which we include some RoleSpec files to get access to its DSL.
 
-Let's start with a simple one, and create `tests/ansible-nginx/test` with the followjng content:
+Let's start with a simple one, and create `tests/ansible-nginx/test` with the following content:
 
 {% highlight bash %}
 #!/bin/bash
@@ -138,7 +139,7 @@ vagrant ssh -c 'specs'
 {% endhighlight %}
 
 RoleSpecs will then download Ansible (version 1.8.3 since this is what we
-asked), install it, and run our test case.
+asked for), install it, and run our test case.
 
 <script type="text/javascript" src="https://asciinema.org/a/17711.js" id="asciicast-17711" async></script>
 
@@ -195,6 +196,6 @@ it from the guard watch, the test will loop forever.
 
 Now run `guard`, change a file (.e.g. `touch tasks/main.yml`), and see what happens.
 
-In the next part, we will add some more tests, and see what we can do with RoleSpec.
+In the next part, we will add some more tests, and see what we can do with [RoleSpec](rolespec).
 
-
+[rolespec]: https://github.com/nickjj/rolespec/
