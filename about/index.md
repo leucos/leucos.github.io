@@ -42,8 +42,7 @@ I am pretty sold to CI/CD, microservices and MonitorAllTheThings™, as is my ru
 ## Links !
 
 - [GitHub profile](https://github.com/leucos)
-- [HopWork](https://www.hopwork.com/profile/michelblanc)
-- [Zuzur's blog](http://arzur.net/)
+- [Zuzur's blog](http://arzur.net/octopress/)
 - [All the rest](https://delicious.com/leucos)
 
 {% include social.html %}
