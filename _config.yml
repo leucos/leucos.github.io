@@ -1,61 +1,60 @@
-# Site wide configuration
+# Site settings
+title: Random stuff
+tagline: brain dump on sysadmin & DevOps related topics
+email: mb@mbnet.fr
+description: > # this means to ignore newlines until "baseurl:"
+  Long time sysadmin with DevOpsy tendencies
+baseurl: "" # the subpath of your site, e.g. /blog/
+url: "http://leucos.github.io" # the base hostname & protocol for your site
+logourl: /assets/images/logo.png # Site logo
+author: "Michel blanc"
+author_thumbnail: "/assets/images/mb.jpg" # Author avatar
+# Theme customization - please change from the defaults!
+theme:
+  # Color for sidebar bar, links, etc
+  highlight_color: "#205081" #205081" # "#272935"
+  # Social media links, leave blank to ignore
+  social: 
+    github: leucos
+    twitter: b9m
+    # facebook:
+    # gplus: 
+    # dribble: 
+    # pinterest: 
 
-title:            Random stuff on random stuff
-locale:           en_US
-#url:              http://localhost:4000
-url: http://leucos.github.io
+  # Enable share buttons on post footer
+  show_share_buttons: true
 
+  # Show author picure, name and social links on post footer
+  show_author_info: true
 
-# Jekyll configuration
+  # Disqus comments manager - shortname
+  disqus_shortname: randomstuffonrandomstuff
 
-permalink:   /:categories/:title/
-markdown:    kramdown
-highlighter: pygments
+  # Google Analytics/Webmaster key, leave blank to ignore
+  google_analytics_key: 
+  google_webmaster_key: 
+
+# Build settings
+markdown: kramdown
+
+# Permalinks
+permalink:        pretty
+
+# Pagination config
+paginate: 5
+
+# Files/Folders to be excluded from generated _site folder
+exclude: 
+  - CNAME
+  - Gemfile
+  - Rakefile
+  - README.md
+  - .gitignore
+  - .sass-cache
+  - Gemfile.lock
+
+# Sass conversion configs
 sass:
-  sass_dir: _sass
-  style: compressed
-gems:
-  - jekyll-sitemap
-
-kramdown:
-  auto_ids: true
-  footnote_nr: 1
-  entity_output: as_char
-  toc_levels: 1..6
-  use_coderay: false
-
-
-# Site owner
-owner:
-  name: Michel Blanc
-  avatar: mb.jpg
-  bio: "Long time sysadmin with DevOps tendencies"
-  email: mb@mbnet.fr
-  disqus-shortname: randomstuffonrandomstuff
-  twitter: b9m
-  facebook: #username
-  google:
-    plus: #username
-    analytics: 
-    verify: 
-    ad-client: 
-    ad-slot: 
-  bing-verify: 
-  github: leucos
-  stackoverflow: 467722/leucos
-  linkedin: michelblanc
-  instagram: #username
-  lastfm: #username
-  tumblr: #username
-  pinterest: #username
-  foursquare: #username
-  steam: #username
-  dribbble: #username
-  youtube: #username
-  soundcloud: #username
-  weibo: #username
-  flickr: #username
-
-include: [".htaccess"]
-exclude: ["lib", "config.rb", "Capfile", "config", "log", "Rakefile", "Rakefile.rb", "tmp", "less", "*.sublime-project", "*.sublime-workspace", "test", "spec", "Gruntfile.js", "package.json", "node_modules", "Gemfile", "Gemfile.lock", "LICENSE", "README.md"]
-
+  sass_dir: assets/css/_sass
+  style: :compressed

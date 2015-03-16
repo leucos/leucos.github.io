@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Testing Ansible roles, part 1
-excerpt: "Testing Ansible roles, TDD style, with rolespec, Vagrant and Guard"
+excerpt: "Testing Ansible roles, TDD style, with rolespec, Vagrant and Guard: creating a basic nginx role"
 tags: [ansible, tdd, rolespec, guard, vagrant]
 modified: 
 comments: true
@@ -10,17 +10,17 @@ comments: true
 [RoleSpec](https://github.com/nickjj/rolespec/) does a great job helping out
 testing your roles. It is maintained and used primarily to test the
 [debops](https://github.com/debops/debops) role suite. RoleSpec handles all the
-boiler plate to run tests (installing the right version of Ansible, adjusting
-paths, taking care of the inventory, wrapping your role in a playbook, ...) and
-privides a simple DSL to write tests.
+boilerplate stuff to run tests (installing the right version of Ansible,
+adjusting paths, taking care of the inventory, wrapping your role in a playbook,
+...) and provides a simple DSL to write tests.
 
 However, in its current state, RoleSpec is mostly intended to run a test suite
 on travis. And this test suite is separated from your role.
 
 I personally prefer to have my role tests along the Ansible role, in a `tests` directory.
 
-We see below how we can achieve this with RoleSpec, and will leverage Vagrant
-for this. We'll also use Guard to continuously test our role while writing it.
+We'll see below how we can achieve this with RoleSpec, and will leverage Vagrant
+for this and also use Guard to continuously test our role while writing it.
 
 ## A simple role
 
@@ -32,7 +32,7 @@ mkdir -p ansible-nginx/{defaults,handlers,tasks,templates,tests/ansible-nginx/in
 
 {% endhighlight %}
 
-The `tests` directory will be sued for our tests later.
+The `tests` directory will be used for our tests later.
 
 If you already have a role want to convert it, create the `tests/ansible-
 nginx/inventory` file and skip straight to 
@@ -87,7 +87,6 @@ included file, like so:
 And then, in `nginx.yml`, put the real tasks:
 
 {% highlight yaml %}
-{% raw %}
 
 - name: Adds nginx ppa
   apt_repository:
@@ -118,7 +117,6 @@ And then, in `nginx.yml`, put the real tasks:
   notify:
     - Restart nginx
 
-{% endraw %}
 {% endhighlight %}
 
 ### Templates

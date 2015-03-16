@@ -1,17 +1,9 @@
 source 'https://rubygems.org'
 
-gem 'jekyll'
-gem 'jekyll-sitemap'
-gem 'kramdown'
-gem 'coderay'
-gem 'rake'
-gem 'thor'
-gem 'activesupport'
-gem 'stringex'
-gem 'link-checker'
-gem 'mini_magick'
-gem 'guard'
-gem 'guard-shell'
+require 'json'
+require 'open-uri'
+versions = JSON.parse(open('https://pages.github.com/versions.json').read)
 
+gem 'github-pages', versions['github-pages']
 gem 'jgd'
-
+gem 'rake'
