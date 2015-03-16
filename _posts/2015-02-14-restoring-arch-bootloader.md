@@ -3,6 +3,7 @@ layout: post
 title: "Restoring Arch bootloader for the future self"
 excerpt: "Quick note on restoring the bootloaded on Asus UX51VZA"
 tags: [uefi, arch]
+comments: true
 ---
 
 - Grab latest Arch, create a bootable key (do this before you're doomed)[^1]. 
