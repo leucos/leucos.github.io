@@ -74,7 +74,7 @@ if [ "x$1" == "x--install" ]; then
   exit
 fi
 
-cd ~vagrant/testdir && rolespec -r $(ls roles)
+cd ~vagrant/testdir && rolespec -r $(ls roles) "$*"
 
 {% endhighlight %}
 
