@@ -78,6 +78,8 @@ cd ~vagrant/testdir && rolespec -r $(ls roles)
 
 {% endhighlight %}
 
+and make it executable (`chmod +x vagrant_specs.sh`).
+
 Now, let's check this ! It might take a while if you don't already have the
 vagrant image on your box:
 
@@ -129,6 +131,8 @@ assert_playbook_runs
 assert_playbook_idempotent
 
 {% endhighlight %}
+
+Don't forget to make the test file executable (`chmod +x tests/ansible-nginx/test`).
 
 ## Runing tests
 
