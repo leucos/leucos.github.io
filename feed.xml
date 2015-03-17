@@ -6,8 +6,8 @@
 </description>
     <link>http://leucos.github.io/</link>
     <atom:link href="http://leucos.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 17 Mar 2015 10:10:00 +0100</pubDate>
-    <lastBuildDate>Tue, 17 Mar 2015 10:10:00 +0100</lastBuildDate>
+    <pubDate>Tue, 17 Mar 2015 11:12:07 +0100</pubDate>
+    <lastBuildDate>Tue, 17 Mar 2015 11:12:07 +0100</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
     
       <item>
@@ -72,7 +72,7 @@ called with &lt;code&gt;--install&lt;/code&gt;. This happens only at vagrant pro
   &lt;span class=&quot;nb&quot;&gt;exit&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
 
-&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; ~vagrant/testdir &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; rolespec -r &lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;ls roles&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; ~vagrant/testdir &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; rolespec -r &lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;ls roles&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;$*&amp;quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;and make it executable (&lt;code&gt;chmod +x vagrant_specs.sh&lt;/code&gt;).&lt;/p&gt;
 

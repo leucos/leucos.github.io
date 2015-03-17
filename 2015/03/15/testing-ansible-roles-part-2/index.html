@@ -130,7 +130,7 @@ called with <code>--install</code>. This happens only at vagrant provisionning t
   <span class="nb">exit</span>
 <span class="k">fi</span>
 
-<span class="nb">cd</span> ~vagrant/testdir <span class="o">&amp;&amp;</span> rolespec -r <span class="k">$(</span>ls roles<span class="k">)</span></code></pre></div>
+<span class="nb">cd</span> ~vagrant/testdir <span class="o">&amp;&amp;</span> rolespec -r <span class="k">$(</span>ls roles<span class="k">)</span> <span class="s2">&quot;$*&quot;</span></code></pre></div>
 
 <p>and make it executable (<code>chmod +x vagrant_specs.sh</code>).</p>
 
