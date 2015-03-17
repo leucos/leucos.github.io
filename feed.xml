@@ -6,8 +6,8 @@
 </description>
     <link>http://leucos.github.io/</link>
     <atom:link href="http://leucos.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 16 Mar 2015 19:04:43 +0100</pubDate>
-    <lastBuildDate>Mon, 16 Mar 2015 19:04:43 +0100</lastBuildDate>
+    <pubDate>Tue, 17 Mar 2015 10:10:00 +0100</pubDate>
+    <lastBuildDate>Tue, 17 Mar 2015 10:10:00 +0100</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
     
       <item>
@@ -74,6 +74,8 @@ called with &lt;code&gt;--install&lt;/code&gt;. This happens only at vagrant pro
 
 &lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; ~vagrant/testdir &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; rolespec -r &lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;ls roles&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
+&lt;p&gt;and make it executable (&lt;code&gt;chmod +x vagrant_specs.sh&lt;/code&gt;).&lt;/p&gt;
+
 &lt;p&gt;Now, let’s check this ! It might take a while if you don’t already have the
 vagrant image on your box:&lt;/p&gt;
 
@@ -117,6 +119,8 @@ assert_playbook_runs
 
 &lt;span class=&quot;c&quot;&gt;# Check that the playbook is idempotent&lt;/span&gt;
 assert_playbook_idempotent&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Don’t forget to make the test file executable (&lt;code&gt;chmod +x tests/ansible-nginx/test&lt;/code&gt;).&lt;/p&gt;
 
 &lt;h2 id=&quot;runing-tests&quot;&gt;Runing tests&lt;/h2&gt;
 

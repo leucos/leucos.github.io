@@ -132,6 +132,8 @@ called with <code>--install</code>. This happens only at vagrant provisionning t
 
 <span class="nb">cd</span> ~vagrant/testdir <span class="o">&amp;&amp;</span> rolespec -r <span class="k">$(</span>ls roles<span class="k">)</span></code></pre></div>
 
+<p>and make it executable (<code>chmod +x vagrant_specs.sh</code>).</p>
+
 <p>Now, let’s check this ! It might take a while if you don’t already have the
 vagrant image on your box:</p>
 
@@ -175,6 +177,8 @@ assert_playbook_runs
 
 <span class="c"># Check that the playbook is idempotent</span>
 assert_playbook_idempotent</code></pre></div>
+
+<p>Don’t forget to make the test file executable (<code>chmod +x tests/ansible-nginx/test</code>).</p>
 
 <h2 id="runing-tests">Runing tests</h2>
 
