@@ -26,6 +26,7 @@
     <link rel="stylesheet" 
     href="http://leucos.github.io/assets/css/main.css">
 
+    <link href='http://fonts.googleapis.com/css?family=Ubuntu:300,300italic'  rel='stylesheet' type='text/css'>
     <!-- IE Fixes -->
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -74,7 +75,9 @@
 
 <h2 id="creating-the-vagrant-machine">Creating the Vagrant machine</h2>
 
-<p>Spin up a Vagrant machine, we need to create a <code>Vagrantfile</code>. We’ll create it in our role top directory:</p>
+<h3 id="vagrantfile">Vagrantfile</h3>
+
+<p>To spin up a Vagrant machine, we need to create a <code>Vagrantfile</code>. We’ll create it in our role top directory:</p>
 
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Vagrant</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
   <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s2">&quot;ubuntu/trusty64&quot;</span>
@@ -92,13 +95,19 @@ needs, but keep in mind RoleSpec is very Debian/Ubuntu inclined. We’ll provisi
 this machine with a shell script (not with Ansible, so we don’t end up in an
 inception style situation).</p>
 
+<h3 id="provisionning-script">Provisionning script</h3>
+
 <p>The provisionning script, <code>vagrant_specs.sh</code> serves two purposes:</p>
 
 <ol>
-  <li>it takes care of installing RoleSpec and setting up the test directory when
+  <li>
+    <p>it takes care of installing RoleSpec and setting up the test directory when
 called with <code>--install</code>. This happens only at vagrant provisionning time (e.g.
-<code>vagrant up</code> of <code>vagrant provision</code>)</li>
-  <li>it can be called to run the test suite; to make invocation easier, it will copy itself to <code>/usr/local/bin/specs</code></li>
+<code>vagrant up</code> of <code>vagrant provision</code>)</p>
+  </li>
+  <li>
+    <p>it can be called to run the test suite; to make invocation easier, it will copy itself to <code>/usr/local/bin/specs</code></p>
+  </li>
 </ol>
 
 <p>Create the <code>vagrant_specs.sh</code> with the following content:</p>
@@ -134,6 +143,8 @@ called with <code>--install</code>. This happens only at vagrant provisionning t
 
 <p>and make it executable (<code>chmod +x vagrant_specs.sh</code>).</p>
 
+<h3 id="running-the-vagrat-box">Running the Vagrat box</h3>
+
 <p>Now, let’s check this ! It might take a while if you don’t already have the
 vagrant image on your box:</p>
 
@@ -156,6 +167,8 @@ $
 <p>We’re almost done. Only two files left to create. First, we RoleSpec needs an inventory. Nothing fancy here, we just need to create an inventory file with a single host, <code>placeholder_fqdn</code>, RoleSpec will take care of the rest:</p>
 
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span><span class="nb">echo</span> <span class="s2">&quot;placeholder_fqdn&quot;</span> &gt; tests/ansible-nginx/inventory/hosts</code></pre></div>
+
+<h3 id="writing-the-test-file">Writing the test file</h3>
 
 <p>And finally, we need a test file, where we can check if our playbook works. We can check the syntax, the idempotency, the resulting templates, etc…</p>
 
@@ -180,7 +193,7 @@ assert_playbook_idempotent</code></pre></div>
 
 <p>Don’t forget to make the test file executable (<code>chmod +x tests/ansible-nginx/test</code>).</p>
 
-<h2 id="runing-tests">Runing tests</h2>
+<h3 id="runing-tests">Runing tests</h3>
 
 <p>Our simple tests are setup. To run them, we need to execute
 <code>/usr/local/bin/specs</code> in the Vagrant host.</p>
@@ -197,10 +210,12 @@ asked for), install it, and run our test case.</p>
 <ul>
   <li>installs Ansible (<code>ROLESPEC: [Install Ansible - v1.8.3]</code>)</li>
   <li>executes the playbook with <code>assert_playbook_runs</code> (<code>TEST: [Run playbook syntax check]</code> and <code>TEST: [Run playbook]</code>)</li>
-  <li>check that the playbook is idempotent with <code>assert_playbook_idempotent</code> (‘TEST: [Re-run playbook]’)</li>
+  <li>check that the playbook is idempotent with <code>assert_playbook_idempotent</code> (<code>TEST: [Re-run playbook]</code>)</li>
 </ul>
 
 <p>Pretty neat !</p>
+
+<h3 id="runing-tests-faster">Runing tests faster</h3>
 
 <p>There is one downside though: it takes almost 3 minutes to run. However, you can
 speed up subsequent runs as long as you don’t have to change the Ansible

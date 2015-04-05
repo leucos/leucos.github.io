@@ -6,8 +6,8 @@
 </description>
     <link>http://leucos.github.io/</link>
     <atom:link href="http://leucos.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 05 Apr 2015 22:47:26 +0200</pubDate>
-    <lastBuildDate>Sun, 05 Apr 2015 22:47:26 +0200</lastBuildDate>
+    <pubDate>Sun, 05 Apr 2015 22:56:41 +0200</pubDate>
+    <lastBuildDate>Sun, 05 Apr 2015 22:56:41 +0200</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
     
       <item>
@@ -16,7 +16,9 @@
 
 &lt;h2 id=&quot;creating-the-vagrant-machine&quot;&gt;Creating the Vagrant machine&lt;/h2&gt;
 
-&lt;p&gt;Spin up a Vagrant machine, we need to create a &lt;code&gt;Vagrantfile&lt;/code&gt;. We’ll create it in our role top directory:&lt;/p&gt;
+&lt;h3 id=&quot;vagrantfile&quot;&gt;Vagrantfile&lt;/h3&gt;
+
+&lt;p&gt;To spin up a Vagrant machine, we need to create a &lt;code&gt;Vagrantfile&lt;/code&gt;. We’ll create it in our role top directory:&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;Vagrant&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;configure&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
   &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;box&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;ubuntu/trusty64&amp;quot;&lt;/span&gt;
@@ -34,13 +36,19 @@ needs, but keep in mind RoleSpec is very Debian/Ubuntu inclined. We’ll provisi
 this machine with a shell script (not with Ansible, so we don’t end up in an
 inception style situation).&lt;/p&gt;
 
+&lt;h3 id=&quot;provisionning-script&quot;&gt;Provisionning script&lt;/h3&gt;
+
 &lt;p&gt;The provisionning script, &lt;code&gt;vagrant_specs.sh&lt;/code&gt; serves two purposes:&lt;/p&gt;
 
 &lt;ol&gt;
-  &lt;li&gt;it takes care of installing RoleSpec and setting up the test directory when
+  &lt;li&gt;
+    &lt;p&gt;it takes care of installing RoleSpec and setting up the test directory when
 called with &lt;code&gt;--install&lt;/code&gt;. This happens only at vagrant provisionning time (e.g.
-&lt;code&gt;vagrant up&lt;/code&gt; of &lt;code&gt;vagrant provision&lt;/code&gt;)&lt;/li&gt;
-  &lt;li&gt;it can be called to run the test suite; to make invocation easier, it will copy itself to &lt;code&gt;/usr/local/bin/specs&lt;/code&gt;&lt;/li&gt;
+&lt;code&gt;vagrant up&lt;/code&gt; of &lt;code&gt;vagrant provision&lt;/code&gt;)&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;it can be called to run the test suite; to make invocation easier, it will copy itself to &lt;code&gt;/usr/local/bin/specs&lt;/code&gt;&lt;/p&gt;
+  &lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;p&gt;Create the &lt;code&gt;vagrant_specs.sh&lt;/code&gt; with the following content:&lt;/p&gt;
@@ -76,6 +84,8 @@ called with &lt;code&gt;--install&lt;/code&gt;. This happens only at vagrant pro
 
 &lt;p&gt;and make it executable (&lt;code&gt;chmod +x vagrant_specs.sh&lt;/code&gt;).&lt;/p&gt;
 
+&lt;h3 id=&quot;running-the-vagrat-box&quot;&gt;Running the Vagrat box&lt;/h3&gt;
+
 &lt;p&gt;Now, let’s check this ! It might take a while if you don’t already have the
 vagrant image on your box:&lt;/p&gt;
 
@@ -98,6 +108,8 @@ $
 &lt;p&gt;We’re almost done. Only two files left to create. First, we RoleSpec needs an inventory. Nothing fancy here, we just need to create an inventory file with a single host, &lt;code&gt;placeholder_fqdn&lt;/code&gt;, RoleSpec will take care of the rest:&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;placeholder_fqdn&amp;quot;&lt;/span&gt; &amp;gt; tests/ansible-nginx/inventory/hosts&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;writing-the-test-file&quot;&gt;Writing the test file&lt;/h3&gt;
 
 &lt;p&gt;And finally, we need a test file, where we can check if our playbook works. We can check the syntax, the idempotency, the resulting templates, etc…&lt;/p&gt;
 
@@ -122,7 +134,7 @@ assert_playbook_idempotent&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Don’t forget to make the test file executable (&lt;code&gt;chmod +x tests/ansible-nginx/test&lt;/code&gt;).&lt;/p&gt;
 
-&lt;h2 id=&quot;runing-tests&quot;&gt;Runing tests&lt;/h2&gt;
+&lt;h3 id=&quot;runing-tests&quot;&gt;Runing tests&lt;/h3&gt;
 
 &lt;p&gt;Our simple tests are setup. To run them, we need to execute
 &lt;code&gt;/usr/local/bin/specs&lt;/code&gt; in the Vagrant host.&lt;/p&gt;
@@ -139,10 +151,12 @@ asked for), install it, and run our test case.&lt;/p&gt;
 &lt;ul&gt;
   &lt;li&gt;installs Ansible (&lt;code&gt;ROLESPEC: [Install Ansible - v1.8.3]&lt;/code&gt;)&lt;/li&gt;
   &lt;li&gt;executes the playbook with &lt;code&gt;assert_playbook_runs&lt;/code&gt; (&lt;code&gt;TEST: [Run playbook syntax check]&lt;/code&gt; and &lt;code&gt;TEST: [Run playbook]&lt;/code&gt;)&lt;/li&gt;
-  &lt;li&gt;check that the playbook is idempotent with &lt;code&gt;assert_playbook_idempotent&lt;/code&gt; (‘TEST: [Re-run playbook]’)&lt;/li&gt;
+  &lt;li&gt;check that the playbook is idempotent with &lt;code&gt;assert_playbook_idempotent&lt;/code&gt; (&lt;code&gt;TEST: [Re-run playbook]&lt;/code&gt;)&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;Pretty neat !&lt;/p&gt;
+
+&lt;h3 id=&quot;runing-tests-faster&quot;&gt;Runing tests faster&lt;/h3&gt;
 
 &lt;p&gt;There is one downside though: it takes almost 3 minutes to run. However, you can
 speed up subsequent runs as long as you don’t have to change the Ansible
