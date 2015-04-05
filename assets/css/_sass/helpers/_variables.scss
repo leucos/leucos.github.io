@@ -71,8 +71,9 @@ $button-shadow-color: rgba(0, 0, 0, .3);
  * Font, line-height, and color for body text, headings, and more.
  */
 
-$font-family-base:            "PT Sans", sans-serif;
-$font-size-base:              16px;
+/*$font-family-base:            "PT Sans", sans-serif;*/
+$font-family-base:            "Ubuntu", sans-serif;
+$font-size-base:              14px;
 $font-size-large:             ceil(($font-size-base * 1.25)); // ~18px
 $font-size-small:             ceil(($font-size-base * 0.85)); // ~12px
 
@@ -112,7 +113,7 @@ $blockquote-border-color:     #DDDDDD;
 $blockquote-background-color: $gray-lighter;
 
 // List styles line line-height
-$list-style-line-height:      $line-height-base * 1.3; 
+$list-style-line-height:      $line-height-base * 1.3;
 
 
 
