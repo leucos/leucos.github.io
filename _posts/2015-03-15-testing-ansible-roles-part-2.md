@@ -12,7 +12,9 @@ Now that we have created our basic role in [part 1]({% post_url 2015-03-14-testi
 
 ## Creating the Vagrant machine
 
-Spin up a Vagrant machine, we need to create a `Vagrantfile`. We'll create it in our role top directory:
+### Vagrantfile
+
+To spin up a Vagrant machine, we need to create a `Vagrantfile`. We'll create it in our role top directory:
 
 {% highlight ruby %}
 {% raw %}
@@ -36,11 +38,14 @@ needs, but keep in mind RoleSpec is very Debian/Ubuntu inclined. We'll provision
 this machine with a shell script (not with Ansible, so we don't end up in an
 inception style situation).
 
+### Provisionning script
+
 The provisionning script, `vagrant_specs.sh` serves two purposes:
 
 1. it takes care of installing RoleSpec and setting up the test directory when
 called with `--install`. This happens only at vagrant provisionning time (e.g.
 `vagrant up` of `vagrant provision`)
+
 2. it can be called to run the test suite; to make invocation easier, it will copy itself to `/usr/local/bin/specs`
 
 Create the `vagrant_specs.sh` with the following content:
@@ -74,9 +79,13 @@ if [ "x$1" == "x--install" ]; then
   exit
 fi
 
-cd ~vagrant/testdir && rolespec -r $(ls roles)
+cd ~vagrant/testdir && rolespec -r $(ls roles) "$*"
 
 {% endhighlight %}
+
+and make it executable (`chmod +x vagrant_specs.sh`).
+
+### Running the Vagrat box
 
 Now, let's check this ! It might take a while if you don't already have the
 vagrant image on your box:
@@ -106,6 +115,8 @@ $ echo "placeholder_fqdn" > tests/ansible-nginx/inventory/hosts
 
 {% endhighlight %}
 
+### Writing the test file
+
 And finally, we need a test file, where we can check if our playbook works. We can check the syntax, the idempotency, the resulting templates, etc...
 
 This test file is simply a bash script, in which we include some RoleSpec files to get access to its DSL.
@@ -130,7 +141,9 @@ assert_playbook_idempotent
 
 {% endhighlight %}
 
-## Runing tests
+Don't forget to make the test file executable (`chmod +x tests/ansible-nginx/test`).
+
+### Runing tests
 
 Our simple tests are setup. To run them, we need to execute
 `/usr/local/bin/specs` in the Vagrant host.
@@ -148,9 +161,11 @@ As you can see in the recording, RoleSpec:
 
 - installs Ansible (`ROLESPEC: [Install Ansible - v1.8.3]`)
 - executes the playbook with `assert_playbook_runs` (`TEST: [Run playbook syntax check]` and `TEST: [Run playbook]`)
-- check that the playbook is idempotent with `assert_playbook_idempotent` ('TEST: [Re-run playbook]')
+- check that the playbook is idempotent with `assert_playbook_idempotent` (`TEST: [Re-run playbook]`)
 
 Pretty neat !
+
+### Runing tests faster
 
 There is one downside though: it takes almost 3 minutes to run. However, you can
 speed up subsequent runs as long as you don't have to change the Ansible
