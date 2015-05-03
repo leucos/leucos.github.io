@@ -6,9 +6,248 @@
 </description>
     <link>http://leucos.github.io/</link>
     <atom:link href="http://leucos.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 05 Apr 2015 22:59:10 +0200</pubDate>
-    <lastBuildDate>Sun, 05 Apr 2015 22:59:10 +0200</lastBuildDate>
+    <pubDate>Sun, 03 May 2015 11:03:08 +0200</pubDate>
+    <lastBuildDate>Sun, 03 May 2015 11:03:08 +0200</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
+    
+      <item>
+        <title>Making dynamic inventory usable with Ansible and Digital Ocean</title>
+        <description>&lt;h2 id=&quot;the-problem&quot;&gt;The problem&lt;/h2&gt;
+
+&lt;p&gt;You’ve been there too. Spinning up droplets on DigitalOcean with Ansible
+and using a dynamic inventory script is quite a pain.&lt;/p&gt;
+
+&lt;p&gt;Most approaches use the &lt;code&gt;digital_ocean&lt;/code&gt; ansible module in
+playbooks to spin up droplets, along with the &lt;code&gt;digital_ocean.py&lt;/code&gt; dynamic
+inventory script, using this kind of workflow:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;define your droplets in a YAML file (eventually with size, region,
+etc…)&lt;/li&gt;
+  &lt;li&gt;create a playbook that will loop over droplet list (&lt;code&gt;with_items&lt;/code&gt; or
+equivalent) and spin up the droplet&lt;/li&gt;
+  &lt;li&gt;dynamically add started droplets to inventory&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;This approach has many drawbacks, and, to be honest, is not really usable.&lt;/p&gt;
+
+&lt;h3 id=&quot;slooooooow&quot;&gt;Slooooooow&lt;/h3&gt;
+
+&lt;p&gt;First, it is damn slow. Droplet creation is serialized. Since
+&lt;code&gt;digital_ocean&lt;/code&gt; waits for the droplet to come up, and since DO itself
+advertizes ‘Start your droplet in 55 seconds !’, you can do the math.
+Starting a single droplet is quite long, so spinning up your multi-tier,
+fault-tolerant, distributed architecture will take ages.&lt;/p&gt;
+
+&lt;h3 id=&quot;naming&quot;&gt;Naming&lt;/h3&gt;
+
+&lt;p&gt;You droplets won’t have real names. They will be known by their IPs.
+Sure, if you use the &lt;code&gt;name&lt;/code&gt; parameter during creation, you might be able
+to use it, but at best, this will be a group name.&lt;/p&gt;
+
+&lt;p&gt;You could also use &lt;code&gt;add_host&lt;/code&gt; in your bootstrapping script, but this is
+a run time hack, so forget about setting variables in &lt;code&gt;host_vars&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Since droplets are mostly nameless, grouping them is hard. Sure, you can
+do it at run time with &lt;code&gt;add_host&lt;/code&gt; too, but you won’t leverage
+&lt;code&gt;group_vars&lt;/code&gt; usage.&lt;/p&gt;
+
+&lt;p&gt;Anyway, all those run-time naming hacks will force you to loop over all
+your droplets definitions, hit DO API to make sure they’re alive, then
+loop over API responses to add hosts and groups EVERY time you execute a
+playbook.&lt;/p&gt;
+
+&lt;h3 id=&quot;localhost-is-forced-in&quot;&gt;localhost is forced in&lt;/h3&gt;
+
+&lt;p&gt;Spinning up instances on DO will require to run the &lt;code&gt;digital_ocean&lt;/code&gt;
+module as a &lt;code&gt;local_action&lt;/code&gt; or using &lt;code&gt;delegate_to: localhost&lt;/code&gt;. This means
+that you are bound to declare localhost in your inventory. This is a
+real pain, since it makes the &lt;code&gt;all&lt;/code&gt; group mostly unusable, unless you
+change all your playbook hosts definitions from &lt;code&gt;hosts: all&lt;/code&gt; to &lt;code&gt;hosts:
+all:!localhost&lt;/code&gt;. Pretty bad for readability.&lt;/p&gt;
+
+&lt;p&gt;Let’s stop here, there are already enough reasons to find an alternate
+way. There are probably other cons, and certainly pros too for the
+dynamic approach, but I fell that this way of doing it is barely usable
+for serious, repeatable stuff.&lt;/p&gt;
+
+&lt;h2 id=&quot;alternate-aproach&quot;&gt;Alternate aproach&lt;/h2&gt;
+
+&lt;p&gt;In the end, we would like to work as we do with on-prem hardware: have a
+static inventory.&lt;/p&gt;
+
+&lt;p&gt;The idea is to create this static inventory first, and then use a
+bootstrapping script that will use this inventory as a contract to apply
+on DigitalOcean.&lt;/p&gt;
+
+&lt;p&gt;The script will list all hosts in your inventory (using &lt;code&gt;ansible
+--list-hosts&lt;/code&gt;), and parallelize droplet creation on digital ocean.&lt;/p&gt;
+
+&lt;p&gt;When all droplets are created, it will create a complementary inventory
+file in your inventory directory containing hosts with their respective
+IPs.&lt;/p&gt;
+
+&lt;p&gt;At this point, you have a perfectly static inventory, and can run your
+ansible playbook normally, without hitting external APIs (serialized),
+without naming problems, … Things are just &lt;em&gt;normal&lt;/em&gt;, fast and
+reliable, without edge cases introduced by dynamic inventories.&lt;/p&gt;
+
+&lt;p&gt;Using this approach on a 8 droplets setup, the time to set-up instances
+went from 9’33” down to 1’56”. And the time to destroy instances went
+from 0’55” down to 0’3” (see demo below). Of course, more droplets, 
+more gain.&lt;/p&gt;
+
+&lt;p&gt;And these are just create/destroy gains. You also benefit from static
+inventory for all your lifecycle playbook runs, since you never hit DO API and
+don’t have to build inventory at run time, which is always slower despite the
+inventory cache.&lt;/p&gt;
+
+&lt;h3 id=&quot;example&quot;&gt;Example&lt;/h3&gt;
+
+&lt;p&gt;Assuming you have an inventory directory in &lt;code&gt;inventories/devel/&lt;/code&gt;,
+containing a &lt;code&gt;hosts&lt;/code&gt; file, you can spin up your droplets like this:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;do_boot.sh inventories/devel/&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;When you’re finished with your infrastructure, call the same command with
+the &lt;code&gt;deleted&lt;/code&gt; parameter:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;do_boot.sh inventories/devel/ deleted&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;That’s all.&lt;/p&gt;
+
+&lt;p&gt;The script has defaults regarding droplet size, region, image and ssh
+key. You can change the defaults in the script to something that suits you, and
+override these defaults per droplet in your inventory:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span class=&quot;p-Indicator&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;www&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;l-Scalar-Plain&quot;&gt;www1&lt;/span&gt;
+&lt;span class=&quot;l-Scalar-Plain&quot;&gt;www2&lt;/span&gt;
+&lt;span class=&quot;l-Scalar-Plain&quot;&gt;www3 do_region=2&lt;/span&gt;
+
+&lt;span class=&quot;l-Scalar-Plain&quot;&gt;[database]&lt;/span&gt;
+&lt;span class=&quot;l-Scalar-Plain&quot;&gt;db1 do_size=62 do_image=12345&lt;/span&gt;
+
+&lt;span class=&quot;l-Scalar-Plain&quot;&gt;[redis]&lt;/span&gt;
+&lt;span class=&quot;l-Scalar-Plain&quot;&gt;redis1&lt;/span&gt;
+
+&lt;span class=&quot;l-Scalar-Plain&quot;&gt;[elastic]&lt;/span&gt;
+&lt;span class=&quot;l-Scalar-Plain&quot;&gt;elastic1 do_size=60&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;spinning-up-and-down-8-droplets-in-215&quot;&gt;Spinning up and down 8 droplets in 2’15”&lt;/h3&gt;
+
+&lt;script type=&quot;text/javascript&quot; src=&quot;https://asciinema.org/a/19479.js&quot; id=&quot;asciicast-19479&quot; async=&quot;&quot;&gt;&lt;/script&gt;
+
+&lt;h2 id=&quot;script&quot;&gt;Script&lt;/h2&gt;
+
+&lt;p&gt;You can grab the script in this &lt;a href=&quot;https://gist.github.com/leucos/6f8d93de3493431acd29&quot;&gt;gist&lt;/a&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/bash&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# Change defaults below&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# ---------------------&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# Digital Ocean default values&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# You can override them using do_something in your inventory file&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# Example:&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# &lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# [www]&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# www1 do_size=62 do_image=12345&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# ...&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# If you don&amp;#39;t override in your inventory, the defaults below will apply&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;DEFAULT_SIZE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;66&lt;/span&gt;       &lt;span class=&quot;c&quot;&gt;# 512mb (override with do_size)&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;DEFAULT_REGION&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;5&lt;/span&gt;      &lt;span class=&quot;c&quot;&gt;# ams2 (override with do_region)&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;DEFAULT_IMAGE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;9801950&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# Ubuntu 14.04 x64 (override with do_image)&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;DEFAULT_KEY&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;785648&lt;/span&gt;    &lt;span class=&quot;c&quot;&gt;# SSH key, change this ! (override with do_key)&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# localhost entry for temporary inventory&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# This is a temp inventory generated to start the DO droplets&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# You might want to change ansible_python_interpreter&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;LOCALHOST_ENTRY&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;localhost ansible_python_interpreter=/usr/bin/python2&amp;quot;&lt;/span&gt; 
+
+&lt;span class=&quot;c&quot;&gt;# Set state to present by default&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;STATE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:-&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;present&amp;quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# digital_ocean module command to use&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# name, size, region, image and key will be filled automatically&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;COMMAND&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;state=$STATE command=droplet private_networking=yes unique_name=yes&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# ---------------------&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; bail_out &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; -e &lt;span class=&quot;s2&quot;&gt;&amp;quot;Usage: $0 &amp;lt;inventory_directory&amp;gt; [present|deleted]\n&amp;quot;&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; -e &lt;span class=&quot;s2&quot;&gt;&amp;quot;\tinventory_directory: the directory containing the inventory goal (compulsory)&amp;quot;&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; -e &lt;span class=&quot;s2&quot;&gt;&amp;quot;\tpresent: the droplet will be created if it doesn&amp;#39;t exist (default)&amp;quot;&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; -e &lt;span class=&quot;s2&quot;&gt;&amp;quot;\tdeleted: the droplet will be destroyed if it exists&amp;quot;&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;exit &lt;/span&gt;1
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# Check that inventory is a directory&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# We need this since we generate a complementary inventory with IP addresses for hosts&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;INVENTORY&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; -d &lt;span class=&quot;nv&quot;&gt;$INVENTORY&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; bail_out &lt;span class=&quot;s2&quot;&gt;&amp;quot;Inventory does not exist, is not a directory, or is not set&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; ! -e &lt;span class=&quot;nv&quot;&gt;$DO_CLIENT_ID&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; bail_out &lt;span class=&quot;s2&quot;&gt;&amp;quot;DO_CLIENT_ID not set&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; ! -e &lt;span class=&quot;nv&quot;&gt;$DO_API_KEY&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;   &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; bail_out &lt;span class=&quot;s2&quot;&gt;&amp;quot;DO_API_KEY not set&amp;quot;&lt;/span&gt;
+
+
+&lt;span class=&quot;c&quot;&gt;# Get a list of hosts from inventory dir&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;HOSTS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;ansible -i &lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt; --list-hosts all &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; awk &lt;span class=&quot;s1&quot;&gt;&amp;#39;{ print $1 }&amp;#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; tr &lt;span class=&quot;s1&quot;&gt;&amp;#39;\n&amp;#39;&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39; &amp;#39;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# Clean up previously generated inventory&lt;/span&gt;
+rm &lt;span class=&quot;nv&quot;&gt;$INVENTORY&lt;/span&gt;/generated
+
+&lt;span class=&quot;c&quot;&gt;# Creating temporary inventory with only localhost in it&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;TEMP_INVENTORY&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;mktemp&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;echo &lt;/span&gt;Creating temporary inventory in &lt;span class=&quot;nv&quot;&gt;$TEMP_INVENTORY&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$LOCALHOST&lt;/span&gt; &amp;gt; &lt;span class=&quot;nv&quot;&gt;$TEMP_INVENTORY&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# Create droplets in //&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; i in &lt;span class=&quot;nv&quot;&gt;$HOSTS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; 
+  &lt;span class=&quot;nv&quot;&gt;SIZE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;grep &lt;span class=&quot;nv&quot;&gt;$i&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt;/hosts &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; grep do_size &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; sed -e &lt;span class=&quot;s1&quot;&gt;&amp;#39;s/.*do_size=\(\d*\)/\1/&amp;#39;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;REGION&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;grep &lt;span class=&quot;nv&quot;&gt;$i&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt;/hosts &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; grep do_region &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; sed -e &lt;span class=&quot;s1&quot;&gt;&amp;#39;s/.*do_region=\(\d*\)/\1/&amp;#39;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;IMAGE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;grep &lt;span class=&quot;nv&quot;&gt;$i&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt;/hosts &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; grep do_image &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; sed -e &lt;span class=&quot;s1&quot;&gt;&amp;#39;s/.*do_image=\(\d*\)/\1/&amp;#39;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;KEY&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;grep &lt;span class=&quot;nv&quot;&gt;$i&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt;/hosts &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; grep do_key &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; sed -e &lt;span class=&quot;s1&quot;&gt;&amp;#39;s/.*do_key=\(\d*\)/\1/&amp;#39;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+
+  &lt;span class=&quot;nv&quot;&gt;SIZE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;SIZE&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:-&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$DEFAULT_SIZE&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;REGION&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;REGION&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:-&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$DEFAULT_REGION&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;IMAGE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;IMAGE&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:-&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$DEFAULT_IMAGE&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;KEY&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;KEY&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:-&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$DEFAULT_KEY&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;${STATE}&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;present&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;Creating $i of size $SIZE using image $IMAGE in region $REGION with key $KEY&amp;quot;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;Deleting $i&amp;quot;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
+  &lt;span class=&quot;c&quot;&gt;# echo &amp;quot; =&amp;gt; $COMMAND name=$i size_id=$SIZE image_id=$IMAGE region_id=$REGION ssh_key_ids=$KEY&amp;quot;&lt;/span&gt;
+  ansible localhost -c &lt;span class=&quot;nb&quot;&gt;local&lt;/span&gt; -i &lt;span class=&quot;nv&quot;&gt;$TEMP_INVENTORY&lt;/span&gt; -m digital_ocean &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    -a &lt;span class=&quot;s2&quot;&gt;&amp;quot;$COMMAND name=$i size_id=$SIZE image_id=$IMAGE region_id=$REGION ssh_key_ids=$KEY&amp;quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;&amp;amp;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;wait&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# Now do it again to fill up complementary inventory&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;${STATE}&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;present&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; i in &lt;span class=&quot;nv&quot;&gt;$HOSTS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; 
+    &lt;span class=&quot;nb&quot;&gt;echo &lt;/span&gt;Checking droplet &lt;span class=&quot;nv&quot;&gt;$i&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;IP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;ansible localhost -c &lt;span class=&quot;nb&quot;&gt;local&lt;/span&gt; -i &lt;span class=&quot;nv&quot;&gt;$TEMP_INVENTORY&lt;/span&gt; -m digital_ocean -a &lt;span class=&quot;s2&quot;&gt;&amp;quot;state=present command=droplet unique_name=yes name=$i&amp;quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; grep &lt;span class=&quot;s2&quot;&gt;&amp;quot;\&amp;quot;ip_address&amp;quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; awk &lt;span class=&quot;s1&quot;&gt;&amp;#39;{ print $2 }&amp;#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; cut -f2 -d&lt;span class=&quot;s1&quot;&gt;&amp;#39;&amp;quot;&amp;#39;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;$i ansible_ssh_host=$IP&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; &lt;span class=&quot;nv&quot;&gt;$INVENTORY&lt;/span&gt;/generated
+  &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;All done !&amp;quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+</description>
+        <pubDate>Sun, 03 May 2015 00:00:00 +0200</pubDate>
+        <link>http://leucos.github.io/2015/05/03/ansible-contract-inventory/</link>
+        <guid isPermaLink="true">http://leucos.github.io/2015/05/03/ansible-contract-inventory/</guid>
+        
+        <category>ansible</category>
+        
+        <category>digital ocean</category>
+        
+        
+      </item>
     
       <item>
         <title>Testing Ansible roles, part 2</title>
