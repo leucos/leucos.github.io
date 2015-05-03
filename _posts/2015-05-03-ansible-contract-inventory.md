@@ -187,10 +187,10 @@ function bail_out {
 # Check that inventory is a directory
 # We need this since we generate a complementary inventory with IP addresses for hosts
 INVENTORY=$1
-[ -d $INVENTORY ]      || bail_out "Inventory does not exist, is not a directory, or is not set"
-[ ! -e $DO_CLIENT_ID ] || bail_out "DO_CLIENT_ID not set"
-[ ! -e $DO_API_KEY ]   || bail_out "DO_API_KEY not set"
-
+[[ ! -d "$INVENTORY" ]]  && bail_out "Inventory does not exist, is not a
+directory, or is not set"
+[[ ! -e $DO_CLIENT_ID ]] || bail_out "DO_CLIENT_ID not set"
+[[ ! -e $DO_API_KEY ]]   || bail_out "DO_API_KEY not set"
 
 # Get a list of hosts from inventory dir
 HOSTS=$(ansible -i $1 --list-hosts all | awk '{ print $1 }' | tr '\n' ' ')
