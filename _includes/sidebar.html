@@ -38,13 +38,13 @@ styles and `#sidebar-toggle-checkbox` for behavior.
     {% endif %}
 
     <a class="sidebar-nav-item {{ c }}" 
-      href="{{ item.href | prepend: site.baseurl | prepend: site.url }}">
+      href="{{ item.href | prepend: site.baseurl | prepend: site.url | append:"/" }} ">
       {{ item.title }}
     </a>
     {% endfor %}
 
     <a class="sidebar-nav-item" 
-      href="http://github.com/{{ site.theme.social.github }}"
+      href="https://github.com/{{ site.theme.social.github }}"
       target="_blank">
       GitHub/Download
     </a>
