@@ -4,10 +4,10 @@
     <title>Random stuff</title>
     <description>Long time sysadmin with DevOpsy tendencies
 </description>
-    <link>http://leucos.github.io/</link>
-    <atom:link href="http://leucos.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 03 May 2015 11:03:08 +0200</pubDate>
-    <lastBuildDate>Sun, 03 May 2015 11:03:08 +0200</lastBuildDate>
+    <link>//leucos.github.io/</link>
+    <atom:link href="//leucos.github.io/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Mon, 04 May 2015 08:36:23 +0200</pubDate>
+    <lastBuildDate>Mon, 04 May 2015 08:36:23 +0200</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
     
       <item>
@@ -239,8 +239,8 @@ rm &lt;span class=&quot;nv&quot;&gt;$INVENTORY&lt;/span&gt;/generated
 
 </description>
         <pubDate>Sun, 03 May 2015 00:00:00 +0200</pubDate>
-        <link>http://leucos.github.io/2015/05/03/ansible-contract-inventory/</link>
-        <guid isPermaLink="true">http://leucos.github.io/2015/05/03/ansible-contract-inventory/</guid>
+        <link>//leucos.github.io/2015/05/03/ansible-contract-inventory/</link>
+        <guid isPermaLink="true">//leucos.github.io/2015/05/03/ansible-contract-inventory/</guid>
         
         <category>ansible</category>
         
@@ -440,8 +440,8 @@ it from the guard watch, the test will loop forever.&lt;/p&gt;
 
 </description>
         <pubDate>Sun, 15 Mar 2015 00:00:00 +0100</pubDate>
-        <link>http://leucos.github.io/2015/03/15/testing-ansible-roles-part-2/</link>
-        <guid isPermaLink="true">http://leucos.github.io/2015/03/15/testing-ansible-roles-part-2/</guid>
+        <link>//leucos.github.io/2015/03/15/testing-ansible-roles-part-2/</link>
+        <guid isPermaLink="true">//leucos.github.io/2015/03/15/testing-ansible-roles-part-2/</guid>
         
         <category>ansible</category>
         
@@ -672,8 +672,8 @@ or not.&lt;/p&gt;
 
 </description>
         <pubDate>Sat, 14 Mar 2015 00:00:00 +0100</pubDate>
-        <link>http://leucos.github.io/2015/03/14/testing-ansible-roles-part-1/</link>
-        <guid isPermaLink="true">http://leucos.github.io/2015/03/14/testing-ansible-roles-part-1/</guid>
+        <link>//leucos.github.io/2015/03/14/testing-ansible-roles-part-1/</link>
+        <guid isPermaLink="true">//leucos.github.io/2015/03/14/testing-ansible-roles-part-1/</guid>
         
         <category>ansible</category>
         
@@ -875,8 +875,8 @@ monitor your Redis statistics for this.&lt;/p&gt;
 &lt;/div&gt;
 </description>
         <pubDate>Sun, 01 Mar 2015 00:00:00 +0100</pubDate>
-        <link>http://leucos.github.io/2015/03/01/expiring-redis-cache-from-ruby/</link>
-        <guid isPermaLink="true">http://leucos.github.io/2015/03/01/expiring-redis-cache-from-ruby/</guid>
+        <link>//leucos.github.io/2015/03/01/expiring-redis-cache-from-ruby/</link>
+        <guid isPermaLink="true">//leucos.github.io/2015/03/01/expiring-redis-cache-from-ruby/</guid>
         
         <category>redis</category>
         
@@ -916,8 +916,8 @@ monitor your Redis statistics for this.&lt;/p&gt;
 &lt;/div&gt;
 </description>
         <pubDate>Sat, 14 Feb 2015 00:00:00 +0100</pubDate>
-        <link>http://leucos.github.io/2015/02/14/restoring-arch-bootloader/</link>
-        <guid isPermaLink="true">http://leucos.github.io/2015/02/14/restoring-arch-bootloader/</guid>
+        <link>//leucos.github.io/2015/02/14/restoring-arch-bootloader/</link>
+        <guid isPermaLink="true">//leucos.github.io/2015/02/14/restoring-arch-bootloader/</guid>
         
         <category>uefi</category>
         
