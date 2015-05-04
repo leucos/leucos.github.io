@@ -32,6 +32,10 @@ advertizes 'Start your droplet in 55 seconds !', you can do the math.
 Starting a single droplet is quite long, so spinning up your multi-tier,
 fault-tolerant, distributed architecture will take ages.
 
+You probably can use `async` + `poll` to spin up the droplets. I didn't
+try and don't know where this would lead. But you'd still face the other
+issues.
+
 ### Naming
 
 You droplets won't have real names. They will be known by their IPs.
