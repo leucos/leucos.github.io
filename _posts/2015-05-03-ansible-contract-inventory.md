@@ -146,7 +146,7 @@ elastic1 do_size=60
 
 You can grab the script in this [gist](https://gist.github.com/leucos/6f8d93de3493431acd29).
 
-*UPDATE*: if you run Ansible v2.0+, use [this script
+__UPDATE:__ if you run Ansible v2.0+, use [this script
 instead](https://gist.github.com/leucos/2c361f7d4767f8aea6dd). It will
 use the new digital Ocean API (v2.0 too). You just need to set
 `DO_API_TOKEN`.
