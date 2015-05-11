@@ -6,8 +6,8 @@
 </description>
     <link>//leucos.github.io/</link>
     <atom:link href="//leucos.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 04 May 2015 08:47:27 +0200</pubDate>
-    <lastBuildDate>Mon, 04 May 2015 08:47:27 +0200</lastBuildDate>
+    <pubDate>Mon, 11 May 2015 13:27:09 +0200</pubDate>
+    <lastBuildDate>Mon, 11 May 2015 13:27:09 +0200</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
     
       <item>
@@ -38,6 +38,10 @@ equivalent) and spin up the droplet&lt;/li&gt;
 advertizes ‘Start your droplet in 55 seconds !’, you can do the math.
 Starting a single droplet is quite long, so spinning up your multi-tier,
 fault-tolerant, distributed architecture will take ages.&lt;/p&gt;
+
+&lt;p&gt;You probably can use &lt;code&gt;async&lt;/code&gt; + &lt;code&gt;poll&lt;/code&gt; to spin up the droplets. I didn’t
+try and don’t know where this would lead. But you’d still face the other
+issues.&lt;/p&gt;
 
 &lt;h3 id=&quot;naming&quot;&gt;Naming&lt;/h3&gt;
 
@@ -141,6 +145,11 @@ override these defaults per droplet in your inventory:&lt;/p&gt;
 &lt;h2 id=&quot;script&quot;&gt;Script&lt;/h2&gt;
 
 &lt;p&gt;You can grab the script in this &lt;a href=&quot;https://gist.github.com/leucos/6f8d93de3493431acd29&quot;&gt;gist&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;UPDATE&lt;/em&gt;: if you run Ansible v2.0+, use &lt;a href=&quot;https://gist.github.com/leucos/2c361f7d4767f8aea6dd&quot;&gt;this script
+instead&lt;/a&gt;. It will
+use the new digital Ocean API (v2.0 too). You just need to set
+&lt;code&gt;DO_API_TOKEN&lt;/code&gt;.&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/bash&lt;/span&gt;
 &lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;

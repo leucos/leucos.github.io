@@ -98,6 +98,10 @@ advertizes ‘Start your droplet in 55 seconds !’, you can do the math.
 Starting a single droplet is quite long, so spinning up your multi-tier,
 fault-tolerant, distributed architecture will take ages.</p>
 
+<p>You probably can use <code>async</code> + <code>poll</code> to spin up the droplets. I didn’t
+try and don’t know where this would lead. But you’d still face the other
+issues.</p>
+
 <h3 id="naming">Naming</h3>
 
 <p>You droplets won’t have real names. They will be known by their IPs.
@@ -200,6 +204,11 @@ override these defaults per droplet in your inventory:</p>
 <h2 id="script">Script</h2>
 
 <p>You can grab the script in this <a href="https://gist.github.com/leucos/6f8d93de3493431acd29">gist</a>.</p>
+
+<p><em>UPDATE</em>: if you run Ansible v2.0+, use <a href="https://gist.github.com/leucos/2c361f7d4767f8aea6dd">this script
+instead</a>. It will
+use the new digital Ocean API (v2.0 too). You just need to set
+<code>DO_API_TOKEN</code>.</p>
 
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#!/bin/bash</span>
 <span class="c">#</span>
