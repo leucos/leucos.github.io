@@ -6,8 +6,8 @@
 </description>
     <link>//leucos.github.io/</link>
     <atom:link href="//leucos.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 11 May 2015 13:52:40 +0200</pubDate>
-    <lastBuildDate>Mon, 11 May 2015 13:52:40 +0200</lastBuildDate>
+    <pubDate>Sun, 17 May 2015 15:21:19 +0200</pubDate>
+    <lastBuildDate>Sun, 17 May 2015 15:21:19 +0200</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
     
       <item>
@@ -916,10 +916,20 @@ monitor your Redis statistics for this.&lt;/p&gt;
   &lt;li&gt;Cross fingers…&lt;/li&gt;
 &lt;/ul&gt;
 
+&lt;p&gt;In case you need to reinstall all the things&lt;sup id=&quot;fnref:2&quot;&gt;&lt;a href=&quot;#fn:2&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;
+sudo pacman -Sy `yaourt -Q | grep -v &#39;^aur&#39;| grep -v &#39;^local&#39; | cut -f2
+-d&#39;/&#39; | awk &#39;{ print $1 }&#39;`
+&lt;/code&gt;&lt;/p&gt;
+
 &lt;div class=&quot;footnotes&quot;&gt;
   &lt;ol&gt;
     &lt;li id=&quot;fn:1&quot;&gt;
       &lt;p&gt;Multisystem is pretty handy for this. You can put several OSes on the key, and choose what to boot. &lt;a href=&quot;http://liveusb.info/dotclear/&quot;&gt;http://liveusb.info/dotclear/&lt;/a&gt; &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:2&quot;&gt;
+      &lt;p&gt;if you don’t use &lt;code&gt;yaourt&lt;/code&gt;, remove the grep part &lt;a href=&quot;#fnref:2&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
   &lt;/ol&gt;
 &lt;/div&gt;
