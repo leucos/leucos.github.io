@@ -3,7 +3,7 @@ layout: post
 title: Making dynamic inventory usable with Ansible and Digital Ocean
 excerpt: "Let's face it, dynamic inventory sucks. Let's fix that."
 tags: [ansible, digital ocean]
-modified: 
+modified: 2015-05-11
 comments: true
 ---
 
@@ -145,6 +145,11 @@ elastic1 do_size=60
 ## Script
 
 You can grab the script in this [gist](https://gist.github.com/leucos/6f8d93de3493431acd29).
+
+__UPDATE:__ if you run Ansible v2.0+, use [this script
+instead](https://gist.github.com/leucos/2c361f7d4767f8aea6dd). It will
+use the new digital Ocean API (v2.0 too). You just need to set
+`DO_API_TOKEN`.
 
 {% highlight bash %}
 #!/bin/bash
