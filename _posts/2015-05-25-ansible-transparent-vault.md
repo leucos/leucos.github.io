@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Transparent encryption/descryption with ansible vault
+title: Transparent encryption/decryption with ansible vault
 excerpt: "Never type ansible-vault again."
 tags: [ansible, ansible-vaut, git]
 modified: 2015-05-25
