@@ -6,8 +6,8 @@
 </description>
     <link>//leucos.github.io/</link>
     <atom:link href="//leucos.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 25 May 2015 18:16:51 +0200</pubDate>
-    <lastBuildDate>Mon, 25 May 2015 18:16:51 +0200</lastBuildDate>
+    <pubDate>Mon, 25 May 2015 21:50:42 +0200</pubDate>
+    <lastBuildDate>Mon, 25 May 2015 21:50:42 +0200</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
     
       <item>
@@ -19,7 +19,8 @@ private stuff (AWS/DigitalOcean/… keys, passwords, …) don’t end up
 world-readable on GitHub.&lt;/p&gt;
 
 &lt;p&gt;However, it is too easy to decrypt your stuff, forget about it, and commit it 
-without encrypting it back.&lt;/p&gt;
+without encrypting it back. It is also quite tedious to ansible-vault
+encrypt/decrypt all day long.&lt;/p&gt;
 
 &lt;h2 id=&quot;solution&quot;&gt;Solution&lt;/h2&gt;
 
