@@ -14,7 +14,8 @@ private stuff (AWS/DigitalOcean/... keys, passwords, ...) don't end up
 world-readable on GitHub.
 
 However, it is too easy to decrypt your stuff, forget about it, and commit it 
-without encrypting it back.
+without encrypting it back. It is also quite tedious to ansible-vault
+encrypt/decrypt all day long.
 
 ## Solution
 
