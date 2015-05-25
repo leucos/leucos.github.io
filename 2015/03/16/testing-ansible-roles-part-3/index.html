@@ -10,10 +10,10 @@
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Restoring Arch bootloader for the future self - Random stuff</title>
+    <title>Testing Ansible roles, part 3 - Random stuff</title>
     <meta name="description" content="Long time sysadmin with DevOpsy tendencies
 ">
-    <meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Restoring Arch bootloader for the future self - Random stuff"><meta property="og:site_name" content="Random stuff"><meta property="og:description" content="Long time sysadmin with DevOpsy tendencies"><meta property="og:url" content="//leucos.github.io/2015/02/14/restoring-arch-bootloader/"><meta property="article:published_time" content="2015-02-14T00:00:00+01:00"><meta property="article:author" content="//leucos.github.io/about">
+    <meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Testing Ansible roles, part 3 - Random stuff"><meta property="og:site_name" content="Random stuff"><meta property="og:description" content="Long time sysadmin with DevOpsy tendencies"><meta property="og:url" content="//leucos.github.io/2015/03/16/testing-ansible-roles-part-3/"><meta property="article:published_time" content="2015-03-16T00:00:00+01:00"><meta property="article:author" content="//leucos.github.io/about">
   
     
 
@@ -22,7 +22,7 @@
     <link rel="alternate" type="application/rss+xml" href="//leucos.github.io/feed.xml">
     <link rel="shortcut icon" href="//leucos.github.io/favicon.ico">
     <link rel="prefetch" href="//leucos.github.io">
-    <link rel="canonical" href="//leucos.github.io/2015/02/14/restoring-arch-bootloader/">
+    <link rel="canonical" href="//leucos.github.io/2015/03/16/testing-ansible-roles-part-3/">
     <link rel="stylesheet" 
     href="//leucos.github.io/assets/css/main.css">
 
@@ -61,51 +61,28 @@
   
 
   <header class="post-header">
-    <h1 class="post-title">Restoring Arch bootloader for the future self</h1>
+    <h1 class="post-title">Testing Ansible roles, part 3</h1>
     <p class="post-meta">
     
     <span class="post-date">
-    Feb 14, 2015  
+    Mar 16, 2015  
     </span>
     </p>
   </header>
 
   <article class="post-content">
-    <ul>
-  <li>
-    <p>Grab latest Arch, create a bootable key (do this before you’re doomed)<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup>. </p>
-  </li>
-  <li>
-    <p>Press F2 at boot, change the boot order to start on the key in <strong>UEFI</strong> mode</p>
-  </li>
-  <li>
-    <p>Boot on Arch, then</p>
-  </li>
-</ul>
+    <p>In the <a href="/2015/03/15/testing-ansible-roles-part-2/">previous</a> post, wrote a basic <code>test</code> file.</p>
 
-<script src="https://gist.github.com/leucos/3f63c07d8326309d7fb1.js"> </script>
+<p>We will now improve it a bit and test other RoleSpec assertions.</p>
 
-<ul>
-  <li>Cross fingers…</li>
-</ul>
+<h2 id="adding-other-tests">Adding other tests</h2>
 
-<p>In case you need to reinstall all the things<sup id="fnref:2"><a href="#fn:2" class="footnote">2</a></sup>:</p>
+<h2 id="ansible-version">Ansible version</h2>
 
-<p><code>
-sudo pacman -Sy `yaourt -Q | grep -v '^aur'| grep -v '^local' | cut -f2
--d'/' | awk '{ print $1 }'`
-</code></p>
+<p>In the <a href="/2015/03/17/testing-ansible-roles-part-4/">next part</a>, we will add TravisCI support, so we can test our role when it is pushed on GitHub.</p>
 
-<div class="footnotes">
-  <ol>
-    <li id="fn:1">
-      <p>Multisystem is pretty handy for this. You can put several OSes on the key, and choose what to boot. <a href="http://liveusb.info/dotclear/">http://liveusb.info/dotclear/</a> <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
-    </li>
-    <li id="fn:2">
-      <p>if you don’t use <code>yaourt</code>, remove the grep part <a href="#fnref:2" class="reversefootnote">&#8617;</a></p>
-    </li>
-  </ol>
-</div>
+<p>Note: see stuff at https://github.com/debops/test-suite/blob/master/defaults.conf
+Can be used to add custom assertions</p>
     
   </article>
 
@@ -151,7 +128,7 @@ sudo pacman -Sy `yaourt -Q | grep -v '^aur'| grep -v '^local' | cut -f2
     
   
     
-      <div class="share-buttons">  <h5>Share this post on</h5>  <ul class="social-media">    <li>        <a title="b9m on Twitter"           href="https://twitter.com/intent/tweet?original_referer=//leucos.github.io/2015/02/14/restoring-arch-bootloader/&amp;text=Restoring Arch bootloader for the future self&amp;url=//leucos.github.io/2015/02/14/restoring-arch-bootloader/" class="twitter wc-img-replace" target="_blank">          Twitter        </a>    </li>       <li>        <a title=" on Google Plus"             href="https://plus.google.com/share?url=//leucos.github.io/2015/02/14/restoring-arch-bootloader/"             class="google wc-img-replace" target="_blank">Google</a>    </li>    <li>        <a title=" on Facebook"             href="https://www.facebook.com/sharer/sharer.php?u=//leucos.github.io/2015/02/14/restoring-arch-bootloader/&amp;t=Restoring Arch bootloader for the future self"             class="facebook wc-img-replace" target="_blank">Facebook</a>    </li>  </ul></div>
+      <div class="share-buttons">  <h5>Share this post on</h5>  <ul class="social-media">    <li>        <a title="b9m on Twitter"           href="https://twitter.com/intent/tweet?original_referer=//leucos.github.io/2015/03/16/testing-ansible-roles-part-3/&amp;text=Testing Ansible roles, part 3&amp;url=//leucos.github.io/2015/03/16/testing-ansible-roles-part-3/" class="twitter wc-img-replace" target="_blank">          Twitter        </a>    </li>       <li>        <a title=" on Google Plus"             href="https://plus.google.com/share?url=//leucos.github.io/2015/03/16/testing-ansible-roles-part-3/"             class="google wc-img-replace" target="_blank">Google</a>    </li>    <li>        <a title=" on Facebook"             href="https://www.facebook.com/sharer/sharer.php?u=//leucos.github.io/2015/03/16/testing-ansible-roles-part-3/&amp;t=Testing Ansible roles, part 3"             class="facebook wc-img-replace" target="_blank">Facebook</a>    </li>  </ul></div>
       
   </div>
   

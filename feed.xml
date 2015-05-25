@@ -6,9 +6,112 @@
 </description>
     <link>//leucos.github.io/</link>
     <atom:link href="//leucos.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 17 May 2015 15:21:19 +0200</pubDate>
-    <lastBuildDate>Sun, 17 May 2015 15:21:19 +0200</lastBuildDate>
+    <pubDate>Mon, 25 May 2015 18:11:34 +0200</pubDate>
+    <lastBuildDate>Mon, 25 May 2015 18:11:34 +0200</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
+    
+      <item>
+        <title>Transparent encryption/descryption with ansible vault</title>
+        <description>&lt;h2 id=&quot;pain-points&quot;&gt;Pain points&lt;/h2&gt;
+
+&lt;p&gt;&lt;code&gt;ansible-vault&lt;/code&gt; is handy. You can crypt your stuff before commiting it so your
+private stuff (AWS/DigitalOcean/… keys, passwords, …) don’t end up
+world-readable on GitHub.&lt;/p&gt;
+
+&lt;p&gt;However, it is too easy to decrypt your stuff, forget about it, and commit it 
+without encrypting it back.&lt;/p&gt;
+
+&lt;h2 id=&quot;solution&quot;&gt;Solution&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/ralovely&quot;&gt;Raphael Campardou&lt;/a&gt; proposed a &lt;a href=&quot;https://gist.github.com/ralovely/9367737&quot;&gt;nice
+solution&lt;/a&gt; to prevent commiting
+ansible vault files.&lt;/p&gt;
+
+&lt;p&gt;In his solution, you have to name your files &lt;code&gt;*_vault.yml&lt;/code&gt; so they get busted
+by a pre-commit hook if they are not currently encrypted.&lt;/p&gt;
+
+&lt;p&gt;This is nice: by naming your files appropriately, you can not commit them unless
+they are ansible-vault crypted beforehand.&lt;/p&gt;
+
+&lt;p&gt;I extended his idea so it can apply to any file in an Ansible repository, with
+very little configuration, and added a post-commit hook so files gets
+transparently decrypted after being commited.&lt;/p&gt;
+
+&lt;h2 id=&quot;transparent-encryptiondecryption&quot;&gt;Transparent encryption/decryption&lt;/h2&gt;
+
+&lt;p&gt;The goal is simple: automagically encrypt the proper files before commit,
+commit them, then decrypt them afterwards so we can hack again without
+any manual intervention. All this with minimal configuration.&lt;/p&gt;
+
+&lt;h3 id=&quot;marking-file-for-encryption&quot;&gt;Marking file for encryption&lt;/h3&gt;
+
+&lt;p&gt;The center trick is to find a way to mark a file for encryption. Modelines
+(a.k.a. emacs local variable lines) to the rescue.&lt;/p&gt;
+
+&lt;p&gt;To tell git hooks that a file requires encryption, we’ll add this line to
+the top of the file (or on line 2 if the file already has a shebang
+line) :&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# -*- vault: true; -*-
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Any file having &lt;code&gt;vault: true&lt;/code&gt; in a modeline is set to &lt;strong&gt;require encryption before
+commit&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;The icing on the cake is that you can use this modeline to set the filetype
+too[1], and help your editor to find out the proper file content, which is
+quite handy with some files not ending in &lt;code&gt;yml&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# -*- mode: yaml; vault: true; -*-
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This is supported out of the box by vim and Emacs. If you use SublimeText,
+you can use the &lt;a href=&quot;https://github.com/kvs/STEmacsModelines&quot;&gt;STEmacsModelines&lt;/a&gt;
+package.&lt;/p&gt;
+
+&lt;h3 id=&quot;using-the-hooks&quot;&gt;Using the hooks&lt;/h3&gt;
+
+&lt;p&gt;The pre-commit hook will encrypt files marked with &lt;code&gt;vault: true&lt;/code&gt;. If a
+&lt;code&gt;.vault_password_hooks&lt;/code&gt; file is present in the project root directory, it will be
+used as the password.&lt;/p&gt;
+
+&lt;p&gt;If this file doesn’t exist, you’ll be promted for an encryption password and
+this password will be saved in &lt;code&gt;.vault_password_hooks&lt;/code&gt;, in your project’s root.&lt;/p&gt;
+
+&lt;p&gt;If &lt;code&gt;.vault_password_hooks&lt;/code&gt; is listed in &lt;code&gt;.gitignore&lt;/code&gt;, this file will persist and you
+won’t be asked for a password anymore for encryption as well as for decryption.
+Otherwise, &lt;code&gt;.vault_password_hooks&lt;/code&gt; will be erased after encryption to avoid commiting
+the file.&lt;/p&gt;
+
+&lt;p&gt;After commiting the files, the post-commit hook will use the same password to
+decrypt the previously encrypted files.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;TL;DR:&lt;/strong&gt; add &lt;code&gt;.vault_password_hooks&lt;/code&gt; to your &lt;code&gt;.gitignore&lt;/code&gt;, add &lt;code&gt;# -*-
+vault: true; -*-&lt;/code&gt; to files that requires encryption and you’re set.&lt;/p&gt;
+
+&lt;p&gt;You end up with a workflow where your files are transparently encrypted before
+commit and decrypted after.&lt;/p&gt;
+
+&lt;h2 id=&quot;hooks&quot;&gt;Hooks&lt;/h2&gt;
+
+&lt;p&gt;Put the hooks in &lt;code&gt;.git/hooks/&lt;/code&gt; and don’t forget to &lt;code&gt;chmod +x
+{pre,post}-commit&lt;/code&gt; them.&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/leucos/405b406b9d6bde0c3d39.js&quot;&gt; &lt;/script&gt;
+
+</description>
+        <pubDate>Mon, 25 May 2015 00:00:00 +0200</pubDate>
+        <link>//leucos.github.io/2015/05/25/ansible-transparent-vault/</link>
+        <guid isPermaLink="true">//leucos.github.io/2015/05/25/ansible-transparent-vault/</guid>
+        
+        <category>ansible</category>
+        
+        <category>ansible-vaut</category>
+        
+        <category>git</category>
+        
+        
+      </item>
     
       <item>
         <title>Making dynamic inventory usable with Ansible and Digital Ocean</title>
@@ -195,10 +298,10 @@ use the new digital Ocean API (v2.0 too). You just need to set
 &lt;span class=&quot;c&quot;&gt;# Check that inventory is a directory&lt;/span&gt;
 &lt;span class=&quot;c&quot;&gt;# We need this since we generate a complementary inventory with IP addresses for hosts&lt;/span&gt;
 &lt;span class=&quot;nv&quot;&gt;INVENTORY&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; -d &lt;span class=&quot;nv&quot;&gt;$INVENTORY&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; bail_out &lt;span class=&quot;s2&quot;&gt;&amp;quot;Inventory does not exist, is not a directory, or is not set&amp;quot;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; ! -e &lt;span class=&quot;nv&quot;&gt;$DO_CLIENT_ID&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; bail_out &lt;span class=&quot;s2&quot;&gt;&amp;quot;DO_CLIENT_ID not set&amp;quot;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; ! -e &lt;span class=&quot;nv&quot;&gt;$DO_API_KEY&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;   &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; bail_out &lt;span class=&quot;s2&quot;&gt;&amp;quot;DO_API_KEY not set&amp;quot;&lt;/span&gt;
-
+&lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; ! -d &lt;span class=&quot;s2&quot;&gt;&amp;quot;$INVENTORY&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; bail_out &lt;span class=&quot;s2&quot;&gt;&amp;quot;Inventory does not exist, is not a&lt;/span&gt;
+&lt;span class=&quot;s2&quot;&gt;directory, or is not set&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; ! -e &lt;span class=&quot;nv&quot;&gt;$DO_CLIENT_ID&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; bail_out &lt;span class=&quot;s2&quot;&gt;&amp;quot;DO_CLIENT_ID not set&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; ! -e &lt;span class=&quot;nv&quot;&gt;$DO_API_KEY&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;   &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; bail_out &lt;span class=&quot;s2&quot;&gt;&amp;quot;DO_API_KEY not set&amp;quot;&lt;/span&gt;
 
 &lt;span class=&quot;c&quot;&gt;# Get a list of hosts from inventory dir&lt;/span&gt;
 &lt;span class=&quot;nv&quot;&gt;HOSTS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;ansible -i &lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt; --list-hosts all &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; awk &lt;span class=&quot;s1&quot;&gt;&amp;#39;{ print $1 }&amp;#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; tr &lt;span class=&quot;s1&quot;&gt;&amp;#39;\n&amp;#39;&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39; &amp;#39;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
@@ -254,6 +357,63 @@ rm &lt;span class=&quot;nv&quot;&gt;$INVENTORY&lt;/span&gt;/generated
         <category>ansible</category>
         
         <category>digital ocean</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>Testing Ansible roles, part 4</title>
+        <description>&lt;p&gt;In the &lt;a href=&quot;/2015/03/16/testing-ansible-roles-part-3/&quot;&gt;previous&lt;/a&gt; post, we added more tests to the &lt;code&gt;test&lt;/code&gt; file.&lt;/p&gt;
+
+&lt;p&gt;We will now add TravisCI support, so we can test our role when it is pushed on GitHub.&lt;/p&gt;
+
+&lt;h2 id=&quot;travis-file&quot;&gt;Travis file&lt;/h2&gt;
+</description>
+        <pubDate>Tue, 17 Mar 2015 00:00:00 +0100</pubDate>
+        <link>//leucos.github.io/2015/03/17/testing-ansible-roles-part-4/</link>
+        <guid isPermaLink="true">//leucos.github.io/2015/03/17/testing-ansible-roles-part-4/</guid>
+        
+        <category>ansible</category>
+        
+        <category>tdd</category>
+        
+        <category>rolespec</category>
+        
+        <category>guard</category>
+        
+        <category>vagrant</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>Testing Ansible roles, part 3</title>
+        <description>&lt;p&gt;In the &lt;a href=&quot;/2015/03/15/testing-ansible-roles-part-2/&quot;&gt;previous&lt;/a&gt; post, wrote a basic &lt;code&gt;test&lt;/code&gt; file.&lt;/p&gt;
+
+&lt;p&gt;We will now improve it a bit and test other RoleSpec assertions.&lt;/p&gt;
+
+&lt;h2 id=&quot;adding-other-tests&quot;&gt;Adding other tests&lt;/h2&gt;
+
+&lt;h2 id=&quot;ansible-version&quot;&gt;Ansible version&lt;/h2&gt;
+
+&lt;p&gt;In the &lt;a href=&quot;/2015/03/17/testing-ansible-roles-part-4/&quot;&gt;next part&lt;/a&gt;, we will add TravisCI support, so we can test our role when it is pushed on GitHub.&lt;/p&gt;
+
+&lt;p&gt;Note: see stuff at https://github.com/debops/test-suite/blob/master/defaults.conf
+Can be used to add custom assertions&lt;/p&gt;
+</description>
+        <pubDate>Mon, 16 Mar 2015 00:00:00 +0100</pubDate>
+        <link>//leucos.github.io/2015/03/16/testing-ansible-roles-part-3/</link>
+        <guid isPermaLink="true">//leucos.github.io/2015/03/16/testing-ansible-roles-part-3/</guid>
+        
+        <category>ansible</category>
+        
+        <category>tdd</category>
+        
+        <category>rolespec</category>
+        
+        <category>guard</category>
+        
+        <category>vagrant</category>
         
         
       </item>

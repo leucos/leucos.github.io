@@ -254,10 +254,10 @@ use the new digital Ocean API (v2.0 too). You just need to set
 <span class="c"># Check that inventory is a directory</span>
 <span class="c"># We need this since we generate a complementary inventory with IP addresses for hosts</span>
 <span class="nv">INVENTORY</span><span class="o">=</span><span class="nv">$1</span>
-<span class="o">[</span> -d <span class="nv">$INVENTORY</span> <span class="o">]</span>      <span class="o">||</span> bail_out <span class="s2">&quot;Inventory does not exist, is not a directory, or is not set&quot;</span>
-<span class="o">[</span> ! -e <span class="nv">$DO_CLIENT_ID</span> <span class="o">]</span> <span class="o">||</span> bail_out <span class="s2">&quot;DO_CLIENT_ID not set&quot;</span>
-<span class="o">[</span> ! -e <span class="nv">$DO_API_KEY</span> <span class="o">]</span>   <span class="o">||</span> bail_out <span class="s2">&quot;DO_API_KEY not set&quot;</span>
-
+<span class="o">[[</span> ! -d <span class="s2">&quot;$INVENTORY&quot;</span> <span class="o">]]</span>  <span class="o">&amp;&amp;</span> bail_out <span class="s2">&quot;Inventory does not exist, is not a</span>
+<span class="s2">directory, or is not set&quot;</span>
+<span class="o">[[</span> ! -e <span class="nv">$DO_CLIENT_ID</span> <span class="o">]]</span> <span class="o">||</span> bail_out <span class="s2">&quot;DO_CLIENT_ID not set&quot;</span>
+<span class="o">[[</span> ! -e <span class="nv">$DO_API_KEY</span> <span class="o">]]</span>   <span class="o">||</span> bail_out <span class="s2">&quot;DO_API_KEY not set&quot;</span>
 
 <span class="c"># Get a list of hosts from inventory dir</span>
 <span class="nv">HOSTS</span><span class="o">=</span><span class="k">$(</span>ansible -i <span class="nv">$1</span> --list-hosts all <span class="p">|</span> awk <span class="s1">&#39;{ print $1 }&#39;</span> <span class="p">|</span> tr <span class="s1">&#39;\n&#39;</span> <span class="s1">&#39; &#39;</span><span class="k">)</span>
@@ -315,27 +315,27 @@ rm <span class="nv">$INVENTORY</span>/generated
         
           <li>
             <h5>
-              <a href="//leucos.github.io/2015/03/15/testing-ansible-roles-part-2/">
-                Testing Ansible roles, part 2
-                <small>15 Mar 2015</small>
+              <a href="//leucos.github.io/2015/05/25/ansible-transparent-vault/">
+                Transparent encryption/descryption with ansible vault
+                <small>25 May 2015</small>
               </a>
             </h5>
           </li>
         
           <li>
             <h5>
-              <a href="//leucos.github.io/2015/03/14/testing-ansible-roles-part-1/">
-                Testing Ansible roles, part 1
-                <small>14 Mar 2015</small>
+              <a href="//leucos.github.io/2015/03/17/testing-ansible-roles-part-4/">
+                Testing Ansible roles, part 4
+                <small>17 Mar 2015</small>
               </a>
             </h5>
           </li>
         
           <li>
             <h5>
-              <a href="//leucos.github.io/2015/03/01/expiring-redis-cache-from-ruby/">
-                Invalidating REDIS cache from Ruby
-                <small>01 Mar 2015</small>
+              <a href="//leucos.github.io/2015/03/16/testing-ansible-roles-part-3/">
+                Testing Ansible roles, part 3
+                <small>16 Mar 2015</small>
               </a>
             </h5>
           </li>
