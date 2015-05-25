@@ -6,8 +6,8 @@
 </description>
     <link>//leucos.github.io/</link>
     <atom:link href="//leucos.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 25 May 2015 21:50:42 +0200</pubDate>
-    <lastBuildDate>Mon, 25 May 2015 21:50:42 +0200</lastBuildDate>
+    <pubDate>Mon, 25 May 2015 22:06:06 +0200</pubDate>
+    <lastBuildDate>Mon, 25 May 2015 22:06:06 +0200</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
     
       <item>
@@ -358,63 +358,6 @@ rm &lt;span class=&quot;nv&quot;&gt;$INVENTORY&lt;/span&gt;/generated
         <category>ansible</category>
         
         <category>digital ocean</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Testing Ansible roles, part 4</title>
-        <description>&lt;p&gt;In the &lt;a href=&quot;/2015/03/16/testing-ansible-roles-part-3/&quot;&gt;previous&lt;/a&gt; post, we added more tests to the &lt;code&gt;test&lt;/code&gt; file.&lt;/p&gt;
-
-&lt;p&gt;We will now add TravisCI support, so we can test our role when it is pushed on GitHub.&lt;/p&gt;
-
-&lt;h2 id=&quot;travis-file&quot;&gt;Travis file&lt;/h2&gt;
-</description>
-        <pubDate>Tue, 17 Mar 2015 00:00:00 +0100</pubDate>
-        <link>//leucos.github.io/2015/03/17/testing-ansible-roles-part-4/</link>
-        <guid isPermaLink="true">//leucos.github.io/2015/03/17/testing-ansible-roles-part-4/</guid>
-        
-        <category>ansible</category>
-        
-        <category>tdd</category>
-        
-        <category>rolespec</category>
-        
-        <category>guard</category>
-        
-        <category>vagrant</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Testing Ansible roles, part 3</title>
-        <description>&lt;p&gt;In the &lt;a href=&quot;/2015/03/15/testing-ansible-roles-part-2/&quot;&gt;previous&lt;/a&gt; post, wrote a basic &lt;code&gt;test&lt;/code&gt; file.&lt;/p&gt;
-
-&lt;p&gt;We will now improve it a bit and test other RoleSpec assertions.&lt;/p&gt;
-
-&lt;h2 id=&quot;adding-other-tests&quot;&gt;Adding other tests&lt;/h2&gt;
-
-&lt;h2 id=&quot;ansible-version&quot;&gt;Ansible version&lt;/h2&gt;
-
-&lt;p&gt;In the &lt;a href=&quot;/2015/03/17/testing-ansible-roles-part-4/&quot;&gt;next part&lt;/a&gt;, we will add TravisCI support, so we can test our role when it is pushed on GitHub.&lt;/p&gt;
-
-&lt;p&gt;Note: see stuff at https://github.com/debops/test-suite/blob/master/defaults.conf
-Can be used to add custom assertions&lt;/p&gt;
-</description>
-        <pubDate>Mon, 16 Mar 2015 00:00:00 +0100</pubDate>
-        <link>//leucos.github.io/2015/03/16/testing-ansible-roles-part-3/</link>
-        <guid isPermaLink="true">//leucos.github.io/2015/03/16/testing-ansible-roles-part-3/</guid>
-        
-        <category>ansible</category>
-        
-        <category>tdd</category>
-        
-        <category>rolespec</category>
-        
-        <category>guard</category>
-        
-        <category>vagrant</category>
         
         
       </item>
