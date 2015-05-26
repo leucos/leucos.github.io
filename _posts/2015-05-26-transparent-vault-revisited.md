@@ -185,6 +185,14 @@ Here is a sample transcript.
 
 <script type="text/javascript" src="https://asciinema.org/a/7oaviuh8v2pi39zeojxrn8434.js" id="asciicast-7oaviuh8v2pi39zeojxrn8434" async></script>
 
-### Filters
+### Big fat warning
+
+The `git cat-file` part is not here for decoration. At least the first
+time, ensure that encryption works. If git can not find your filters, it
+will **happily and silently commit your files unencrypted**. So doucle
+check with cat file, or on Git{hub,lab} and change any credential if
+encryption went wrong.
+
+### The filters
 
 {% gist leucos/1bfcfc7252e8c262956e %}
