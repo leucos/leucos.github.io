@@ -10,10 +10,10 @@
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Transparent encryption/decryption with ansible vault - Random stuff</title>
+    <title>Transparent encryption with ansible vault revisited - Random stuff</title>
     <meta name="description" content="Long time sysadmin with DevOpsy tendencies
 ">
-    <meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Transparent encryption/decryption with ansible vault - Random stuff"><meta property="og:site_name" content="Random stuff"><meta property="og:description" content="Long time sysadmin with DevOpsy tendencies"><meta property="og:url" content="//leucos.github.io/2015/05/25/ansible-transparent-vault/"><meta property="article:published_time" content="2015-05-25T00:00:00+02:00"><meta property="article:author" content="//leucos.github.io/about">
+    <meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Transparent encryption with ansible vault revisited - Random stuff"><meta property="og:site_name" content="Random stuff"><meta property="og:description" content="Long time sysadmin with DevOpsy tendencies"><meta property="og:url" content="//leucos.github.io/2015/05/26/transparent-vault-revisited/"><meta property="article:published_time" content="2015-05-26T00:00:00+02:00"><meta property="article:author" content="//leucos.github.io/about">
   
     
 
@@ -22,7 +22,7 @@
     <link rel="alternate" type="application/rss+xml" href="//leucos.github.io/feed.xml">
     <link rel="shortcut icon" href="//leucos.github.io/favicon.ico">
     <link rel="prefetch" href="//leucos.github.io">
-    <link rel="canonical" href="//leucos.github.io/2015/05/25/ansible-transparent-vault/">
+    <link rel="canonical" href="//leucos.github.io/2015/05/26/transparent-vault-revisited/">
     <link rel="stylesheet" 
     href="//leucos.github.io/assets/css/main.css">
 
@@ -61,110 +61,202 @@
   
 
   <header class="post-header">
-    <h1 class="post-title">Transparent encryption/decryption with ansible vault</h1>
+    <h1 class="post-title">Transparent encryption with ansible vault revisited</h1>
     <p class="post-meta">
     
     <span class="post-date">
-    May 25, 2015  
+    May 26, 2015  
     </span>
     </p>
   </header>
 
   <article class="post-content">
-    <h1 id="big-fat-warning">Big Fat Warning</h1>
+    <h2 id="doing-it-the-wrong-way">Doing it the wrong way</h2>
 
-<p><strong>THIS FILE IS LEFT HERE FOR REFERENCE</strong></p>
+<p><a href="/2015/05/25/ansible-transparent-vault/">Last attempt</a>
+to make ansible vault encryption/decryption transparent wasn’t quite
+right. Decrypting files after commit wasn’t a good idea as
+<a href="https://github.com/ralovely">Raphael Campardou</a> noticed.</p>
 
-<p>However, the method described here is WRONG. Check out 
-<a href="/2015/05/26/transparent-vault-revisited/">next post</a> instead !</p>
+<p>In search for a better idea, I eventually realized that hooks where not
+the right place to do it: yes, you can guard from commiting files that
+should be encrypted, but hacking around hooks to build a crypt/decrypt
+pipeline is doomed to failure.</p>
 
-<h2 id="pain-points">Pain points</h2>
+<h2 id="doing-it-better">Doing it better</h2>
 
-<p><code>ansible-vault</code> is handy. You can crypt your stuff before commiting it so your
-private stuff (AWS/DigitalOcean/… keys, passwords, …) don’t end up
-world-readable on GitHub.</p>
+<p>While looking for alternate ways, I remembered I hacked around with
+git filters back in the days to see clear-text diffs for OpenOffice
+files.</p>
 
-<p>However, it is too easy to decrypt your stuff, forget about it, and commit it 
-without encrypting it back. It is also quite tedious to ansible-vault
-encrypt/decrypt all day long.</p>
+<p>Git let’s you apply <code>smudge</code>, <code>clean</code> and <code>textconv</code> filters to files
+which are applied this way:</p>
 
-<h2 id="solution">Solution</h2>
+<ul>
+  <li>filter/smudge: after checkout, reads blob from STDIN and outputs the
+workfile from STDOUT</li>
+  <li>filter/clean: converts the worktree file to blob upon check in</li>
+  <li>diff/textconv: applied before diffing files</li>
+</ul>
 
-<p><a href="https://github.com/ralovely">Raphael Campardou</a> proposed a <a href="https://gist.github.com/ralovely/9367737">nice
-solution</a> to prevent commiting
-ansible vault files.</p>
+<p>So, for our needs, <em>smudge</em> and <em>textconv</em> are good places to decrypt,
+while <em>clean</em> is the place to encrypt.</p>
 
-<p>In his solution, you have to name your files <code>*_vault.yml</code> so they get busted
-by a pre-commit hook if they are not currently encrypted.</p>
+<h2 id="implementation">Implementation</h2>
 
-<p>This is nice: by naming your files appropriately, you can not commit them unless
-they are ansible-vault crypted beforehand.</p>
+<p>The implementation requires to write the 3 filters (<em>smudge</em>, <em>clean</em>,
+<em>textconv</em>) and configure your git repos to use the filters.</p>
 
-<p>I extended his idea so it can apply to any file in an Ansible repository, with
-very little configuration, and added a post-commit hook so files gets
-transparently decrypted after being commited.</p>
+<p>Those filters should be executable.</p>
 
-<h2 id="transparent-encryptiondecryption">Transparent encryption/decryption</h2>
+<p>As we did in last post, we will use a <code>.vault_password</code> file in the
+project root directory containing the vault key (don’t forget to add it
+to your <code>.gitignore</code> file !). The filters fail if the file is not
+present.</p>
 
-<p>The goal is simple: automagically encrypt the proper files before commit,
-commit them, then decrypt them afterwards so we can hack again without
-any manual intervention. All this with minimal configuration.</p>
+<h3 id="smudge">Smudge</h3>
 
-<h3 id="marking-file-for-encryption">Marking file for encryption</h3>
+<p>The problem that came up to write the smudge &amp; clean filters is that the
+blob content is fed on STDIN, and <code>ansible-vault</code> can only
+encrypt/decrypt files <em>in-place</em>.</p>
 
-<p>The center trick is to find a way to mark a file for encryption. Modelines
-(a.k.a. emacs local variable lines) to the rescue.</p>
+<p>So we have to write the blob in a temporary file. While this is not
+really a problem for the smudge filter, it is for the clean filter since
+the temporary file contains the clear-text version of the file. The temp
+file is created with restricted permissions, but you’ve been warned.</p>
 
-<p>To tell git hooks that a file requires encryption, we’ll add this line to
-the top of the file (or on line 2 if the file already has a shebang
-line) :</p>
+<p>Smudge’s filter job is simple:
+- write STDIN content to temp file
+- decrypt the temp file and swallow the output in a variable (using
+  <code>ansible-vault view</code> after setting the PAGER to <code>cat</code>)
+- if the file was a vault encrypted file, display the variable, else,
+  bail out.</p>
 
-<pre><code># -*- vault: true; -*-
+<pre><code>#!/bin/sh
+
+if [ ! -r '.vault_password' ]; then
+  exit 1
+fi
+
+tmp=`mktemp`
+cat &gt; $tmp
+
+export PAGER='cat'
+CONTENT=`ansible-vault view "$tmp" --vault-password-file=.vault_password 2&gt; /dev/null`
+
+if echo $CONTENT | grep 'ERROR: data is not encrypted' &gt; /dev/null; then
+  echo "Looks like one file was commited clear text"
+  echo "Please fix this before continuing !"
+  exit 1
+else
+  echo $CONTENT
+fi
+
+rm $tmp
 </code></pre>
 
-<p>Any file having <code>vault: true</code> in a modeline is set to <strong>require encryption before
-commit</strong>.</p>
+<p>As you guessed, <code>ansible-vault</code> does not output errors on STDERR but on
+STDOUT.</p>
 
-<p>The icing on the cake is that you can use this modeline to set the filetype
-too[1], and help your editor to find out the proper file content, which is
-quite handy with some files not ending in <code>yml</code>:</p>
+<h3 id="clean">Clean</h3>
 
-<pre><code># -*- mode: yaml; vault: true; -*-
+<p>The clean filter works almost the same way:
+- write STDIN to a temp file
+- encrypt the temp file in place
+- write the temp file to STDOUT</p>
+
+<pre><code>#!/bin/sh
+
+if [ ! -r '.vault_password' ]; then
+  exit 1
+fi
+
+tmp=`mktemp`
+cat &gt; $tmp
+
+ansible-vault encrypt $tmp --vault-password-file=.vault_password &gt; /dev/null 2&gt;&amp;1
+
+cat "$tmp"
+rm $tmp
 </code></pre>
 
-<p>This is supported out of the box by vim and Emacs. If you use SublimeText,
-you can use the <a href="https://github.com/kvs/STEmacsModelines">STEmacsModelines</a>
-package.</p>
+<p>This one was quite easy. We could also use modelines, by encrypting only if
+“vault: true” is present in the 4 first lines. This way, we could apply
+the filters to all the files. However I ditched the idea for performance
+reasons (see below).</p>
 
-<h3 id="using-the-hooks">Using the hooks</h3>
+<h3 id="diff-filter">Diff filter</h3>
 
-<p>The pre-commit hook will encrypt files marked with <code>vault: true</code>. If a
-<code>.vault_password_hooks</code> file is present in the project root directory, it will be
-used as the password.</p>
+<p>The filter works like the smudge filter except that it uses the file
+name passed as a parameter.</p>
 
-<p>If this file doesn’t exist, you’ll be promted for an encryption password and
-this password will be saved in <code>.vault_password_hooks</code>, in your project’s root.</p>
+<pre><code>#!/bin/sh
 
-<p>If <code>.vault_password_hooks</code> is listed in <code>.gitignore</code>, this file will persist and you
-won’t be asked for a password anymore for encryption as well as for decryption.
-Otherwise, <code>.vault_password_hooks</code> will be erased after encryption to avoid commiting
-the file.</p>
+if [ ! -r '.vault_password' ]; then
+  exit 1
+fi
 
-<p>After commiting the files, the post-commit hook will use the same password to
-decrypt the previously encrypted files.</p>
+export PAGER='cat'
+CONTENT=`ansible-vault view "$1" --vault-password-file=.vault_password 2&gt; /dev/null`
 
-<p><strong>TL;DR:</strong> add <code>.vault_password_hooks</code> to your <code>.gitignore</code>, add <code># -*-
-vault: true; -*-</code> to files that requires encryption and you’re set.</p>
+if echo "$CONTENT" | grep 'ERROR: data is not encrypted' &gt; /dev/null; then
+  cat "$1"
+else
+  echo "$CONTENT"
+fi
+</code></pre>
 
-<p>You end up with a workflow where your files are transparently encrypted before
-commit and decrypted after.</p>
+<h3 id="git-configuration">Git configuration</h3>
 
-<h2 id="hooks">Hooks</h2>
+<h4 id="attributes">Attributes</h4>
 
-<p>Put the hooks in <code>.git/hooks/</code> and don’t forget to <code>chmod +x
-{pre,post}-commit</code> them.</p>
+<p>Now that the various filters are out and chmoded +x, we need to set-up
+out git repos to use them.</p>
 
-<script src="https://gist.github.com/leucos/405b406b9d6bde0c3d39.js"> </script>
+<p>For this, we need to tell git on which files we want to apply the
+filters, using a <code>.gitattributes</code> file in our project top directory.</p>
+
+<p>The following <code>.gitattributes</code> file</p>
+
+<pre><code>*_vault* filter=vault diff=vault
+</code></pre>
+
+<p>will run filters on repository blobs/files that match <code>*_vault*</code>.</p>
+
+<p>I initially intended to run the filters on all files, using modelines.
+However, performance was really bad, so I finally ended up removing a
+full wildcard (<code>*</code>) and restrict filter selection to specific files.
+You can repeat the lines ad nauseam if you want to catch multiple
+fileglobs.</p>
+
+<h4 id="gitconfig">Gitconfig</h4>
+
+<p>I put my filters in <code>~/.bin/</code>, but the location doesn’t matter. You can
+event add them to the project and commit them, so everyone has them.</p>
+
+<p>The following section needs to be added to the project’s <code>.git/config</code>
+file:</p>
+
+<pre><code>[filter "vault"]
+  smudge = ~/.bin/smudge_vault
+  clean  = ~/.bin/clean_vault
+
+[diff "vault"]
+  textconv = ~/.bin/diff_vault
+</code></pre>
+
+<h3 id="test">Test</h3>
+
+<p>Adding a file that matches a glob in <code>.gitattributes</code> should now trigger
+transparent encryption.</p>
+
+<p>Here is a sample transcript.</p>
+
+<script type="text/javascript" src="https://asciinema.org/a/7oaviuh8v2pi39zeojxrn8434.js" id="asciicast-7oaviuh8v2pi39zeojxrn8434" async=""></script>
+
+<h3 id="filters">Filters</h3>
+
+<script src="https://gist.github.com/leucos/1bfcfc7252e8c262956e.js"> </script>
 
     
   </article>
@@ -176,9 +268,9 @@ commit and decrypted after.</p>
         
           <li>
             <h5>
-              <a href="//leucos.github.io/2015/05/26/transparent-vault-revisited/">
-                Transparent encryption with ansible vault revisited
-                <small>26 May 2015</small>
+              <a href="//leucos.github.io/2015/05/25/ansible-transparent-vault/">
+                Transparent encryption/decryption with ansible vault
+                <small>25 May 2015</small>
               </a>
             </h5>
           </li>
@@ -211,7 +303,7 @@ commit and decrypted after.</p>
     
   
     
-      <div class="share-buttons">  <h5>Share this post on</h5>  <ul class="social-media">    <li>        <a title="b9m on Twitter"           href="https://twitter.com/intent/tweet?original_referer=//leucos.github.io/2015/05/25/ansible-transparent-vault/&amp;text=Transparent encryption/decryption with ansible vault&amp;url=//leucos.github.io/2015/05/25/ansible-transparent-vault/" class="twitter wc-img-replace" target="_blank">          Twitter        </a>    </li>       <li>        <a title=" on Google Plus"             href="https://plus.google.com/share?url=//leucos.github.io/2015/05/25/ansible-transparent-vault/"             class="google wc-img-replace" target="_blank">Google</a>    </li>    <li>        <a title=" on Facebook"             href="https://www.facebook.com/sharer/sharer.php?u=//leucos.github.io/2015/05/25/ansible-transparent-vault/&amp;t=Transparent encryption/decryption with ansible vault"             class="facebook wc-img-replace" target="_blank">Facebook</a>    </li>  </ul></div>
+      <div class="share-buttons">  <h5>Share this post on</h5>  <ul class="social-media">    <li>        <a title="b9m on Twitter"           href="https://twitter.com/intent/tweet?original_referer=//leucos.github.io/2015/05/26/transparent-vault-revisited/&amp;text=Transparent encryption with ansible vault revisited&amp;url=//leucos.github.io/2015/05/26/transparent-vault-revisited/" class="twitter wc-img-replace" target="_blank">          Twitter        </a>    </li>       <li>        <a title=" on Google Plus"             href="https://plus.google.com/share?url=//leucos.github.io/2015/05/26/transparent-vault-revisited/"             class="google wc-img-replace" target="_blank">Google</a>    </li>    <li>        <a title=" on Facebook"             href="https://www.facebook.com/sharer/sharer.php?u=//leucos.github.io/2015/05/26/transparent-vault-revisited/&amp;t=Transparent encryption with ansible vault revisited"             class="facebook wc-img-replace" target="_blank">Facebook</a>    </li>  </ul></div>
       
   </div>
   

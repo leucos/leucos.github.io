@@ -6,13 +6,223 @@
 </description>
     <link>//leucos.github.io/</link>
     <atom:link href="//leucos.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 25 May 2015 22:06:06 +0200</pubDate>
-    <lastBuildDate>Mon, 25 May 2015 22:06:06 +0200</lastBuildDate>
+    <pubDate>Tue, 26 May 2015 21:46:10 +0200</pubDate>
+    <lastBuildDate>Tue, 26 May 2015 21:46:10 +0200</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
     
       <item>
+        <title>Transparent encryption with ansible vault revisited</title>
+        <description>&lt;h2 id=&quot;doing-it-the-wrong-way&quot;&gt;Doing it the wrong way&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;/2015/05/25/ansible-transparent-vault/&quot;&gt;Last attempt&lt;/a&gt;
+to make ansible vault encryption/decryption transparent wasn’t quite
+right. Decrypting files after commit wasn’t a good idea as
+&lt;a href=&quot;https://github.com/ralovely&quot;&gt;Raphael Campardou&lt;/a&gt; noticed.&lt;/p&gt;
+
+&lt;p&gt;In search for a better idea, I eventually realized that hooks where not
+the right place to do it: yes, you can guard from commiting files that
+should be encrypted, but hacking around hooks to build a crypt/decrypt
+pipeline is doomed to failure.&lt;/p&gt;
+
+&lt;h2 id=&quot;doing-it-better&quot;&gt;Doing it better&lt;/h2&gt;
+
+&lt;p&gt;While looking for alternate ways, I remembered I hacked around with
+git filters back in the days to see clear-text diffs for OpenOffice
+files.&lt;/p&gt;
+
+&lt;p&gt;Git let’s you apply &lt;code&gt;smudge&lt;/code&gt;, &lt;code&gt;clean&lt;/code&gt; and &lt;code&gt;textconv&lt;/code&gt; filters to files
+which are applied this way:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;filter/smudge: after checkout, reads blob from STDIN and outputs the
+workfile from STDOUT&lt;/li&gt;
+  &lt;li&gt;filter/clean: converts the worktree file to blob upon check in&lt;/li&gt;
+  &lt;li&gt;diff/textconv: applied before diffing files&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;So, for our needs, &lt;em&gt;smudge&lt;/em&gt; and &lt;em&gt;textconv&lt;/em&gt; are good places to decrypt,
+while &lt;em&gt;clean&lt;/em&gt; is the place to encrypt.&lt;/p&gt;
+
+&lt;h2 id=&quot;implementation&quot;&gt;Implementation&lt;/h2&gt;
+
+&lt;p&gt;The implementation requires to write the 3 filters (&lt;em&gt;smudge&lt;/em&gt;, &lt;em&gt;clean&lt;/em&gt;,
+&lt;em&gt;textconv&lt;/em&gt;) and configure your git repos to use the filters.&lt;/p&gt;
+
+&lt;p&gt;Those filters should be executable.&lt;/p&gt;
+
+&lt;p&gt;As we did in last post, we will use a &lt;code&gt;.vault_password&lt;/code&gt; file in the
+project root directory containing the vault key (don’t forget to add it
+to your &lt;code&gt;.gitignore&lt;/code&gt; file !). The filters fail if the file is not
+present.&lt;/p&gt;
+
+&lt;h3 id=&quot;smudge&quot;&gt;Smudge&lt;/h3&gt;
+
+&lt;p&gt;The problem that came up to write the smudge &amp;amp; clean filters is that the
+blob content is fed on STDIN, and &lt;code&gt;ansible-vault&lt;/code&gt; can only
+encrypt/decrypt files &lt;em&gt;in-place&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;So we have to write the blob in a temporary file. While this is not
+really a problem for the smudge filter, it is for the clean filter since
+the temporary file contains the clear-text version of the file. The temp
+file is created with restricted permissions, but you’ve been warned.&lt;/p&gt;
+
+&lt;p&gt;Smudge’s filter job is simple:
+- write STDIN content to temp file
+- decrypt the temp file and swallow the output in a variable (using
+  &lt;code&gt;ansible-vault view&lt;/code&gt; after setting the PAGER to &lt;code&gt;cat&lt;/code&gt;)
+- if the file was a vault encrypted file, display the variable, else,
+  bail out.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#!/bin/sh
+
+if [ ! -r &#39;.vault_password&#39; ]; then
+  exit 1
+fi
+
+tmp=`mktemp`
+cat &amp;gt; $tmp
+
+export PAGER=&#39;cat&#39;
+CONTENT=`ansible-vault view &quot;$tmp&quot; --vault-password-file=.vault_password 2&amp;gt; /dev/null`
+
+if echo $CONTENT | grep &#39;ERROR: data is not encrypted&#39; &amp;gt; /dev/null; then
+  echo &quot;Looks like one file was commited clear text&quot;
+  echo &quot;Please fix this before continuing !&quot;
+  exit 1
+else
+  echo $CONTENT
+fi
+
+rm $tmp
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As you guessed, &lt;code&gt;ansible-vault&lt;/code&gt; does not output errors on STDERR but on
+STDOUT.&lt;/p&gt;
+
+&lt;h3 id=&quot;clean&quot;&gt;Clean&lt;/h3&gt;
+
+&lt;p&gt;The clean filter works almost the same way:
+- write STDIN to a temp file
+- encrypt the temp file in place
+- write the temp file to STDOUT&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#!/bin/sh
+
+if [ ! -r &#39;.vault_password&#39; ]; then
+  exit 1
+fi
+
+tmp=`mktemp`
+cat &amp;gt; $tmp
+
+ansible-vault encrypt $tmp --vault-password-file=.vault_password &amp;gt; /dev/null 2&amp;gt;&amp;amp;1
+
+cat &quot;$tmp&quot;
+rm $tmp
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This one was quite easy. We could also use modelines, by encrypting only if
+“vault: true” is present in the 4 first lines. This way, we could apply
+the filters to all the files. However I ditched the idea for performance
+reasons (see below).&lt;/p&gt;
+
+&lt;h3 id=&quot;diff-filter&quot;&gt;Diff filter&lt;/h3&gt;
+
+&lt;p&gt;The filter works like the smudge filter except that it uses the file
+name passed as a parameter.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#!/bin/sh
+
+if [ ! -r &#39;.vault_password&#39; ]; then
+  exit 1
+fi
+
+export PAGER=&#39;cat&#39;
+CONTENT=`ansible-vault view &quot;$1&quot; --vault-password-file=.vault_password 2&amp;gt; /dev/null`
+
+if echo &quot;$CONTENT&quot; | grep &#39;ERROR: data is not encrypted&#39; &amp;gt; /dev/null; then
+  cat &quot;$1&quot;
+else
+  echo &quot;$CONTENT&quot;
+fi
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;git-configuration&quot;&gt;Git configuration&lt;/h3&gt;
+
+&lt;h4 id=&quot;attributes&quot;&gt;Attributes&lt;/h4&gt;
+
+&lt;p&gt;Now that the various filters are out and chmoded +x, we need to set-up
+out git repos to use them.&lt;/p&gt;
+
+&lt;p&gt;For this, we need to tell git on which files we want to apply the
+filters, using a &lt;code&gt;.gitattributes&lt;/code&gt; file in our project top directory.&lt;/p&gt;
+
+&lt;p&gt;The following &lt;code&gt;.gitattributes&lt;/code&gt; file&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;*_vault* filter=vault diff=vault
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;will run filters on repository blobs/files that match &lt;code&gt;*_vault*&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;I initially intended to run the filters on all files, using modelines.
+However, performance was really bad, so I finally ended up removing a
+full wildcard (&lt;code&gt;*&lt;/code&gt;) and restrict filter selection to specific files.
+You can repeat the lines ad nauseam if you want to catch multiple
+fileglobs.&lt;/p&gt;
+
+&lt;h4 id=&quot;gitconfig&quot;&gt;Gitconfig&lt;/h4&gt;
+
+&lt;p&gt;I put my filters in &lt;code&gt;~/.bin/&lt;/code&gt;, but the location doesn’t matter. You can
+event add them to the project and commit them, so everyone has them.&lt;/p&gt;
+
+&lt;p&gt;The following section needs to be added to the project’s &lt;code&gt;.git/config&lt;/code&gt;
+file:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[filter &quot;vault&quot;]
+  smudge = ~/.bin/smudge_vault
+  clean  = ~/.bin/clean_vault
+
+[diff &quot;vault&quot;]
+  textconv = ~/.bin/diff_vault
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;test&quot;&gt;Test&lt;/h3&gt;
+
+&lt;p&gt;Adding a file that matches a glob in &lt;code&gt;.gitattributes&lt;/code&gt; should now trigger
+transparent encryption.&lt;/p&gt;
+
+&lt;p&gt;Here is a sample transcript.&lt;/p&gt;
+
+&lt;script type=&quot;text/javascript&quot; src=&quot;https://asciinema.org/a/7oaviuh8v2pi39zeojxrn8434.js&quot; id=&quot;asciicast-7oaviuh8v2pi39zeojxrn8434&quot; async=&quot;&quot;&gt;&lt;/script&gt;
+
+&lt;h3 id=&quot;filters&quot;&gt;Filters&lt;/h3&gt;
+
+&lt;script src=&quot;https://gist.github.com/leucos/1bfcfc7252e8c262956e.js&quot;&gt; &lt;/script&gt;
+
+</description>
+        <pubDate>Tue, 26 May 2015 00:00:00 +0200</pubDate>
+        <link>//leucos.github.io/2015/05/26/transparent-vault-revisited/</link>
+        <guid isPermaLink="true">//leucos.github.io/2015/05/26/transparent-vault-revisited/</guid>
+        
+        <category>ansible</category>
+        
+        <category>ansible-vaut</category>
+        
+        <category>git</category>
+        
+        
+      </item>
+    
+      <item>
         <title>Transparent encryption/decryption with ansible vault</title>
-        <description>&lt;h2 id=&quot;pain-points&quot;&gt;Pain points&lt;/h2&gt;
+        <description>&lt;h1 id=&quot;big-fat-warning&quot;&gt;Big Fat Warning&lt;/h1&gt;
+
+&lt;p&gt;&lt;strong&gt;THIS FILE IS LEFT HERE FOR REFERENCE&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;However, the method described here is WRONG. Check out 
+&lt;a href=&quot;/2015/05/26/transparent-vault-revisited/&quot;&gt;next post&lt;/a&gt; instead !&lt;/p&gt;
+
+&lt;h2 id=&quot;pain-points&quot;&gt;Pain points&lt;/h2&gt;
 
 &lt;p&gt;&lt;code&gt;ansible-vault&lt;/code&gt; is handy. You can crypt your stuff before commiting it so your
 private stuff (AWS/DigitalOcean/… keys, passwords, …) don’t end up
