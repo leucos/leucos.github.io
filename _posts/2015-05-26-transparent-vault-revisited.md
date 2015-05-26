@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Transparent encryption with ansible vault revisited
-excerpt: "Never type ansible-vault again."
+excerpt: "Test your blog posts thoroughly next time"
 tags: [ansible, ansible-vaut, git]
 modified: 2015-05-25
 comments: true
