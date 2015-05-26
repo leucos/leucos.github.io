@@ -190,7 +190,7 @@ Here is a sample transcript.
 The `git cat-file` part is not here for decoration. At least the first
 time, ensure that encryption works. If git can not find your filters, it
 will **happily and silently commit your files unencrypted**. So doucle
-check with cat file, or on Git{hub,lab} and change any credential if
+check with `cat-file`, or on Git{hub,lab} and change any credential if
 encryption went wrong.
 
 ### The filters
