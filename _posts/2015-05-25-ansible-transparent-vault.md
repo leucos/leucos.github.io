@@ -7,6 +7,13 @@ modified: 2015-05-25
 comments: true
 ---
 
+# Big Fat Warning
+
+**THIS FILE IS LEFT HERE FOR REFERENCE**
+
+However, the method described here is WRONG. Check out 
+[next post]({% post_url 2015-05-26-transparent-vault-revisited %}) instead !
+
 ## Pain points
 
 `ansible-vault` is handy. You can crypt your stuff before commiting it so your
