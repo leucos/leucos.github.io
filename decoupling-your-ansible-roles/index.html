@@ -10,10 +10,10 @@
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Restoring Arch bootloader for the future self - Random stuff</title>
+    <title>Decoupling your Ansible roles - Random stuff</title>
     <meta name="description" content="Long time sysadmin with DevOpsy tendencies
 ">
-    <meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Restoring Arch bootloader for the future self - Random stuff"><meta property="og:site_name" content="Random stuff"><meta property="og:description" content="Long time sysadmin with DevOpsy tendencies"><meta property="og:url" content="//leucos.github.io/2015/02/14/restoring-arch-bootloader/"><meta property="article:published_time" content="2015-02-14T00:00:00+01:00"><meta property="article:author" content="//leucos.github.io/about">
+    <meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="og:title" content="Decoupling your Ansible roles - Random stuff"><meta property="og:site_name" content="Random stuff"><meta property="og:description" content="Long time sysadmin with DevOpsy tendencies"><meta property="og:url" content="//leucos.github.io/decoupling-your-ansible-roles"><meta property="article:published_time" content="2015-06-27T00:00:00+02:00"><meta property="article:author" content="//leucos.github.io/about">
   
     
 
@@ -22,7 +22,7 @@
     <link rel="alternate" type="application/rss+xml" href="//leucos.github.io/feed.xml">
     <link rel="shortcut icon" href="//leucos.github.io/favicon.ico">
     <link rel="prefetch" href="//leucos.github.io">
-    <link rel="canonical" href="//leucos.github.io/2015/02/14/restoring-arch-bootloader/">
+    <link rel="canonical" href="//leucos.github.io/decoupling-your-ansible-roles">
     <link rel="stylesheet" 
     href="//leucos.github.io/assets/css/main.css">
 
@@ -61,51 +61,119 @@
   
 
   <header class="post-header">
-    <h1 class="post-title">Restoring Arch bootloader for the future self</h1>
+    <h1 class="post-title">Decoupling your Ansible roles</h1>
     <p class="post-meta">
     
     <span class="post-date">
-    Feb 14, 2015  
+    Jun 27, 2015  
     </span>
     </p>
   </header>
 
   <article class="post-content">
-    <ul>
-  <li>
-    <p>Grab latest Arch, create a bootable key (do this before you’re doomed)<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup>. </p>
-  </li>
-  <li>
-    <p>Press F2 at boot, change the boot order to start on the key in <strong>UEFI</strong> mode</p>
-  </li>
-  <li>
-    <p>Boot on Arch, then</p>
-  </li>
-</ul>
+    <p>Having tightly coupled role is the best way to have a hard time
+maintaining roles and playbooks, and live in fear of changing anything
+in them.</p>
 
-<script src="https://gist.github.com/leucos/3f63c07d8326309d7fb1.js"> </script>
+<p>Here is a journey into role decoupling.</p>
 
-<ul>
-  <li>Cross fingers…</li>
-</ul>
+<h2 id="the-problem">The problem</h2>
 
-<p>In case you need to reinstall all the things<sup id="fnref:2"><a href="#fn:2" class="footnote">2</a></sup>:</p>
+<p>Let say we have a role (<em>my_app</em>) that depend on <em>php-fpm</em> role. In the php-fpm
+role, we want to display errors in HTML output depending on the application
+running environment (e.g. always display unless we’re running in production
+environment).</p>
 
-<p><code>
-sudo pacman -Sy `yaourt -Q | grep -v '^aur'| grep -v '^local' | cut -f2
--d'/' | awk '{ print $1 }'`
-</code></p>
+<p>The application running environment is available in <code>myapp_environment</code>.</p>
 
-<div class="footnotes">
-  <ol>
-    <li id="fn:1">
-      <p>Multisystem is pretty handy for this. You can put several OSes on the key, and choose what to boot. <a href="http://liveusb.info/dotclear/">http://liveusb.info/dotclear/</a> <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
-    </li>
-    <li id="fn:2">
-      <p>if you don’t use <code>yaourt</code>, remove the grep part <a href="#fnref:2" class="reversefootnote">&#8617;</a></p>
-    </li>
-  </ol>
-</div>
+<h2 id="first-idea">First idea</h2>
+
+<p>The first idea that comes to mind is to change the php.ini according to
+<code>myapp_environment</code>, like so:</p>
+
+<pre><code>{% if myapp_environment == "production" %}
+display_errors = Off
+{% else %}
+display_errors = On
+{% endif %}
+</code></pre>
+
+<p>The problem with this approach if that php-fpm role now needs
+<code>myapp_environment</code> to be defined, which is quite absurd.</p>
+
+<p>So instead, you could rename the variable <code>environment</code>, and use this in
+both roles (<code>myapp</code> and <code>php-fpm</code>). This is better, but not much. The
+problem with this approach is that a plain <code>environment</code> variable is not
+linked (by it’s name) to any role, and this can lead to great confusion
+is it is used and set in many roles or in different places in the
+inventory.</p>
+
+<h2 id="another-try">Another try</h2>
+
+<p>So the best way is to have two variables, <code>php_fpm_environment</code>, which is
+meaningful, and <code>myapp_environment</code>. But now how can I sync them together ?</p>
+
+<p>One ways is to match them in your inventory, like so :</p>
+
+<pre><code># Somewhere in inventory
+myapp_environment = "production"
+php_fpm_environment = {{ myapp_environment }}
+</code></pre>
+
+<p>However, this has some drawbacks. For instance, we are still talking about
+<code>php_fpm_environment</code> and, while not a big deal, it has no php-fpm
+meaning per se and it is not obvious what this variable does.</p>
+
+<p>Also, in the <code>php.ini</code> template, we will still have to test against the string
+“production” to set <code>display_errors</code>. Testing against a string set somewhere
+else is quite dangerous. What is the production name for the app is “live”
+instead ? Our php-fpm role is broken now.</p>
+
+<h2 id="some-progress">Some progress</h2>
+
+<p>We could go a better way: let’s call the variable <code>php_fpm_display_error</code> (more
+meaningful) and make it a boolean. We now can do this :</p>
+
+<pre><code>{% if php_fpm_display_errors %}
+display_errors = On
+{% else %}
+display_errors = Off
+{% endif %}
+</code></pre>
+
+<p>and somewhere in inventory:</p>
+
+<pre><code>myapp_environment = "production"
+php_fpm_display_errors = {{ myapp_environment =="production"  }}
+</code></pre>
+
+<h2 id="streamlining-the-solution">Streamlining the solution</h2>
+
+<p>Well, this is better now. But it is not perfect. The inventory is more verbose
+than required and handles something that it shouldn’t have to take care
+of. It is also quite easy to forget add it to the inventory and end up
+with errors showing in production.</p>
+
+<p>By moving this logic away from the inventory, and directly in the role
+dependencies, this configuration setting becomes completely transparent. We
+just have to add the following lines in <code>myapp/meta/main.yml</code>:</p>
+
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">dependencies</span><span class="p-Indicator">:</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">role</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">role-php-fpm</span>
+    <span class="l-Scalar-Plain">php_fpm_display_errors</span><span class="p-Indicator">:</span> <span class="p-Indicator">{{</span> <span class="nv">myapp_environment == &quot;production&quot;</span> <span class="p-Indicator">}}</span></code></pre></div>
+
+<p>Now, php-fpm role is completely decoupled from myapp role, and the production
+setting is completely transparent to the role user. Setting <code>myapp_environment</code>
+is enough to have the depending role set variables accordingly. You don’t even
+have to be aware of the <code>myapp</code><code>role dependency. If you swap, let say
+nginx/php-fpm for apache/php, you just have to change the role dependency and
+have no impact on your inventory. If you want to name your production
+environment "live", you can do so by changing </code>meta/main.yml` and not
+touching anything else.</p>
+
+<p>Keeping role decoupled is the best way to have manageable and reusable
+roles. Try to make them self sufficient, and avoid cross variables or
+even worse, group names in roles !</p>
     
   </article>
 
@@ -113,15 +181,6 @@ sudo pacman -Sy `yaourt -Q | grep -v '^aur'| grep -v '^local' | cut -f2
     <div class="related-posts">
       <h4>Related Posts</h4>
       <ul>
-        
-          <li>
-            <h5>
-              <a href="//leucos.github.io/decoupling-your-ansible-roles">
-                Decoupling your Ansible roles
-                <small>27 Jun 2015</small>
-              </a>
-            </h5>
-          </li>
         
           <li>
             <h5>
@@ -141,6 +200,15 @@ sudo pacman -Sy `yaourt -Q | grep -v '^aur'| grep -v '^local' | cut -f2
             </h5>
           </li>
         
+          <li>
+            <h5>
+              <a href="//leucos.github.io/2015/05/03/ansible-contract-inventory/">
+                Making dynamic inventory usable with Ansible and Digital Ocean
+                <small>03 May 2015</small>
+              </a>
+            </h5>
+          </li>
+        
       </ul>
     </div>
   
@@ -151,16 +219,10 @@ sudo pacman -Sy `yaourt -Q | grep -v '^aur'| grep -v '^local' | cut -f2
     
   
     
-      <div class="share-buttons">  <h5>Share this post on</h5>  <ul class="social-media">    <li>        <a title="b9m on Twitter"           href="https://twitter.com/intent/tweet?original_referer=//leucos.github.io/2015/02/14/restoring-arch-bootloader/&amp;text=Restoring Arch bootloader for the future self&amp;url=//leucos.github.io/2015/02/14/restoring-arch-bootloader/" class="twitter wc-img-replace" target="_blank">          Twitter        </a>    </li>       <li>        <a title=" on Google Plus"             href="https://plus.google.com/share?url=//leucos.github.io/2015/02/14/restoring-arch-bootloader/"             class="google wc-img-replace" target="_blank">Google</a>    </li>    <li>        <a title=" on Facebook"             href="https://www.facebook.com/sharer/sharer.php?u=//leucos.github.io/2015/02/14/restoring-arch-bootloader/&amp;t=Restoring Arch bootloader for the future self"             class="facebook wc-img-replace" target="_blank">Facebook</a>    </li>  </ul></div>
+      <div class="share-buttons">  <h5>Share this post on</h5>  <ul class="social-media">    <li>        <a title="b9m on Twitter"           href="https://twitter.com/intent/tweet?original_referer=//leucos.github.io/decoupling-your-ansible-roles&amp;text=Decoupling your Ansible roles&amp;url=//leucos.github.io/decoupling-your-ansible-roles" class="twitter wc-img-replace" target="_blank">          Twitter        </a>    </li>       <li>        <a title=" on Google Plus"             href="https://plus.google.com/share?url=//leucos.github.io/decoupling-your-ansible-roles"             class="google wc-img-replace" target="_blank">Google</a>    </li>    <li>        <a title=" on Facebook"             href="https://www.facebook.com/sharer/sharer.php?u=//leucos.github.io/decoupling-your-ansible-roles&amp;t=Decoupling your Ansible roles"             class="facebook wc-img-replace" target="_blank">Facebook</a>    </li>  </ul></div>
       
   </div>
   
-  
-    <div class="comments">
-        <a href="javascript:;" class="load-view">View Comments...</a>
-        <div id="disqus_thread"></div>
-        <div id="g-comments"></div>
-    </div>
   
 </div>
 

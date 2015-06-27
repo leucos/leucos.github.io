@@ -6,9 +6,124 @@
 </description>
     <link>//leucos.github.io/</link>
     <atom:link href="//leucos.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 26 May 2015 23:23:33 +0200</pubDate>
-    <lastBuildDate>Tue, 26 May 2015 23:23:33 +0200</lastBuildDate>
+    <pubDate>Sat, 27 Jun 2015 20:40:07 +0200</pubDate>
+    <lastBuildDate>Sat, 27 Jun 2015 20:40:07 +0200</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
+    
+      <item>
+        <title>Decoupling your Ansible roles</title>
+        <description>&lt;p&gt;Having tightly coupled role is the best way to have a hard time
+maintaining roles and playbooks, and live in fear of changing anything
+in them.&lt;/p&gt;
+
+&lt;p&gt;Here is a journey into role decoupling.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-problem&quot;&gt;The problem&lt;/h2&gt;
+
+&lt;p&gt;Let say we have a role (&lt;em&gt;my_app&lt;/em&gt;) that depend on &lt;em&gt;php-fpm&lt;/em&gt; role. In the php-fpm
+role, we want to display errors in HTML output depending on the application
+running environment (e.g. always display unless we’re running in production
+environment).&lt;/p&gt;
+
+&lt;p&gt;The application running environment is available in &lt;code&gt;myapp_environment&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;first-idea&quot;&gt;First idea&lt;/h2&gt;
+
+&lt;p&gt;The first idea that comes to mind is to change the php.ini according to
+&lt;code&gt;myapp_environment&lt;/code&gt;, like so:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;{% if myapp_environment == &quot;production&quot; %}
+display_errors = Off
+{% else %}
+display_errors = On
+{% endif %}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The problem with this approach if that php-fpm role now needs
+&lt;code&gt;myapp_environment&lt;/code&gt; to be defined, which is quite absurd.&lt;/p&gt;
+
+&lt;p&gt;So instead, you could rename the variable &lt;code&gt;environment&lt;/code&gt;, and use this in
+both roles (&lt;code&gt;myapp&lt;/code&gt; and &lt;code&gt;php-fpm&lt;/code&gt;). This is better, but not much. The
+problem with this approach is that a plain &lt;code&gt;environment&lt;/code&gt; variable is not
+linked (by it’s name) to any role, and this can lead to great confusion
+is it is used and set in many roles or in different places in the
+inventory.&lt;/p&gt;
+
+&lt;h2 id=&quot;another-try&quot;&gt;Another try&lt;/h2&gt;
+
+&lt;p&gt;So the best way is to have two variables, &lt;code&gt;php_fpm_environment&lt;/code&gt;, which is
+meaningful, and &lt;code&gt;myapp_environment&lt;/code&gt;. But now how can I sync them together ?&lt;/p&gt;
+
+&lt;p&gt;One ways is to match them in your inventory, like so :&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# Somewhere in inventory
+myapp_environment = &quot;production&quot;
+php_fpm_environment = {{ myapp_environment }}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;However, this has some drawbacks. For instance, we are still talking about
+&lt;code&gt;php_fpm_environment&lt;/code&gt; and, while not a big deal, it has no php-fpm
+meaning per se and it is not obvious what this variable does.&lt;/p&gt;
+
+&lt;p&gt;Also, in the &lt;code&gt;php.ini&lt;/code&gt; template, we will still have to test against the string
+“production” to set &lt;code&gt;display_errors&lt;/code&gt;. Testing against a string set somewhere
+else is quite dangerous. What is the production name for the app is “live”
+instead ? Our php-fpm role is broken now.&lt;/p&gt;
+
+&lt;h2 id=&quot;some-progress&quot;&gt;Some progress&lt;/h2&gt;
+
+&lt;p&gt;We could go a better way: let’s call the variable &lt;code&gt;php_fpm_display_error&lt;/code&gt; (more
+meaningful) and make it a boolean. We now can do this :&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;{% if php_fpm_display_errors %}
+display_errors = On
+{% else %}
+display_errors = Off
+{% endif %}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and somewhere in inventory:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;myapp_environment = &quot;production&quot;
+php_fpm_display_errors = {{ myapp_environment ==&quot;production&quot;  }}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;streamlining-the-solution&quot;&gt;Streamlining the solution&lt;/h2&gt;
+
+&lt;p&gt;Well, this is better now. But it is not perfect. The inventory is more verbose
+than required and handles something that it shouldn’t have to take care
+of. It is also quite easy to forget add it to the inventory and end up
+with errors showing in production.&lt;/p&gt;
+
+&lt;p&gt;By moving this logic away from the inventory, and directly in the role
+dependencies, this configuration setting becomes completely transparent. We
+just have to add the following lines in &lt;code&gt;myapp/meta/main.yml&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span class=&quot;l-Scalar-Plain&quot;&gt;dependencies&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;role&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;role-php-fpm&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;php_fpm_display_errors&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p-Indicator&quot;&gt;{{&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;myapp_environment == &amp;quot;production&amp;quot;&lt;/span&gt; &lt;span class=&quot;p-Indicator&quot;&gt;}}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Now, php-fpm role is completely decoupled from myapp role, and the production
+setting is completely transparent to the role user. Setting &lt;code&gt;myapp_environment&lt;/code&gt;
+is enough to have the depending role set variables accordingly. You don’t even
+have to be aware of the &lt;code&gt;myapp&lt;/code&gt;&lt;code&gt;role dependency. If you swap, let say
+nginx/php-fpm for apache/php, you just have to change the role dependency and
+have no impact on your inventory. If you want to name your production
+environment &quot;live&quot;, you can do so by changing &lt;/code&gt;meta/main.yml` and not
+touching anything else.&lt;/p&gt;
+
+&lt;p&gt;Keeping role decoupled is the best way to have manageable and reusable
+roles. Try to make them self sufficient, and avoid cross variables or
+even worse, group names in roles !&lt;/p&gt;
+</description>
+        <pubDate>Sat, 27 Jun 2015 00:00:00 +0200</pubDate>
+        <link>//leucos.github.io/decoupling-your-ansible-roles</link>
+        <guid isPermaLink="true">//leucos.github.io/decoupling-your-ansible-roles</guid>
+        
+        <category>ansible</category>
+        
+        
+      </item>
     
       <item>
         <title>Transparent encryption with ansible vault revisited</title>
