@@ -104,7 +104,7 @@ dependencies:
 Now, php-fpm role is completely decoupled from myapp role, and the production
 setting is completely transparent to the role user. Setting `myapp_environment`
 is enough to have the depending role set variables accordingly. You don't even
-have to be aware of the `myapp``role dependency. If you swap, let say
+have to be aware of the `myapp` role dependency. If you swap, let say
 nginx/php-fpm for apache/php, you just have to change the role dependency and
 have no impact on your inventory. If you want to name your production
 environment "live", you can do so by changing `meta/main.yml` and not
