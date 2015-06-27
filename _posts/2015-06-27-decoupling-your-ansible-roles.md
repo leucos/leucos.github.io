@@ -84,7 +84,7 @@ and somewhere in inventory:
     {% raw %}php_fpm_display_errors = {{ myapp_environment =="production"  }}{% endraw %}
 
 
-## Streamlining the solution
+## Streamlining our solution
 
 Well, this is better now. But it is not perfect. The inventory is more verbose
 than required and handles something that it shouldn't have to take care
