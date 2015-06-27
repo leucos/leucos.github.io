@@ -6,8 +6,8 @@
 </description>
     <link>//leucos.github.io/</link>
     <atom:link href="//leucos.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 27 Jun 2015 20:41:36 +0200</pubDate>
-    <lastBuildDate>Sat, 27 Jun 2015 20:41:36 +0200</lastBuildDate>
+    <pubDate>Sat, 27 Jun 2015 21:41:10 +0200</pubDate>
+    <lastBuildDate>Sat, 27 Jun 2015 21:41:10 +0200</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
     
       <item>
@@ -88,7 +88,7 @@ display_errors = Off
 php_fpm_display_errors = {{ myapp_environment ==&quot;production&quot;  }}
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&quot;streamlining-the-solution&quot;&gt;Streamlining the solution&lt;/h2&gt;
+&lt;h2 id=&quot;streamlining-our-solution&quot;&gt;Streamlining our solution&lt;/h2&gt;
 
 &lt;p&gt;Well, this is better now. But it is not perfect. The inventory is more verbose
 than required and handles something that it shouldn’t have to take care
