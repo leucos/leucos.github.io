@@ -6,8 +6,8 @@
 </description>
     <link>//leucos.github.io/</link>
     <atom:link href="//leucos.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 27 Jun 2015 20:40:07 +0200</pubDate>
-    <lastBuildDate>Sat, 27 Jun 2015 20:40:07 +0200</lastBuildDate>
+    <pubDate>Sat, 27 Jun 2015 20:41:36 +0200</pubDate>
+    <lastBuildDate>Sat, 27 Jun 2015 20:41:36 +0200</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
     
       <item>
@@ -106,10 +106,10 @@ just have to add the following lines in &lt;code&gt;myapp/meta/main.yml&lt;/code
 &lt;p&gt;Now, php-fpm role is completely decoupled from myapp role, and the production
 setting is completely transparent to the role user. Setting &lt;code&gt;myapp_environment&lt;/code&gt;
 is enough to have the depending role set variables accordingly. You don’t even
-have to be aware of the &lt;code&gt;myapp&lt;/code&gt;&lt;code&gt;role dependency. If you swap, let say
+have to be aware of the &lt;code&gt;myapp&lt;/code&gt; role dependency. If you swap, let say
 nginx/php-fpm for apache/php, you just have to change the role dependency and
 have no impact on your inventory. If you want to name your production
-environment &quot;live&quot;, you can do so by changing &lt;/code&gt;meta/main.yml` and not
+environment “live”, you can do so by changing &lt;code&gt;meta/main.yml&lt;/code&gt; and not
 touching anything else.&lt;/p&gt;
 
 &lt;p&gt;Keeping role decoupled is the best way to have manageable and reusable

@@ -165,10 +165,10 @@ just have to add the following lines in <code>myapp/meta/main.yml</code>:</p>
 <p>Now, php-fpm role is completely decoupled from myapp role, and the production
 setting is completely transparent to the role user. Setting <code>myapp_environment</code>
 is enough to have the depending role set variables accordingly. You don’t even
-have to be aware of the <code>myapp</code><code>role dependency. If you swap, let say
+have to be aware of the <code>myapp</code> role dependency. If you swap, let say
 nginx/php-fpm for apache/php, you just have to change the role dependency and
 have no impact on your inventory. If you want to name your production
-environment "live", you can do so by changing </code>meta/main.yml` and not
+environment “live”, you can do so by changing <code>meta/main.yml</code> and not
 touching anything else.</p>
 
 <p>Keeping role decoupled is the best way to have manageable and reusable
