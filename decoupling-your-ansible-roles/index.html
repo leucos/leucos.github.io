@@ -144,19 +144,18 @@ display_errors = Off
 <p>and somewhere in inventory:</p>
 
 <pre><code>myapp_environment = "production"
-php_fpm_display_errors = {{ myapp_environment =="production"  }}
+php_fpm_display_errors = {{ myapp_environment == "production" }}
 </code></pre>
 
 <h2 id="streamlining-our-solution">Streamlining our solution</h2>
 
 <p>Well, this is better now. But it is not perfect. The inventory is more verbose
 than required and handles something that it shouldn’t have to take care
-of. It is also quite easy to forget add it to the inventory and end up
+of. It is also quite easy to forget to add it to the inventory and end up
 with errors showing in production.</p>
 
 <p>By moving this logic away from the inventory, and directly in the role
-dependencies, this configuration setting becomes completely transparent. We
-just have to add the following lines in <code>myapp/meta/main.yml</code>:</p>
+dependencies, this configuration setting becomes completely transparent, and we get rid of redundancy. We just have to add the following lines in <code>myapp/meta/main.yml</code>:</p>
 
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">dependencies</span><span class="p-Indicator">:</span>
   <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">role</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">role-php-fpm</span>
@@ -215,7 +214,8 @@ even worse, group names in roles !</p>
 
   <div class="author-info">
     
-      <div class="author">   <a href="//leucos.github.io/about">    <img       src="//leucos.github.io/assets/images/gravatar.jpg"      alt="Random stuff" width="60" height="60" />  </a>    <h5>Author</h4>  <h6>    <a href="//leucos.github.io/about">      Michel blanc    </a>  </h5>  <p>    Find me on            <a title="b9m on Twitter"             href="https://twitter.com/b9m"             class="twitter" target="_blank">Twitter</a>        /         /      </p></div>
+      <div class="author">   <a href="//leucos.github.io/about">    <img       src="//leucos.github.io/assets/images/gravatar.jpg"      alt="Random stuff" width="60" height="60" />  </a>    <h5>Author</h4>  <h6>    <a href="//leucos.github.io/about">      Michel blanc    </a>  </h5>  <p>    Find me on            <a title="b9m on Twitter"             href="https://twitter.com/b9m"             class="twitter" target="_blank">Twitter</a>               </p></div>
+
     
   
     
