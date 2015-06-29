@@ -81,19 +81,18 @@ meaningful) and make it a boolean. We now can do this :
 and somewhere in inventory:
 
     myapp_environment = "production"
-    {% raw %}php_fpm_display_errors = {{ myapp_environment =="production"  }}{% endraw %}
+    {% raw %}php_fpm_display_errors = {{ myapp_environment == "production" }}{% endraw %}
 
 
 ## Streamlining our solution
 
 Well, this is better now. But it is not perfect. The inventory is more verbose
 than required and handles something that it shouldn't have to take care
-of. It is also quite easy to forget add it to the inventory and end up
+of. It is also quite easy to forget to add it to the inventory and end up
 with errors showing in production.
 
 By moving this logic away from the inventory, and directly in the role
-dependencies, this configuration setting becomes completely transparent. We
-just have to add the following lines in `myapp/meta/main.yml`:
+dependencies, this configuration setting becomes completely transparent, and we get rid of redundancy. We just have to add the following lines in `myapp/meta/main.yml`:
 
 {% highlight yaml %}
 dependencies:
