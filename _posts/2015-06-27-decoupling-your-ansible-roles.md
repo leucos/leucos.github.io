@@ -112,3 +112,4 @@ touching anything else.
 Keeping role decoupled is the best way to have manageable and reusable
 roles. Try to make them self sufficient, and avoid cross variables or
 even worse, group names in roles !
+
