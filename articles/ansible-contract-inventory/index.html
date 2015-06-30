@@ -1,0 +1,474 @@
+<!doctype html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if (IE 7)&!(IEMobile)]><html class="no-js lt-ie9 lt-ie8" lang="en"><![endif]-->
+<!--[if (IE 8)&!(IEMobile)]><html class="no-js lt-ie9" lang="en"><![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"><!--<![endif]-->
+<head>
+<meta charset="utf-8">
+<title>Making dynamic inventory usable with Ansible and Digital Ocean &#8211; Random stuff</title>
+<meta name="description" content="Let's face it, dynamic inventory sucks. Let's fix that.">
+<meta name="keywords" content="ansible, digital ocean">
+
+
+
+<!-- Twitter Cards -->
+<meta name="twitter:title" content="Making dynamic inventory usable with Ansible and Digital Ocean">
+<meta name="twitter:description" content="Let's face it, dynamic inventory sucks. Let's fix that.">
+<meta name="twitter:site" content="@b9m">
+<meta name="twitter:creator" content="@b9m">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="//leucos.github.io/images/logo.png">
+
+<!-- Open Graph -->
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Making dynamic inventory usable with Ansible and Digital Ocean">
+<meta property="og:description" content="Let's face it, dynamic inventory sucks. Let's fix that.">
+<meta property="og:url" content="//leucos.github.io/articles/ansible-contract-inventory/">
+<meta property="og:site_name" content="Random stuff">
+
+
+
+
+
+<link rel="canonical" href="//leucos.github.io/articles/ansible-contract-inventory/">
+<link href="//leucos.github.io/feed.xml" type="application/atom+xml" rel="alternate" title="Random stuff Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="//leucos.github.io/assets/css/main.css">
+<!-- Webfonts -->
+<script src="//use.edgefonts.net/source-sans-pro:n2,i2,n3,i3,n4,i4,n6,i6,n7,i7,n9,i9;source-code-pro:n4,n7;volkhov.js"></script>
+
+<meta http-equiv="cleartype" content="on">
+
+<!-- HTML5 Shiv and Media Query Support -->
+<!--[if lt IE 9]>
+  <script src="//leucos.github.io/assets/js/vendor/html5shiv.min.js"></script>
+  <script src="//leucos.github.io/assets/js/vendor/respond.min.js"></script>
+<![endif]-->
+
+<!-- Modernizr -->
+<script src="//leucos.github.io/assets/js/vendor/modernizr-2.7.1.custom.min.js"></script>
+
+<!-- Icons -->
+<!-- 16x16 -->
+<link rel="shortcut icon" href="//leucos.github.io/favicon.ico">
+<!-- 32x32 -->
+<link rel="shortcut icon" href="//leucos.github.io/favicon.png">
+<!-- 57x57 (precomposed) for iPhone 3GS, pre-2011 iPod Touch and older Android devices -->
+<link rel="apple-touch-icon-precomposed" href="//leucos.github.io/images/apple-touch-icon-precomposed.png">
+<!-- 72x72 (precomposed) for 1st generation iPad, iPad 2 and iPad mini -->
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="//leucos.github.io/images/apple-touch-icon-72x72-precomposed.png">
+<!-- 114x114 (precomposed) for iPhone 4, 4S, 5 and post-2011 iPod Touch -->
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="//leucos.github.io/images/apple-touch-icon-114x114-precomposed.png">
+<!-- 144x144 (precomposed) for iPad 3rd and 4th generation -->
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="//leucos.github.io/images/apple-touch-icon-144x144-precomposed.png">
+
+</head>
+
+<body id="post">
+
+<div class="navigation-wrapper">
+	<nav role="navigation" id="site-nav" class="animated drop">
+	    <ul>
+      
+		    
+		        
+		    
+		    <li><a href="//leucos.github.io/" >Home</a></li>
+		  
+		    
+		        
+		    
+		    <li><a href="//leucos.github.io/articles/" >Articles</a></li>
+		  
+		    
+		        
+		    
+		    <li><a href="//leucos.github.io/tags/" >Tags</a></li>
+		  
+		    
+		        
+		    
+		    <li><a href="//leucos.github.io/search/" >Search</a></li>
+		  
+		    
+		        
+		    
+		    <li><a href="//leucos.github.io/about/" >About</a></li>
+		  
+	    </ul>
+	</nav>
+</div><!-- /.navigation-wrapper -->
+
+<!--[if lt IE 9]><div class="upgrade"><strong><a href="http://whatbrowser.org/">Your browser is quite old!</strong> Why not upgrade to a different browser to better enjoy this site?</a></div><![endif]-->
+
+<header class="masthead">
+	<div class="wrap">
+      
+  		<a href="//leucos.github.io/" class="site-logo" rel="home" title="Random stuff"><img src="//leucos.github.io/images/logo.png" width="200" height="200" alt="Random stuff logo" class="animated fadeInDown"></a>
+      
+      <h1 class="site-title animated fadeIn"><a href="//leucos.github.io/">Random stuff</a></h1>
+		<h2 class="site-description animated fadeIn" itemprop="description">brain dump on sysadmin & DevOps related topics</h2>
+	</div>
+</header><!-- /.masthead -->
+
+<div class="js-menu-screen menu-screen"></div>
+
+
+<div id="main" role="main">
+  <article class="hentry">
+    
+    <div class="entry-wrapper">
+      <header class="entry-header">
+        <span class="entry-tags"><a href="//leucos.github.io/tags/#ansible" title="Pages tagged ansible">ansible</a>&nbsp;&bull;&nbsp;<a href="//leucos.github.io/tags/#digital ocean" title="Pages tagged digital ocean">digital ocean</a></span>
+        
+          <h1 class="entry-title">Making dynamic inventory usable with Ansible and Digital Ocean</h1>
+        
+      </header>
+      <footer class="entry-meta">
+        
+        
+        
+          <img src="//leucos.github.io/images/gravatar.jpg" class="bio-photo" alt="Michel Blanc bio photo"></a>
+        
+        <span class="author vcard">By <span class="fn">Michel Blanc</span></span>
+        <span class="entry-date date published"><time datetime="2015-05-03T00:00:00+02:00"><i class="fa fa-calendar-o"></i> May 03, 2015</time></span>
+        <span class="entry-date date modified"><time datetime="2015-05-11"><i class="fa fa-pencil"></i> May 11, 2015</time></span>
+        <span class="entry-comments"><i class="fa fa-comment-o"></i> <a href="#disqus_thread">Comment</a></span>
+        
+        
+      </footer>
+      <div class="entry-content">
+        <h2 id="the-problem">The problem</h2>
+
+<p>You’ve been there too. Spinning up droplets on DigitalOcean with Ansible
+and using a dynamic inventory script is quite a pain.</p>
+
+<p>Most approaches use the <code>digital_ocean</code> ansible module in
+playbooks to spin up droplets, along with the <code>digital_ocean.py</code> dynamic
+inventory script, using this kind of workflow:</p>
+
+<ul>
+  <li>define your droplets in a YAML file (eventually with size, region,
+etc…)</li>
+  <li>create a playbook that will loop over droplet list (<code>with_items</code> or
+equivalent) and spin up the droplet</li>
+  <li>dynamically add started droplets to inventory</li>
+</ul>
+
+<p>This approach has many drawbacks, and, to be honest, is not really usable.</p>
+
+<h3 id="slooooooow">Slooooooow</h3>
+
+<p>First, it is damn slow. Droplet creation is serialized. Since
+<code>digital_ocean</code> waits for the droplet to come up, and since DO itself
+advertizes ‘Start your droplet in 55 seconds !’, you can do the math.
+Starting a single droplet is quite long, so spinning up your multi-tier,
+fault-tolerant, distributed architecture will take ages.</p>
+
+<p>You probably can use <code>async</code> + <code>poll</code> to spin up the droplets. I didn’t
+try and don’t know where this would lead. But you’d still face the other
+issues.</p>
+
+<h3 id="naming">Naming</h3>
+
+<p>You droplets won’t have real names. They will be known by their IPs.
+Sure, if you use the <code>name</code> parameter during creation, you might be able
+to use it, but at best, this will be a group name.</p>
+
+<p>You could also use <code>add_host</code> in your bootstrapping script, but this is
+a run time hack, so forget about setting variables in <code>host_vars</code>.</p>
+
+<p>Since droplets are mostly nameless, grouping them is hard. Sure, you can
+do it at run time with <code>add_host</code> too, but you won’t leverage
+<code>group_vars</code> usage.</p>
+
+<p>Anyway, all those run-time naming hacks will force you to loop over all
+your droplets definitions, hit DO API to make sure they’re alive, then
+loop over API responses to add hosts and groups EVERY time you execute a
+playbook.</p>
+
+<h3 id="localhost-is-forced-in">localhost is forced in</h3>
+
+<p>Spinning up instances on DO will require to run the <code>digital_ocean</code>
+module as a <code>local_action</code> or using <code>delegate_to: localhost</code>. This means
+that you are bound to declare localhost in your inventory. This is a
+real pain, since it makes the <code>all</code> group mostly unusable, unless you
+change all your playbook hosts definitions from <code>hosts: all</code> to <code>hosts:
+all:!localhost</code>. Pretty bad for readability.</p>
+
+<p>Let’s stop here, there are already enough reasons to find an alternate
+way. There are probably other cons, and certainly pros too for the
+dynamic approach, but I fell that this way of doing it is barely usable
+for serious, repeatable stuff.</p>
+
+<h2 id="alternate-aproach">Alternate aproach</h2>
+
+<p>In the end, we would like to work as we do with on-prem hardware: have a
+static inventory.</p>
+
+<p>The idea is to create this static inventory first, and then use a
+bootstrapping script that will use this inventory as a contract to apply
+on DigitalOcean.</p>
+
+<p>The script will list all hosts in your inventory (using <code>ansible
+--list-hosts</code>), and parallelize droplet creation on digital ocean.</p>
+
+<p>When all droplets are created, it will create a complementary inventory
+file in your inventory directory containing hosts with their respective
+IPs.</p>
+
+<p>At this point, you have a perfectly static inventory, and can run your
+ansible playbook normally, without hitting external APIs (serialized),
+without naming problems, … Things are just <em>normal</em>, fast and
+reliable, without edge cases introduced by dynamic inventories.</p>
+
+<p>Using this approach on a 8 droplets setup, the time to set-up instances
+went from 9’33” down to 1’56”. And the time to destroy instances went
+from 0’55” down to 0’3” (see demo below). Of course, more droplets, 
+more gain.</p>
+
+<p>And these are just create/destroy gains. You also benefit from static
+inventory for all your lifecycle playbook runs, since you never hit DO API and
+don’t have to build inventory at run time, which is always slower despite the
+inventory cache.</p>
+
+<h3 id="example">Example</h3>
+
+<p>Assuming you have an inventory directory in <code>inventories/devel/</code>,
+containing a <code>hosts</code> file, you can spin up your droplets like this:</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">do_boot.sh inventories/devel/</code></pre></div>
+
+<p>When you’re finished with your infrastructure, call the same command with
+the <code>deleted</code> parameter:</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">do_boot.sh inventories/devel/ deleted</code></pre></div>
+
+<p>That’s all.</p>
+
+<p>The script has defaults regarding droplet size, region, image and ssh
+key. You can change the defaults in the script to something that suits you, and
+override these defaults per droplet in your inventory:</p>
+
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="p-Indicator">[</span><span class="nv">www</span><span class="p-Indicator">]</span>
+<span class="l-Scalar-Plain">www1</span>
+<span class="l-Scalar-Plain">www2</span>
+<span class="l-Scalar-Plain">www3 do_region=2</span>
+
+<span class="l-Scalar-Plain">[database]</span>
+<span class="l-Scalar-Plain">db1 do_size=62 do_image=12345</span>
+
+<span class="l-Scalar-Plain">[redis]</span>
+<span class="l-Scalar-Plain">redis1</span>
+
+<span class="l-Scalar-Plain">[elastic]</span>
+<span class="l-Scalar-Plain">elastic1 do_size=60</span></code></pre></div>
+
+<h3 id="spinning-up-and-down-8-droplets-in-215">Spinning up and down 8 droplets in 2’15”</h3>
+
+<script type="text/javascript" src="https://asciinema.org/a/19479.js" id="asciicast-19479" async=""></script>
+
+<h2 id="script">Script</h2>
+
+<p>You can grab the script in this <a href="https://gist.github.com/leucos/6f8d93de3493431acd29">gist</a>.</p>
+
+<p><strong>UPDATE:</strong> if you run Ansible v2.0+, use <a href="https://gist.github.com/leucos/2c361f7d4767f8aea6dd">this script
+instead</a>. It will
+use the new digital Ocean API (v2.0 too). You just need to set
+<code>DO_API_TOKEN</code>.</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#!/bin/bash</span>
+<span class="c">#</span>
+<span class="c"># Change defaults below</span>
+<span class="c"># ---------------------</span>
+<span class="c">#</span>
+<span class="c"># Digital Ocean default values</span>
+<span class="c"># You can override them using do_something in your inventory file</span>
+<span class="c"># Example:</span>
+<span class="c"># </span>
+<span class="c"># [www]</span>
+<span class="c"># www1 do_size=62 do_image=12345</span>
+<span class="c"># ...</span>
+<span class="c">#</span>
+<span class="c"># If you don&#39;t override in your inventory, the defaults below will apply</span>
+<span class="nv">DEFAULT_SIZE</span><span class="o">=</span><span class="m">66</span>       <span class="c"># 512mb (override with do_size)</span>
+<span class="nv">DEFAULT_REGION</span><span class="o">=</span><span class="m">5</span>      <span class="c"># ams2 (override with do_region)</span>
+<span class="nv">DEFAULT_IMAGE</span><span class="o">=</span><span class="m">9801950</span> <span class="c"># Ubuntu 14.04 x64 (override with do_image)</span>
+<span class="nv">DEFAULT_KEY</span><span class="o">=</span><span class="m">785648</span>    <span class="c"># SSH key, change this ! (override with do_key)</span>
+
+<span class="c"># localhost entry for temporary inventory</span>
+<span class="c"># This is a temp inventory generated to start the DO droplets</span>
+<span class="c"># You might want to change ansible_python_interpreter</span>
+<span class="nv">LOCALHOST_ENTRY</span><span class="o">=</span><span class="s2">&quot;localhost ansible_python_interpreter=/usr/bin/python2&quot;</span> 
+
+<span class="c"># Set state to present by default</span>
+<span class="nv">STATE</span><span class="o">=</span><span class="k">${</span><span class="nv">2</span><span class="k">:-</span><span class="s2">&quot;present&quot;</span><span class="k">}</span>
+
+<span class="c"># digital_ocean module command to use</span>
+<span class="c"># name, size, region, image and key will be filled automatically</span>
+<span class="nv">COMMAND</span><span class="o">=</span><span class="s2">&quot;state=$STATE command=droplet private_networking=yes unique_name=yes&quot;</span>
+<span class="c"># ---------------------</span>
+
+<span class="k">function</span> bail_out <span class="o">{</span>
+  <span class="nb">echo</span> <span class="nv">$1</span>
+  <span class="nb">echo</span> -e <span class="s2">&quot;Usage: $0 &lt;inventory_directory&gt; [present|deleted]\n&quot;</span>
+  <span class="nb">echo</span> -e <span class="s2">&quot;\tinventory_directory: the directory containing the inventory goal (compulsory)&quot;</span>
+  <span class="nb">echo</span> -e <span class="s2">&quot;\tpresent: the droplet will be created if it doesn&#39;t exist (default)&quot;</span>
+  <span class="nb">echo</span> -e <span class="s2">&quot;\tdeleted: the droplet will be destroyed if it exists&quot;</span>
+  <span class="nb">exit </span>1
+<span class="o">}</span>
+
+<span class="c"># Check that inventory is a directory</span>
+<span class="c"># We need this since we generate a complementary inventory with IP addresses for hosts</span>
+<span class="nv">INVENTORY</span><span class="o">=</span><span class="nv">$1</span>
+<span class="o">[[</span> ! -d <span class="s2">&quot;$INVENTORY&quot;</span> <span class="o">]]</span>  <span class="o">&amp;&amp;</span> bail_out <span class="s2">&quot;Inventory does not exist, is not a</span>
+<span class="s2">directory, or is not set&quot;</span>
+<span class="o">[[</span> ! -e <span class="nv">$DO_CLIENT_ID</span> <span class="o">]]</span> <span class="o">||</span> bail_out <span class="s2">&quot;DO_CLIENT_ID not set&quot;</span>
+<span class="o">[[</span> ! -e <span class="nv">$DO_API_KEY</span> <span class="o">]]</span>   <span class="o">||</span> bail_out <span class="s2">&quot;DO_API_KEY not set&quot;</span>
+
+<span class="c"># Get a list of hosts from inventory dir</span>
+<span class="nv">HOSTS</span><span class="o">=</span><span class="k">$(</span>ansible -i <span class="nv">$1</span> --list-hosts all <span class="p">|</span> awk <span class="s1">&#39;{ print $1 }&#39;</span> <span class="p">|</span> tr <span class="s1">&#39;\n&#39;</span> <span class="s1">&#39; &#39;</span><span class="k">)</span>
+
+<span class="c"># Clean up previously generated inventory</span>
+rm <span class="nv">$INVENTORY</span>/generated
+
+<span class="c"># Creating temporary inventory with only localhost in it</span>
+<span class="nv">TEMP_INVENTORY</span><span class="o">=</span><span class="k">$(</span>mktemp<span class="k">)</span>
+<span class="nb">echo </span>Creating temporary inventory in <span class="nv">$TEMP_INVENTORY</span>
+<span class="nb">echo</span> <span class="nv">$LOCALHOST</span> &gt; <span class="nv">$TEMP_INVENTORY</span>
+
+<span class="c"># Create droplets in //</span>
+<span class="k">for</span> i in <span class="nv">$HOSTS</span><span class="p">;</span> <span class="k">do</span> 
+  <span class="nv">SIZE</span><span class="o">=</span><span class="k">$(</span>grep <span class="nv">$i</span> <span class="nv">$1</span>/hosts <span class="p">|</span> grep do_size <span class="p">|</span> sed -e <span class="s1">&#39;s/.*do_size=\(\d*\)/\1/&#39;</span><span class="k">)</span>
+  <span class="nv">REGION</span><span class="o">=</span><span class="k">$(</span>grep <span class="nv">$i</span> <span class="nv">$1</span>/hosts <span class="p">|</span> grep do_region <span class="p">|</span> sed -e <span class="s1">&#39;s/.*do_region=\(\d*\)/\1/&#39;</span><span class="k">)</span>
+  <span class="nv">IMAGE</span><span class="o">=</span><span class="k">$(</span>grep <span class="nv">$i</span> <span class="nv">$1</span>/hosts <span class="p">|</span> grep do_image <span class="p">|</span> sed -e <span class="s1">&#39;s/.*do_image=\(\d*\)/\1/&#39;</span><span class="k">)</span>
+  <span class="nv">KEY</span><span class="o">=</span><span class="k">$(</span>grep <span class="nv">$i</span> <span class="nv">$1</span>/hosts <span class="p">|</span> grep do_key <span class="p">|</span> sed -e <span class="s1">&#39;s/.*do_key=\(\d*\)/\1/&#39;</span><span class="k">)</span>
+
+  <span class="nv">SIZE</span><span class="o">=</span><span class="k">${</span><span class="nv">SIZE</span><span class="k">:-</span><span class="nv">$DEFAULT_SIZE</span><span class="k">}</span>
+  <span class="nv">REGION</span><span class="o">=</span><span class="k">${</span><span class="nv">REGION</span><span class="k">:-</span><span class="nv">$DEFAULT_REGION</span><span class="k">}</span>
+  <span class="nv">IMAGE</span><span class="o">=</span><span class="k">${</span><span class="nv">IMAGE</span><span class="k">:-</span><span class="nv">$DEFAULT_IMAGE</span><span class="k">}</span>
+  <span class="nv">KEY</span><span class="o">=</span><span class="k">${</span><span class="nv">KEY</span><span class="k">:-</span><span class="nv">$DEFAULT_KEY</span><span class="k">}</span>
+
+  <span class="k">if</span> <span class="o">[</span> <span class="s2">&quot;${STATE}&quot;</span> <span class="o">==</span> <span class="s2">&quot;present&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+    <span class="nb">echo</span> <span class="s2">&quot;Creating $i of size $SIZE using image $IMAGE in region $REGION with key $KEY&quot;</span>
+  <span class="k">else</span>
+    <span class="nb">echo</span> <span class="s2">&quot;Deleting $i&quot;</span>
+  <span class="k">fi</span>
+  <span class="c"># echo &quot; =&gt; $COMMAND name=$i size_id=$SIZE image_id=$IMAGE region_id=$REGION ssh_key_ids=$KEY&quot;</span>
+  ansible localhost -c <span class="nb">local</span> -i <span class="nv">$TEMP_INVENTORY</span> -m digital_ocean <span class="se">\</span>
+    -a <span class="s2">&quot;$COMMAND name=$i size_id=$SIZE image_id=$IMAGE region_id=$REGION ssh_key_ids=$KEY&quot;</span> <span class="p">&amp;</span>
+<span class="k">done</span>
+
+<span class="nb">wait</span>
+
+<span class="c"># Now do it again to fill up complementary inventory</span>
+<span class="k">if</span> <span class="o">[</span> <span class="s2">&quot;${STATE}&quot;</span> <span class="o">==</span> <span class="s2">&quot;present&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+  <span class="k">for</span> i in <span class="nv">$HOSTS</span><span class="p">;</span> <span class="k">do</span> 
+    <span class="nb">echo </span>Checking droplet <span class="nv">$i</span>
+    <span class="nv">IP</span><span class="o">=</span><span class="k">$(</span>ansible localhost -c <span class="nb">local</span> -i <span class="nv">$TEMP_INVENTORY</span> -m digital_ocean -a <span class="s2">&quot;state=present command=droplet unique_name=yes name=$i&quot;</span> <span class="p">|</span> grep <span class="s2">&quot;\&quot;ip_address&quot;</span> <span class="p">|</span> awk <span class="s1">&#39;{ print $2 }&#39;</span> <span class="p">|</span> cut -f2 -d<span class="s1">&#39;&quot;&#39;</span><span class="k">)</span>
+    <span class="nb">echo</span> <span class="s2">&quot;$i ansible_ssh_host=$IP&quot;</span> &gt;&gt; <span class="nv">$INVENTORY</span>/generated
+  <span class="k">done</span>
+<span class="k">fi</span>
+
+<span class="nb">echo</span> <span class="s2">&quot;All done !&quot;</span></code></pre></div>
+
+
+        
+          <div id="disqus_thread"></div><!-- /#disqus_thread -->
+          
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'randomstuffonrandomstuff'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+        
+      </div><!-- /.entry-content -->
+    </div><!-- /.entry-wrapper -->
+    <nav class="pagination" role="navigation">
+      
+        <a href="//leucos.github.io/articles/testing-ansible-roles-part-2/" class="btn" title="Testing Ansible roles, part 2">Previous</a>
+      
+      
+        <a href="//leucos.github.io/articles/ansible-transparent-vault/" class="btn" title="Transparent encryption/decryption with ansible vault">Next</a>
+      
+    </nav><!-- /.pagination -->
+  </article>
+</div><!-- /#main -->
+
+<div class="footer-wrapper">
+  <footer role="contentinfo" class="entry-wrapper">
+    
+
+<span>&copy; 2015 Michel Blanc. Powered by <a href="http://jekyllrb.com" rel="nofollow">Jekyll</a> using the <a href="http://mademistakes.com/so-simple/" rel="nofollow">So Simple Theme</a>.</span>
+<div class="social-icons">
+	<a href="http://twitter.com/b9m" title="Michel Blanc on Twitter" target="_blank"><i class="fa fa-twitter-square fa-2x"></i></a>
+	
+	
+	<a href="http://linkedin.com/in/michelblanc" title="Michel Blanc on LinkedIn" target="_blank"><i class="fa fa-linkedin-square fa-2x"></i></a>
+	<a href="http://stackoverflow.com/users/467722/leucos" title="Michel Blanc on StackExchange" target="_blank"><i class="fa fa-stack-exchange fa-2x"></i></a>
+	
+	
+	<a href="http://github.com/leucos" title="Michel Blanc on Github" target="_blank"><i class="fa fa-github-square fa-2x"></i></a>
+	
+  
+	
+  <a href="//leucos.github.io/feed.xml" title="Atom/RSS feed"><i class="fa fa-rss-square fa-2x"></i></a>
+</div><!-- /.social-icons -->
+
+  </footer>
+</div><!-- /.footer-wrapper -->
+
+<script type="text/javascript">
+  var BASE_URL = '//leucos.github.io';
+</script>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="//leucos.github.io/assets/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+<script src="//leucos.github.io/assets/js/scripts.min.js"></script>
+
+
+<!-- Asynchronous Google Analytics snippet -->
+<script>
+  var _gaq = _gaq || [];
+  var pluginUrl = 
+ '//www.google-analytics.com/plugins/ga/inpage_linkid.js';
+  _gaq.push(['_require', 'inpage_linkid', pluginUrl]);
+  _gaq.push(['_setAccount', 'UA-60810209-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+</body>
+</html>

@@ -5,14 +5,14 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"><!--<![endif]-->
 <head>
 <meta charset="utf-8">
-<title>Page Not Found &#8211; Random stuff</title>
+<title>Search &#8211; Random stuff</title>
 
 
 
 
 
 <!-- Twitter Cards -->
-<meta name="twitter:title" content="Page Not Found">
+<meta name="twitter:title" content="Search">
 
 <meta name="twitter:site" content="@b9m">
 <meta name="twitter:creator" content="@b9m">
@@ -23,16 +23,16 @@
 <!-- Open Graph -->
 <meta property="og:locale" content="en_US">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Page Not Found">
+<meta property="og:title" content="Search">
 
-<meta property="og:url" content="//leucos.github.io/404.html">
+<meta property="og:url" content="//leucos.github.io/search/">
 <meta property="og:site_name" content="Random stuff">
 
 
 
 
 
-<link rel="canonical" href="//leucos.github.io/404.html">
+<link rel="canonical" href="//leucos.github.io/search/">
 <link href="//leucos.github.io/feed.xml" type="application/atom+xml" rel="alternate" title="Random stuff Feed">
 
 <!-- http://t.co/dKP3o1e -->
@@ -127,17 +127,27 @@
     
     <div class="entry-wrapper">
       <header class="entry-header">
-        <h1 class="entry-title">Page Not Found</h1>
+        <h1 class="entry-title">Search</h1>
       </header>
       <div class="entry-content">
-        <p>Sorry, but the page you were trying to view does not exist — perhaps you can try searching for it below.</p>
+        <!-- Search form -->
+<form method="get" action="//leucos.github.io/search/" data-search-form="" class="simple-search">
+  <label for="q">Search Random stuff for:</label>
+  <input type="search" name="q" id="goog-wm-qt" placeholder="What are you looking for?" data-search-input="" autofocus="" />
+  <input type="submit" value="Search" id="goog-wm-sb" />
+</form>
 
-<script type="text/javascript">
-  var GOOG_FIXURL_LANG = 'en';
-  var GOOG_FIXURL_SITE = '//leucos.github.io'
-</script>
+<!-- Search results placeholder -->
+<h6 data-search-found="">
+  <span data-search-found-count=""></span> result(s) found for &ldquo;<span data-search-found-term=""></span>&rdquo;.
+</h6>
+<ul class="post-list" data-search-results=""></ul>
 
-<script type="text/javascript" src="//linkhelp.clients.google.com/tbproxy/lh/wm/fixurl.js">
+<!-- Search result template -->
+<script type="text/x-template" id="search-result">
+  <li><article>
+    <a href="##Url##">##Title## <span class="excerpt">##Excerpt##</span></a>
+  </article></li>
 </script>
 
 

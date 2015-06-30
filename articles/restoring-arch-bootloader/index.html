@@ -5,15 +5,15 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"><!--<![endif]-->
 <head>
 <meta charset="utf-8">
-<title>Page Not Found &#8211; Random stuff</title>
-
-
+<title>Restoring Arch bootloader for the future self &#8211; Random stuff</title>
+<meta name="description" content="Quick note on restoring the bootloaded on Asus UX51VZA">
+<meta name="keywords" content="uefi, arch">
 
 
 
 <!-- Twitter Cards -->
-<meta name="twitter:title" content="Page Not Found">
-
+<meta name="twitter:title" content="Restoring Arch bootloader for the future self">
+<meta name="twitter:description" content="Quick note on restoring the bootloaded on Asus UX51VZA">
 <meta name="twitter:site" content="@b9m">
 <meta name="twitter:creator" content="@b9m">
 
@@ -23,16 +23,16 @@
 <!-- Open Graph -->
 <meta property="og:locale" content="en_US">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Page Not Found">
-
-<meta property="og:url" content="//leucos.github.io/404.html">
+<meta property="og:title" content="Restoring Arch bootloader for the future self">
+<meta property="og:description" content="Quick note on restoring the bootloaded on Asus UX51VZA">
+<meta property="og:url" content="//leucos.github.io/articles/restoring-arch-bootloader/">
 <meta property="og:site_name" content="Random stuff">
 
 
 
 
 
-<link rel="canonical" href="//leucos.github.io/404.html">
+<link rel="canonical" href="//leucos.github.io/articles/restoring-arch-bootloader/">
 <link href="//leucos.github.io/feed.xml" type="application/atom+xml" rel="alternate" title="Random stuff Feed">
 
 <!-- http://t.co/dKP3o1e -->
@@ -72,7 +72,7 @@
 
 </head>
 
-<body id="page">
+<body id="post">
 
 <div class="navigation-wrapper">
 	<nav role="navigation" id="site-nav" class="animated drop">
@@ -123,26 +123,97 @@
 
 
 <div id="main" role="main">
-  <article class="entry">
+  <article class="hentry">
     
     <div class="entry-wrapper">
       <header class="entry-header">
-        <h1 class="entry-title">Page Not Found</h1>
+        <span class="entry-tags"><a href="//leucos.github.io/tags/#uefi" title="Pages tagged uefi">uefi</a>&nbsp;&bull;&nbsp;<a href="//leucos.github.io/tags/#arch" title="Pages tagged arch">arch</a></span>
+        
+          <h1 class="entry-title">Restoring Arch bootloader for the future self</h1>
+        
       </header>
+      <footer class="entry-meta">
+        
+        
+        
+          <img src="//leucos.github.io/images/gravatar.jpg" class="bio-photo" alt="Michel Blanc bio photo"></a>
+        
+        <span class="author vcard">By <span class="fn">Michel Blanc</span></span>
+        <span class="entry-date date published"><time datetime="2015-02-14T00:00:00+01:00"><i class="fa fa-calendar-o"></i> February 14, 2015</time></span>
+        
+        <span class="entry-comments"><i class="fa fa-comment-o"></i> <a href="#disqus_thread">Comment</a></span>
+        
+        
+      </footer>
       <div class="entry-content">
-        <p>Sorry, but the page you were trying to view does not exist — perhaps you can try searching for it below.</p>
+        <ul>
+  <li>
+    <p>Grab latest Arch, create a bootable key (do this before you’re doomed)<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup>. </p>
+  </li>
+  <li>
+    <p>Press F2 at boot, change the boot order to start on the key in <strong>UEFI</strong> mode</p>
+  </li>
+  <li>
+    <p>Boot on Arch, then</p>
+  </li>
+</ul>
 
+<script src="https://gist.github.com/leucos/3f63c07d8326309d7fb1.js"> </script>
+
+<ul>
+  <li>Cross fingers…</li>
+</ul>
+
+<p>In case you need to reinstall all the things<sup id="fnref:2"><a href="#fn:2" class="footnote">2</a></sup>:</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">sudo pacman -Sy <span class="sb">`</span>yaourt -Q <span class="p">|</span> grep -v <span class="s1">&#39;^aur&#39;</span><span class="p">|</span> grep -v <span class="s1">&#39;^local&#39;</span> <span class="p">|</span> cut -f2
+-d<span class="s1">&#39;/&#39;</span> <span class="p">|</span> awk <span class="s1">&#39;{ print $1 }&#39;</span><span class="sb">`</span></code></pre></div>
+
+<div class="footnotes">
+  <ol>
+    <li id="fn:1">
+      <p>Multisystem is pretty handy for this. You can put several OSes on the key, and choose what to boot. <a href="http://liveusb.info/dotclear/">http://liveusb.info/dotclear/</a> <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
+    </li>
+    <li id="fn:2">
+      <p>if you don’t use <code>yaourt</code>, remove the grep part <a href="#fnref:2" class="reversefootnote">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+        
+          <div id="disqus_thread"></div><!-- /#disqus_thread -->
+          
 <script type="text/javascript">
-  var GOOG_FIXURL_LANG = 'en';
-  var GOOG_FIXURL_SITE = '//leucos.github.io'
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'randomstuffonrandomstuff'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
 </script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
-<script type="text/javascript" src="//linkhelp.clients.google.com/tbproxy/lh/wm/fixurl.js">
-</script>
-
-
+        
       </div><!-- /.entry-content -->
     </div><!-- /.entry-wrapper -->
+    <nav class="pagination" role="navigation">
+      
+      
+        <a href="//leucos.github.io/articles/expiring-redis-cache-from-ruby/" class="btn" title="Invalidating REDIS cache from Ruby">Next</a>
+      
+    </nav><!-- /.pagination -->
   </article>
 </div><!-- /#main -->
 

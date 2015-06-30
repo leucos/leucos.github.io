@@ -1,0 +1,427 @@
+<!doctype html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if (IE 7)&!(IEMobile)]><html class="no-js lt-ie9 lt-ie8" lang="en"><![endif]-->
+<!--[if (IE 8)&!(IEMobile)]><html class="no-js lt-ie9" lang="en"><![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"><!--<![endif]-->
+<head>
+<meta charset="utf-8">
+<title>Transparent encryption with ansible vault revisited &#8211; Random stuff</title>
+<meta name="description" content="Note to self: test your blog posts thoroughly next time">
+<meta name="keywords" content="ansible, ansible-vaut, git">
+
+
+
+<!-- Twitter Cards -->
+<meta name="twitter:title" content="Transparent encryption with ansible vault revisited">
+<meta name="twitter:description" content="Note to self: test your blog posts thoroughly next time">
+<meta name="twitter:site" content="@b9m">
+<meta name="twitter:creator" content="@b9m">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="//leucos.github.io/images/logo.png">
+
+<!-- Open Graph -->
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Transparent encryption with ansible vault revisited">
+<meta property="og:description" content="Note to self: test your blog posts thoroughly next time">
+<meta property="og:url" content="//leucos.github.io/articles/transparent-vault-revisited/">
+<meta property="og:site_name" content="Random stuff">
+
+
+
+
+
+<link rel="canonical" href="//leucos.github.io/articles/transparent-vault-revisited/">
+<link href="//leucos.github.io/feed.xml" type="application/atom+xml" rel="alternate" title="Random stuff Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="//leucos.github.io/assets/css/main.css">
+<!-- Webfonts -->
+<script src="//use.edgefonts.net/source-sans-pro:n2,i2,n3,i3,n4,i4,n6,i6,n7,i7,n9,i9;source-code-pro:n4,n7;volkhov.js"></script>
+
+<meta http-equiv="cleartype" content="on">
+
+<!-- HTML5 Shiv and Media Query Support -->
+<!--[if lt IE 9]>
+  <script src="//leucos.github.io/assets/js/vendor/html5shiv.min.js"></script>
+  <script src="//leucos.github.io/assets/js/vendor/respond.min.js"></script>
+<![endif]-->
+
+<!-- Modernizr -->
+<script src="//leucos.github.io/assets/js/vendor/modernizr-2.7.1.custom.min.js"></script>
+
+<!-- Icons -->
+<!-- 16x16 -->
+<link rel="shortcut icon" href="//leucos.github.io/favicon.ico">
+<!-- 32x32 -->
+<link rel="shortcut icon" href="//leucos.github.io/favicon.png">
+<!-- 57x57 (precomposed) for iPhone 3GS, pre-2011 iPod Touch and older Android devices -->
+<link rel="apple-touch-icon-precomposed" href="//leucos.github.io/images/apple-touch-icon-precomposed.png">
+<!-- 72x72 (precomposed) for 1st generation iPad, iPad 2 and iPad mini -->
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="//leucos.github.io/images/apple-touch-icon-72x72-precomposed.png">
+<!-- 114x114 (precomposed) for iPhone 4, 4S, 5 and post-2011 iPod Touch -->
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="//leucos.github.io/images/apple-touch-icon-114x114-precomposed.png">
+<!-- 144x144 (precomposed) for iPad 3rd and 4th generation -->
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="//leucos.github.io/images/apple-touch-icon-144x144-precomposed.png">
+
+</head>
+
+<body id="post">
+
+<div class="navigation-wrapper">
+	<nav role="navigation" id="site-nav" class="animated drop">
+	    <ul>
+      
+		    
+		        
+		    
+		    <li><a href="//leucos.github.io/" >Home</a></li>
+		  
+		    
+		        
+		    
+		    <li><a href="//leucos.github.io/articles/" >Articles</a></li>
+		  
+		    
+		        
+		    
+		    <li><a href="//leucos.github.io/tags/" >Tags</a></li>
+		  
+		    
+		        
+		    
+		    <li><a href="//leucos.github.io/search/" >Search</a></li>
+		  
+		    
+		        
+		    
+		    <li><a href="//leucos.github.io/about/" >About</a></li>
+		  
+	    </ul>
+	</nav>
+</div><!-- /.navigation-wrapper -->
+
+<!--[if lt IE 9]><div class="upgrade"><strong><a href="http://whatbrowser.org/">Your browser is quite old!</strong> Why not upgrade to a different browser to better enjoy this site?</a></div><![endif]-->
+
+<header class="masthead">
+	<div class="wrap">
+      
+  		<a href="//leucos.github.io/" class="site-logo" rel="home" title="Random stuff"><img src="//leucos.github.io/images/logo.png" width="200" height="200" alt="Random stuff logo" class="animated fadeInDown"></a>
+      
+      <h1 class="site-title animated fadeIn"><a href="//leucos.github.io/">Random stuff</a></h1>
+		<h2 class="site-description animated fadeIn" itemprop="description">brain dump on sysadmin & DevOps related topics</h2>
+	</div>
+</header><!-- /.masthead -->
+
+<div class="js-menu-screen menu-screen"></div>
+
+
+<div id="main" role="main">
+  <article class="hentry">
+    
+    <div class="entry-wrapper">
+      <header class="entry-header">
+        <span class="entry-tags"><a href="//leucos.github.io/tags/#ansible" title="Pages tagged ansible">ansible</a>&nbsp;&bull;&nbsp;<a href="//leucos.github.io/tags/#ansible-vaut" title="Pages tagged ansible-vaut">ansible-vaut</a>&nbsp;&bull;&nbsp;<a href="//leucos.github.io/tags/#git" title="Pages tagged git">git</a></span>
+        
+          <h1 class="entry-title">Transparent encryption with ansible vault revisited</h1>
+        
+      </header>
+      <footer class="entry-meta">
+        
+        
+        
+          <img src="//leucos.github.io/images/gravatar.jpg" class="bio-photo" alt="Michel Blanc bio photo"></a>
+        
+        <span class="author vcard">By <span class="fn">Michel Blanc</span></span>
+        <span class="entry-date date published"><time datetime="2015-05-26T00:00:00+02:00"><i class="fa fa-calendar-o"></i> May 26, 2015</time></span>
+        <span class="entry-date date modified"><time datetime="2015-05-25"><i class="fa fa-pencil"></i> May 25, 2015</time></span>
+        <span class="entry-comments"><i class="fa fa-comment-o"></i> <a href="#disqus_thread">Comment</a></span>
+        
+        
+      </footer>
+      <div class="entry-content">
+        <h2 id="doing-it-the-wrong-way">Doing it the wrong way</h2>
+
+<p><a href="/articles/ansible-transparent-vault/">Last attempt</a>
+to make ansible vault encryption/decryption transparent wasn’t quite
+right. Decrypting files after commit wasn’t a good idea as
+<a href="https://github.com/ralovely">Raphael Campardou</a> noticed.</p>
+
+<p>In search for a better idea, I eventually realized that hooks where not
+the right place to do it: yes, you can guard from commiting files that
+should be encrypted, but hacking around hooks to build a crypt/decrypt
+pipeline is doomed to failure.</p>
+
+<h2 id="doing-it-better">Doing it better</h2>
+
+<p>While looking for alternate ways, I remembered I hacked around with
+git filters back in the days to see clear-text diffs for OpenOffice
+files.</p>
+
+<p>Git let’s you apply <code>smudge</code>, <code>clean</code> and <code>textconv</code> filters to files
+which are applied this way:</p>
+
+<ul>
+  <li>filter/smudge: after checkout, reads blob from STDIN and outputs the
+workfile from STDOUT</li>
+  <li>filter/clean: converts the worktree file to blob upon check in</li>
+  <li>diff/textconv: applied before diffing files</li>
+</ul>
+
+<p>So, for our needs, <em>smudge</em> and <em>textconv</em> are good places to decrypt,
+while <em>clean</em> is the place to encrypt.</p>
+
+<h2 id="implementation">Implementation</h2>
+
+<p>The implementation requires to write the 3 filters (<em>smudge</em>, <em>clean</em>,
+<em>textconv</em>) and configure your git repos to use the filters.</p>
+
+<p>Those filters should be executable.</p>
+
+<p>As we did in last post, we will use a <code>.vault_password</code> file in the
+project root directory containing the vault key (don’t forget to add it
+to your <code>.gitignore</code> file !). The filters fail if the file is not
+present.</p>
+
+<h3 id="smudge">Smudge</h3>
+
+<p>The problem that came up to write the smudge &amp; clean filters is that the
+blob content is fed on STDIN, and <code>ansible-vault</code> can only
+encrypt/decrypt files <em>in-place</em>.</p>
+
+<p>So we have to write the blob in a temporary file. While this is not
+really a problem for the smudge filter, it is for the clean filter since
+the temporary file contains the clear-text version of the file. The temp
+file is created with restricted permissions, but you’ve been warned.</p>
+
+<p>Smudge’s filter job is simple:
+- write STDIN content to temp file
+- decrypt the temp file and swallow the output in a variable (using
+  <code>ansible-vault view</code> after setting the PAGER to <code>cat</code>)
+- if the file was a vault encrypted file, display the variable, else,
+  bail out.</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#!/bin/sh</span>
+
+<span class="k">if</span> <span class="o">[</span> ! -r <span class="s1">&#39;.vault_password&#39;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+  <span class="nb">exit </span>1
+<span class="k">fi</span>
+
+<span class="nv">tmp</span><span class="o">=</span><span class="sb">`</span>mktemp<span class="sb">`</span>
+cat &gt; <span class="nv">$tmp</span>
+
+<span class="nb">export </span><span class="nv">PAGER</span><span class="o">=</span><span class="s1">&#39;cat&#39;</span>
+<span class="nv">CONTENT</span><span class="o">=</span><span class="sb">`</span>ansible-vault view <span class="s2">&quot;$tmp&quot;</span> --vault-password-file<span class="o">=</span>.vault_password 2&gt; /dev/null<span class="sb">`</span>
+
+<span class="k">if</span> <span class="nb">echo</span> <span class="nv">$CONTENT</span> <span class="p">|</span> grep <span class="s1">&#39;ERROR: data is not encrypted&#39;</span> &gt; /dev/null<span class="p">;</span> <span class="k">then</span>
+  <span class="nb">echo</span> <span class="s2">&quot;Looks like one file was commited clear text&quot;</span>
+  <span class="nb">echo</span> <span class="s2">&quot;Please fix this before continuing !&quot;</span>
+  <span class="nb">exit </span>1
+<span class="k">else</span>
+  <span class="nb">echo</span> <span class="nv">$CONTENT</span>
+<span class="k">fi</span>
+
+rm <span class="nv">$tmp</span></code></pre></div>
+
+<p>As you guessed, <code>ansible-vault</code> does not output errors on STDERR but on
+STDOUT.</p>
+
+<h3 id="clean">Clean</h3>
+
+<p>The clean filter works almost the same way:
+- write STDIN to a temp file
+- encrypt the temp file in place
+- write the temp file to STDOUT</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#!/bin/sh</span>
+
+<span class="k">if</span> <span class="o">[</span> ! -r <span class="s1">&#39;.vault_password&#39;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+  <span class="nb">exit </span>1
+<span class="k">fi</span>
+
+<span class="nv">tmp</span><span class="o">=</span><span class="sb">`</span>mktemp<span class="sb">`</span>
+cat &gt; <span class="nv">$tmp</span>
+
+ansible-vault encrypt <span class="nv">$tmp</span> --vault-password-file<span class="o">=</span>.vault_password &gt; /dev/null 2&gt;<span class="p">&amp;</span>1
+
+cat <span class="s2">&quot;$tmp&quot;</span>
+rm <span class="nv">$tmp</span></code></pre></div>
+
+<p>This one was quite easy. We could also use modelines, by encrypting only if
+“vault: true” is present in the 4 first lines. This way, we could apply
+the filters to all the files. However I ditched the idea for performance
+reasons (see below).</p>
+
+<h3 id="diff-filter">Diff filter</h3>
+
+<p>The filter works like the smudge filter except that it uses the file
+name passed as a parameter.</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#!/bin/sh</span>
+
+<span class="k">if</span> <span class="o">[</span> ! -r <span class="s1">&#39;.vault_password&#39;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+  <span class="nb">exit </span>1
+<span class="k">fi</span>
+
+<span class="nb">export </span><span class="nv">PAGER</span><span class="o">=</span><span class="s1">&#39;cat&#39;</span>
+<span class="nv">CONTENT</span><span class="o">=</span><span class="sb">`</span>ansible-vault view <span class="s2">&quot;$1&quot;</span> --vault-password-file<span class="o">=</span>.vault_password 2&gt; /dev/null<span class="sb">`</span>
+
+<span class="k">if</span> <span class="nb">echo</span> <span class="s2">&quot;$CONTENT&quot;</span> <span class="p">|</span> grep <span class="s1">&#39;ERROR: data is not encrypted&#39;</span> &gt; /dev/null<span class="p">;</span> <span class="k">then</span>
+  cat <span class="s2">&quot;$1&quot;</span>
+<span class="k">else</span>
+  <span class="nb">echo</span> <span class="s2">&quot;$CONTENT&quot;</span>
+<span class="k">fi</span></code></pre></div>
+
+<h3 id="git-configuration">Git configuration</h3>
+
+<h4 id="attributes">Attributes</h4>
+
+<p>Now that the various filters are out and chmoded +x, we need to set-up
+out git repos to use them.</p>
+
+<p>For this, we need to tell git on which files we want to apply the
+filters, using a <code>.gitattributes</code> file in our project top directory.</p>
+
+<p>The following <code>.gitattributes</code> file</p>
+
+<div class="highlight"><pre><code class="language-text" data-lang="text">*_vault* filter=vault diff=vault</code></pre></div>
+
+<p>will run filters on repository blobs/files that match <code>*_vault*</code>.</p>
+
+<p>I initially intended to run the filters on all files, using modelines.
+However, performance was really bad, so I finally ended up removing a
+full wildcard (<code>*</code>) and restrict filter selection to specific files.
+You can repeat the lines ad nauseam if you want to catch multiple
+fileglobs.</p>
+
+<h4 id="gitconfig">Gitconfig</h4>
+
+<p>I put my filters in <code>~/.bin/</code>, but the location doesn’t matter. You can
+event add them to the project and commit them, so everyone has them.</p>
+
+<p>The following section needs to be added to the project’s <code>.git/config</code>
+file:</p>
+
+<div class="highlight"><pre><code class="language-text" data-lang="text">[filter &quot;vault&quot;]
+  smudge = ~/.bin/smudge_vault
+  clean  = ~/.bin/clean_vault
+
+[diff &quot;vault&quot;]
+  textconv = ~/.bin/diff_vault</code></pre></div>
+
+<h3 id="test">Test</h3>
+
+<p>Adding a file that matches a glob in <code>.gitattributes</code> should now trigger
+transparent encryption.</p>
+
+<p>Here is a sample transcript.</p>
+
+<script type="text/javascript" src="https://asciinema.org/a/7oaviuh8v2pi39zeojxrn8434.js" id="asciicast-7oaviuh8v2pi39zeojxrn8434" async=""></script>
+
+<h3 id="big-fat-warning">Big fat warning</h3>
+
+<p>The <code>git cat-file</code> part is not here for decoration. At least the first
+time, ensure that encryption works.</p>
+
+<h3 id="the-filters">The filters</h3>
+
+<script src="https://gist.github.com/leucos/1bfcfc7252e8c262956e.js"> </script>
+
+
+        
+          <div id="disqus_thread"></div><!-- /#disqus_thread -->
+          
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'randomstuffonrandomstuff'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+        
+      </div><!-- /.entry-content -->
+    </div><!-- /.entry-wrapper -->
+    <nav class="pagination" role="navigation">
+      
+        <a href="//leucos.github.io/articles/ansible-transparent-vault/" class="btn" title="Transparent encryption/decryption with ansible vault">Previous</a>
+      
+      
+        <a href="//leucos.github.io/decoupling-your-ansible-roles" class="btn" title="Decoupling your Ansible roles">Next</a>
+      
+    </nav><!-- /.pagination -->
+  </article>
+</div><!-- /#main -->
+
+<div class="footer-wrapper">
+  <footer role="contentinfo" class="entry-wrapper">
+    
+
+<span>&copy; 2015 Michel Blanc. Powered by <a href="http://jekyllrb.com" rel="nofollow">Jekyll</a> using the <a href="http://mademistakes.com/so-simple/" rel="nofollow">So Simple Theme</a>.</span>
+<div class="social-icons">
+	<a href="http://twitter.com/b9m" title="Michel Blanc on Twitter" target="_blank"><i class="fa fa-twitter-square fa-2x"></i></a>
+	
+	
+	<a href="http://linkedin.com/in/michelblanc" title="Michel Blanc on LinkedIn" target="_blank"><i class="fa fa-linkedin-square fa-2x"></i></a>
+	<a href="http://stackoverflow.com/users/467722/leucos" title="Michel Blanc on StackExchange" target="_blank"><i class="fa fa-stack-exchange fa-2x"></i></a>
+	
+	
+	<a href="http://github.com/leucos" title="Michel Blanc on Github" target="_blank"><i class="fa fa-github-square fa-2x"></i></a>
+	
+  
+	
+  <a href="//leucos.github.io/feed.xml" title="Atom/RSS feed"><i class="fa fa-rss-square fa-2x"></i></a>
+</div><!-- /.social-icons -->
+
+  </footer>
+</div><!-- /.footer-wrapper -->
+
+<script type="text/javascript">
+  var BASE_URL = '//leucos.github.io';
+</script>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="//leucos.github.io/assets/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+<script src="//leucos.github.io/assets/js/scripts.min.js"></script>
+
+
+<!-- Asynchronous Google Analytics snippet -->
+<script>
+  var _gaq = _gaq || [];
+  var pluginUrl = 
+ '//www.google-analytics.com/plugins/ga/inpage_linkid.js';
+  _gaq.push(['_require', 'inpage_linkid', pluginUrl]);
+  _gaq.push(['_setAccount', 'UA-60810209-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+</body>
+</html>

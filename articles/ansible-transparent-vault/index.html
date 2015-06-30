@@ -1,0 +1,335 @@
+<!doctype html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if (IE 7)&!(IEMobile)]><html class="no-js lt-ie9 lt-ie8" lang="en"><![endif]-->
+<!--[if (IE 8)&!(IEMobile)]><html class="no-js lt-ie9" lang="en"><![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"><!--<![endif]-->
+<head>
+<meta charset="utf-8">
+<title>Transparent encryption/decryption with ansible vault &#8211; Random stuff</title>
+<meta name="description" content="Never type ansible-vault again.">
+<meta name="keywords" content="ansible, ansible-vaut, git">
+
+
+
+<!-- Twitter Cards -->
+<meta name="twitter:title" content="Transparent encryption/decryption with ansible vault">
+<meta name="twitter:description" content="Never type ansible-vault again.">
+<meta name="twitter:site" content="@b9m">
+<meta name="twitter:creator" content="@b9m">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="//leucos.github.io/images/logo.png">
+
+<!-- Open Graph -->
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Transparent encryption/decryption with ansible vault">
+<meta property="og:description" content="Never type ansible-vault again.">
+<meta property="og:url" content="//leucos.github.io/articles/ansible-transparent-vault/">
+<meta property="og:site_name" content="Random stuff">
+
+
+
+
+
+<link rel="canonical" href="//leucos.github.io/articles/ansible-transparent-vault/">
+<link href="//leucos.github.io/feed.xml" type="application/atom+xml" rel="alternate" title="Random stuff Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="//leucos.github.io/assets/css/main.css">
+<!-- Webfonts -->
+<script src="//use.edgefonts.net/source-sans-pro:n2,i2,n3,i3,n4,i4,n6,i6,n7,i7,n9,i9;source-code-pro:n4,n7;volkhov.js"></script>
+
+<meta http-equiv="cleartype" content="on">
+
+<!-- HTML5 Shiv and Media Query Support -->
+<!--[if lt IE 9]>
+  <script src="//leucos.github.io/assets/js/vendor/html5shiv.min.js"></script>
+  <script src="//leucos.github.io/assets/js/vendor/respond.min.js"></script>
+<![endif]-->
+
+<!-- Modernizr -->
+<script src="//leucos.github.io/assets/js/vendor/modernizr-2.7.1.custom.min.js"></script>
+
+<!-- Icons -->
+<!-- 16x16 -->
+<link rel="shortcut icon" href="//leucos.github.io/favicon.ico">
+<!-- 32x32 -->
+<link rel="shortcut icon" href="//leucos.github.io/favicon.png">
+<!-- 57x57 (precomposed) for iPhone 3GS, pre-2011 iPod Touch and older Android devices -->
+<link rel="apple-touch-icon-precomposed" href="//leucos.github.io/images/apple-touch-icon-precomposed.png">
+<!-- 72x72 (precomposed) for 1st generation iPad, iPad 2 and iPad mini -->
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="//leucos.github.io/images/apple-touch-icon-72x72-precomposed.png">
+<!-- 114x114 (precomposed) for iPhone 4, 4S, 5 and post-2011 iPod Touch -->
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="//leucos.github.io/images/apple-touch-icon-114x114-precomposed.png">
+<!-- 144x144 (precomposed) for iPad 3rd and 4th generation -->
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="//leucos.github.io/images/apple-touch-icon-144x144-precomposed.png">
+
+</head>
+
+<body id="post">
+
+<div class="navigation-wrapper">
+	<nav role="navigation" id="site-nav" class="animated drop">
+	    <ul>
+      
+		    
+		        
+		    
+		    <li><a href="//leucos.github.io/" >Home</a></li>
+		  
+		    
+		        
+		    
+		    <li><a href="//leucos.github.io/articles/" >Articles</a></li>
+		  
+		    
+		        
+		    
+		    <li><a href="//leucos.github.io/tags/" >Tags</a></li>
+		  
+		    
+		        
+		    
+		    <li><a href="//leucos.github.io/search/" >Search</a></li>
+		  
+		    
+		        
+		    
+		    <li><a href="//leucos.github.io/about/" >About</a></li>
+		  
+	    </ul>
+	</nav>
+</div><!-- /.navigation-wrapper -->
+
+<!--[if lt IE 9]><div class="upgrade"><strong><a href="http://whatbrowser.org/">Your browser is quite old!</strong> Why not upgrade to a different browser to better enjoy this site?</a></div><![endif]-->
+
+<header class="masthead">
+	<div class="wrap">
+      
+  		<a href="//leucos.github.io/" class="site-logo" rel="home" title="Random stuff"><img src="//leucos.github.io/images/logo.png" width="200" height="200" alt="Random stuff logo" class="animated fadeInDown"></a>
+      
+      <h1 class="site-title animated fadeIn"><a href="//leucos.github.io/">Random stuff</a></h1>
+		<h2 class="site-description animated fadeIn" itemprop="description">brain dump on sysadmin & DevOps related topics</h2>
+	</div>
+</header><!-- /.masthead -->
+
+<div class="js-menu-screen menu-screen"></div>
+
+
+<div id="main" role="main">
+  <article class="hentry">
+    
+    <div class="entry-wrapper">
+      <header class="entry-header">
+        <span class="entry-tags"><a href="//leucos.github.io/tags/#ansible" title="Pages tagged ansible">ansible</a>&nbsp;&bull;&nbsp;<a href="//leucos.github.io/tags/#ansible-vaut" title="Pages tagged ansible-vaut">ansible-vaut</a>&nbsp;&bull;&nbsp;<a href="//leucos.github.io/tags/#git" title="Pages tagged git">git</a></span>
+        
+          <h1 class="entry-title">Transparent encryption/decryption with ansible vault</h1>
+        
+      </header>
+      <footer class="entry-meta">
+        
+        
+        
+          <img src="//leucos.github.io/images/gravatar.jpg" class="bio-photo" alt="Michel Blanc bio photo"></a>
+        
+        <span class="author vcard">By <span class="fn">Michel Blanc</span></span>
+        <span class="entry-date date published"><time datetime="2015-05-25T00:00:00+02:00"><i class="fa fa-calendar-o"></i> May 25, 2015</time></span>
+        <span class="entry-date date modified"><time datetime="2015-05-25"><i class="fa fa-pencil"></i> May 25, 2015</time></span>
+        <span class="entry-comments"><i class="fa fa-comment-o"></i> <a href="#disqus_thread">Comment</a></span>
+        
+        
+      </footer>
+      <div class="entry-content">
+        <h1 id="big-fat-warning">Big Fat Warning</h1>
+
+<p><strong>THIS FILE IS LEFT HERE FOR REFERENCE</strong></p>
+
+<p>However, the method described here is WRONG. Check out 
+<a href="/articles/transparent-vault-revisited/">next post</a> instead !</p>
+
+<h2 id="pain-points">Pain points</h2>
+
+<p><code>ansible-vault</code> is handy. You can crypt your stuff before commiting it so your
+private stuff (AWS/DigitalOcean/… keys, passwords, …) don’t end up
+world-readable on GitHub.</p>
+
+<p>However, it is too easy to decrypt your stuff, forget about it, and commit it 
+without encrypting it back. It is also quite tedious to ansible-vault
+encrypt/decrypt all day long.</p>
+
+<h2 id="solution">Solution</h2>
+
+<p><a href="https://github.com/ralovely">Raphael Campardou</a> proposed a <a href="https://gist.github.com/ralovely/9367737">nice
+solution</a> to prevent commiting
+ansible vault files.</p>
+
+<p>In his solution, you have to name your files <code>*_vault.yml</code> so they get busted
+by a pre-commit hook if they are not currently encrypted.</p>
+
+<p>This is nice: by naming your files appropriately, you can not commit them unless
+they are ansible-vault crypted beforehand.</p>
+
+<p>I extended his idea so it can apply to any file in an Ansible repository, with
+very little configuration, and added a post-commit hook so files gets
+transparently decrypted after being commited.</p>
+
+<h2 id="transparent-encryptiondecryption">Transparent encryption/decryption</h2>
+
+<p>The goal is simple: automagically encrypt the proper files before commit,
+commit them, then decrypt them afterwards so we can hack again without
+any manual intervention. All this with minimal configuration.</p>
+
+<h3 id="marking-file-for-encryption">Marking file for encryption</h3>
+
+<p>The center trick is to find a way to mark a file for encryption. Modelines
+(a.k.a. emacs local variable lines) to the rescue.</p>
+
+<p>To tell git hooks that a file requires encryption, we’ll add this line to
+the top of the file (or on line 2 if the file already has a shebang
+line) :</p>
+
+<pre><code># -*- vault: true; -*-
+</code></pre>
+
+<p>Any file having <code>vault: true</code> in a modeline is set to <strong>require encryption before
+commit</strong>.</p>
+
+<p>The icing on the cake is that you can use this modeline to set the filetype
+too[1], and help your editor to find out the proper file content, which is
+quite handy with some files not ending in <code>yml</code>:</p>
+
+<pre><code># -*- mode: yaml; vault: true; -*-
+</code></pre>
+
+<p>This is supported out of the box by vim and Emacs. If you use SublimeText,
+you can use the <a href="https://github.com/kvs/STEmacsModelines">STEmacsModelines</a>
+package.</p>
+
+<h3 id="using-the-hooks">Using the hooks</h3>
+
+<p>The pre-commit hook will encrypt files marked with <code>vault: true</code>. If a
+<code>.vault_password_hooks</code> file is present in the project root directory, it will be
+used as the password.</p>
+
+<p>If this file doesn’t exist, you’ll be promted for an encryption password and
+this password will be saved in <code>.vault_password_hooks</code>, in your project’s root.</p>
+
+<p>If <code>.vault_password_hooks</code> is listed in <code>.gitignore</code>, this file will persist and you
+won’t be asked for a password anymore for encryption as well as for decryption.
+Otherwise, <code>.vault_password_hooks</code> will be erased after encryption to avoid commiting
+the file.</p>
+
+<p>After commiting the files, the post-commit hook will use the same password to
+decrypt the previously encrypted files.</p>
+
+<p><strong>TL;DR:</strong> add <code>.vault_password_hooks</code> to your <code>.gitignore</code>, add <code># -*-
+vault: true; -*-</code> to files that requires encryption and you’re set.</p>
+
+<p>You end up with a workflow where your files are transparently encrypted before
+commit and decrypted after.</p>
+
+<h2 id="hooks">Hooks</h2>
+
+<p>Put the hooks in <code>.git/hooks/</code> and don’t forget to <code>chmod +x
+{pre,post}-commit</code> them.</p>
+
+<script src="https://gist.github.com/leucos/405b406b9d6bde0c3d39.js"> </script>
+
+
+        
+          <div id="disqus_thread"></div><!-- /#disqus_thread -->
+          
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'randomstuffonrandomstuff'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+        
+      </div><!-- /.entry-content -->
+    </div><!-- /.entry-wrapper -->
+    <nav class="pagination" role="navigation">
+      
+        <a href="//leucos.github.io/articles/ansible-contract-inventory/" class="btn" title="Making dynamic inventory usable with Ansible and Digital Ocean">Previous</a>
+      
+      
+        <a href="//leucos.github.io/articles/transparent-vault-revisited/" class="btn" title="Transparent encryption with ansible vault revisited">Next</a>
+      
+    </nav><!-- /.pagination -->
+  </article>
+</div><!-- /#main -->
+
+<div class="footer-wrapper">
+  <footer role="contentinfo" class="entry-wrapper">
+    
+
+<span>&copy; 2015 Michel Blanc. Powered by <a href="http://jekyllrb.com" rel="nofollow">Jekyll</a> using the <a href="http://mademistakes.com/so-simple/" rel="nofollow">So Simple Theme</a>.</span>
+<div class="social-icons">
+	<a href="http://twitter.com/b9m" title="Michel Blanc on Twitter" target="_blank"><i class="fa fa-twitter-square fa-2x"></i></a>
+	
+	
+	<a href="http://linkedin.com/in/michelblanc" title="Michel Blanc on LinkedIn" target="_blank"><i class="fa fa-linkedin-square fa-2x"></i></a>
+	<a href="http://stackoverflow.com/users/467722/leucos" title="Michel Blanc on StackExchange" target="_blank"><i class="fa fa-stack-exchange fa-2x"></i></a>
+	
+	
+	<a href="http://github.com/leucos" title="Michel Blanc on Github" target="_blank"><i class="fa fa-github-square fa-2x"></i></a>
+	
+  
+	
+  <a href="//leucos.github.io/feed.xml" title="Atom/RSS feed"><i class="fa fa-rss-square fa-2x"></i></a>
+</div><!-- /.social-icons -->
+
+  </footer>
+</div><!-- /.footer-wrapper -->
+
+<script type="text/javascript">
+  var BASE_URL = '//leucos.github.io';
+</script>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="//leucos.github.io/assets/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+<script src="//leucos.github.io/assets/js/scripts.min.js"></script>
+
+
+<!-- Asynchronous Google Analytics snippet -->
+<script>
+  var _gaq = _gaq || [];
+  var pluginUrl = 
+ '//www.google-analytics.com/plugins/ga/inpage_linkid.js';
+  _gaq.push(['_require', 'inpage_linkid', pluginUrl]);
+  _gaq.push(['_setAccount', 'UA-60810209-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+</body>
+</html>

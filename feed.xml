@@ -1,18 +1,33 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Random stuff</title>
-    <description>Long time sysadmin with DevOpsy tendencies
-</description>
-    <link>//leucos.github.io/</link>
-    <atom:link href="//leucos.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 29 Jun 2015 23:04:41 +0200</pubDate>
-    <lastBuildDate>Mon, 29 Jun 2015 23:04:41 +0200</lastBuildDate>
-    <generator>Jekyll v2.4.0</generator>
-    
-      <item>
-        <title>Decoupling your Ansible roles</title>
-        <description>&lt;p&gt;Having tightly coupled role is the best way to have a hard time
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+<title type="text">Random stuff</title>
+<generator uri="https://github.com/jekyll/jekyll">Jekyll</generator>
+<link rel="self" type="application/atom+xml" href="//leucos.github.io/feed.xml" />
+<link rel="alternate" type="text/html" href="//leucos.github.io" />
+<updated>2015-06-30T16:30:41+02:00</updated>
+<id>//leucos.github.io/</id>
+<author>
+  <name>Michel Blanc</name>
+  <uri>//leucos.github.io/</uri>
+  <email>mb@mbnet.fr</email>
+</author>
+
+
+  
+
+<entry>
+  <title type="html"><![CDATA[Decoupling your Ansible roles]]></title>
+  <link rel="alternate" type="text/html" href="//leucos.github.io/decoupling-your-ansible-roles" />
+  <id>//leucos.github.io/decoupling-your-ansible-roles</id>
+  <published>2015-06-27T00:00:00+02:00</published>
+  <updated>2015-06-27T00:00:00+02:00</updated>
+  <author>
+    <name>Michel Blanc</name>
+    <uri>//leucos.github.io</uri>
+    <email>mb@mbnet.fr</email>
+  </author>
+  <content type="html">
+    &lt;p&gt;Having tightly coupled role is the best way to have a hard time
 maintaining roles and playbooks, and live in fear of changing anything
 in them.&lt;/p&gt;
 
@@ -32,12 +47,11 @@ environment).&lt;/p&gt;
 &lt;p&gt;The first idea that comes to mind is to change the php.ini according to
 &lt;code&gt;myapp_environment&lt;/code&gt;, like so:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;{% if myapp_environment == &quot;production&quot; %}
-display_errors = Off
-{% else %}
-display_errors = On
-{% endif %}
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-jinja&quot; data-lang=&quot;jinja&quot;&gt;&lt;span class=&quot;cp&quot;&gt;{%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;myapp_environment&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;production&amp;quot;&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%}&lt;/span&gt;&lt;span class=&quot;x&quot;&gt;&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;display_errors = Off&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;{%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%}&lt;/span&gt;&lt;span class=&quot;x&quot;&gt;&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;display_errors = On&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;{%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;endif&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%}&lt;/span&gt;&lt;span class=&quot;x&quot;&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The problem with this approach if that php-fpm role now needs
 &lt;code&gt;myapp_environment&lt;/code&gt; to be defined, which is quite absurd.&lt;/p&gt;
@@ -56,10 +70,9 @@ meaningful, and &lt;code&gt;myapp_environment&lt;/code&gt;. But now how can I sy
 
 &lt;p&gt;One ways is to match them in your inventory, like so :&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;# Somewhere in inventory
-myapp_environment = &quot;production&quot;
-php_fpm_environment = {{ myapp_environment }}
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# Somewhere in inventory&lt;/span&gt;
+&lt;span class=&quot;l-Scalar-Plain&quot;&gt;myapp_environment&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;production&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;l-Scalar-Plain&quot;&gt;php_fpm_environment&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p-Indicator&quot;&gt;{{&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;myapp_environment&lt;/span&gt; &lt;span class=&quot;p-Indicator&quot;&gt;}}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;However, this has some drawbacks. For instance, we are still talking about
 &lt;code&gt;php_fpm_environment&lt;/code&gt; and, while not a big deal, it has no php-fpm
@@ -75,18 +88,16 @@ instead ? Our php-fpm role is broken now.&lt;/p&gt;
 &lt;p&gt;We could go a better way: let’s call the variable &lt;code&gt;php_fpm_display_error&lt;/code&gt; (more
 meaningful) and make it a boolean. We now can do this :&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;{% if php_fpm_display_errors %}
-display_errors = On
-{% else %}
-display_errors = Off
-{% endif %}
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-jinja&quot; data-lang=&quot;jinja&quot;&gt;&lt;span class=&quot;cp&quot;&gt;{%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;php_fpm_display_errors&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%}&lt;/span&gt;&lt;span class=&quot;x&quot;&gt;&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;display_errors = On&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;{%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%}&lt;/span&gt;&lt;span class=&quot;x&quot;&gt;&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;display_errors = Off&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;{%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;endif&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%}&lt;/span&gt;&lt;span class=&quot;x&quot;&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;and somewhere in inventory:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;myapp_environment = &quot;production&quot;
-php_fpm_display_errors = {{ myapp_environment == &quot;production&quot; }}
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span class=&quot;l-Scalar-Plain&quot;&gt;myapp_environment&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;production&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;l-Scalar-Plain&quot;&gt;php_fpm_display_errors&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p-Indicator&quot;&gt;{{&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;myapp_environment == &amp;quot;production&amp;quot;&lt;/span&gt; &lt;span class=&quot;p-Indicator&quot;&gt;}}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2 id=&quot;streamlining-our-solution&quot;&gt;Streamlining our solution&lt;/h2&gt;
 
@@ -114,21 +125,31 @@ touching anything else.&lt;/p&gt;
 &lt;p&gt;Keeping role decoupled is the best way to have manageable and reusable
 roles. Try to make them self sufficient, and avoid cross variables or
 even worse, group names in roles !&lt;/p&gt;
-</description>
-        <pubDate>Sat, 27 Jun 2015 00:00:00 +0200</pubDate>
-        <link>//leucos.github.io/decoupling-your-ansible-roles</link>
-        <guid isPermaLink="true">//leucos.github.io/decoupling-your-ansible-roles</guid>
-        
-        <category>ansible</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Transparent encryption with ansible vault revisited</title>
-        <description>&lt;h2 id=&quot;doing-it-the-wrong-way&quot;&gt;Doing it the wrong way&lt;/h2&gt;
 
-&lt;p&gt;&lt;a href=&quot;/2015/05/25/ansible-transparent-vault/&quot;&gt;Last attempt&lt;/a&gt;
+
+    &lt;p&gt;&lt;a href=&quot;//leucos.github.io/decoupling-your-ansible-roles&quot;&gt;Decoupling your Ansible roles&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;//leucos.github.io&quot;&gt;Random stuff&lt;/a&gt; on June 27, 2015.&lt;/p&gt;
+  </content>
+</entry>
+
+
+  
+
+<entry>
+  <title type="html"><![CDATA[Transparent encryption with ansible vault revisited]]></title>
+  <link rel="alternate" type="text/html" href="//leucos.github.io/articles/transparent-vault-revisited/" />
+  <id>//leucos.github.io/articles/transparent-vault-revisited</id>
+  <updated>2015-05-25T00:00:00-00:00</updated>
+  <published>2015-05-26T00:00:00+02:00</published>
+  
+  <author>
+    <name>Michel Blanc</name>
+    <uri>//leucos.github.io</uri>
+    <email>mb@mbnet.fr</email>
+  </author>
+  <content type="html">
+    &lt;h2 id=&quot;doing-it-the-wrong-way&quot;&gt;Doing it the wrong way&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;/articles/ansible-transparent-vault/&quot;&gt;Last attempt&lt;/a&gt;
 to make ansible vault encryption/decryption transparent wasn’t quite
 right. Decrypting files after commit wasn’t a good idea as
 &lt;a href=&quot;https://github.com/ralovely&quot;&gt;Raphael Campardou&lt;/a&gt; noticed.&lt;/p&gt;
@@ -187,28 +208,27 @@ file is created with restricted permissions, but you’ve been warned.&lt;/p&gt;
 - if the file was a vault encrypted file, display the variable, else,
   bail out.&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;#!/bin/sh
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/sh&lt;/span&gt;
 
-if [ ! -r &#39;.vault_password&#39; ]; then
-  exit 1
-fi
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; ! -r &lt;span class=&quot;s1&quot;&gt;&amp;#39;.vault_password&amp;#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;exit &lt;/span&gt;1
+&lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
 
-tmp=`mktemp`
-cat &amp;gt; $tmp
+&lt;span class=&quot;nv&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;mktemp&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
+cat &amp;gt; &lt;span class=&quot;nv&quot;&gt;$tmp&lt;/span&gt;
 
-export PAGER=&#39;cat&#39;
-CONTENT=`ansible-vault view &quot;$tmp&quot; --vault-password-file=.vault_password 2&amp;gt; /dev/null`
+&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PAGER&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;cat&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;CONTENT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;ansible-vault view &lt;span class=&quot;s2&quot;&gt;&amp;quot;$tmp&amp;quot;&lt;/span&gt; --vault-password-file&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;.vault_password 2&amp;gt; /dev/null&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
 
-if echo $CONTENT | grep &#39;ERROR: data is not encrypted&#39; &amp;gt; /dev/null; then
-  echo &quot;Looks like one file was commited clear text&quot;
-  echo &quot;Please fix this before continuing !&quot;
-  exit 1
-else
-  echo $CONTENT
-fi
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$CONTENT&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; grep &lt;span class=&quot;s1&quot;&gt;&amp;#39;ERROR: data is not encrypted&amp;#39;&lt;/span&gt; &amp;gt; /dev/null&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;Looks like one file was commited clear text&amp;quot;&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;Please fix this before continuing !&amp;quot;&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;exit &lt;/span&gt;1
+&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$CONTENT&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
 
-rm $tmp
-&lt;/code&gt;&lt;/pre&gt;
+rm &lt;span class=&quot;nv&quot;&gt;$tmp&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;As you guessed, &lt;code&gt;ansible-vault&lt;/code&gt; does not output errors on STDERR but on
 STDOUT.&lt;/p&gt;
@@ -220,20 +240,19 @@ STDOUT.&lt;/p&gt;
 - encrypt the temp file in place
 - write the temp file to STDOUT&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;#!/bin/sh
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/sh&lt;/span&gt;
 
-if [ ! -r &#39;.vault_password&#39; ]; then
-  exit 1
-fi
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; ! -r &lt;span class=&quot;s1&quot;&gt;&amp;#39;.vault_password&amp;#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;exit &lt;/span&gt;1
+&lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
 
-tmp=`mktemp`
-cat &amp;gt; $tmp
+&lt;span class=&quot;nv&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;mktemp&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
+cat &amp;gt; &lt;span class=&quot;nv&quot;&gt;$tmp&lt;/span&gt;
 
-ansible-vault encrypt $tmp --vault-password-file=.vault_password &amp;gt; /dev/null 2&amp;gt;&amp;amp;1
+ansible-vault encrypt &lt;span class=&quot;nv&quot;&gt;$tmp&lt;/span&gt; --vault-password-file&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;.vault_password &amp;gt; /dev/null 2&amp;gt;&lt;span class=&quot;p&quot;&gt;&amp;amp;&lt;/span&gt;1
 
-cat &quot;$tmp&quot;
-rm $tmp
-&lt;/code&gt;&lt;/pre&gt;
+cat &lt;span class=&quot;s2&quot;&gt;&amp;quot;$tmp&amp;quot;&lt;/span&gt;
+rm &lt;span class=&quot;nv&quot;&gt;$tmp&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;This one was quite easy. We could also use modelines, by encrypting only if
 “vault: true” is present in the 4 first lines. This way, we could apply
@@ -245,21 +264,20 @@ reasons (see below).&lt;/p&gt;
 &lt;p&gt;The filter works like the smudge filter except that it uses the file
 name passed as a parameter.&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;#!/bin/sh
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/sh&lt;/span&gt;
 
-if [ ! -r &#39;.vault_password&#39; ]; then
-  exit 1
-fi
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; ! -r &lt;span class=&quot;s1&quot;&gt;&amp;#39;.vault_password&amp;#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;exit &lt;/span&gt;1
+&lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
 
-export PAGER=&#39;cat&#39;
-CONTENT=`ansible-vault view &quot;$1&quot; --vault-password-file=.vault_password 2&amp;gt; /dev/null`
+&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PAGER&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;cat&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;CONTENT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;ansible-vault view &lt;span class=&quot;s2&quot;&gt;&amp;quot;$1&amp;quot;&lt;/span&gt; --vault-password-file&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;.vault_password 2&amp;gt; /dev/null&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
 
-if echo &quot;$CONTENT&quot; | grep &#39;ERROR: data is not encrypted&#39; &amp;gt; /dev/null; then
-  cat &quot;$1&quot;
-else
-  echo &quot;$CONTENT&quot;
-fi
-&lt;/code&gt;&lt;/pre&gt;
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;$CONTENT&amp;quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; grep &lt;span class=&quot;s1&quot;&gt;&amp;#39;ERROR: data is not encrypted&amp;#39;&lt;/span&gt; &amp;gt; /dev/null&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt;
+  cat &lt;span class=&quot;s2&quot;&gt;&amp;quot;$1&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;$CONTENT&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h3 id=&quot;git-configuration&quot;&gt;Git configuration&lt;/h3&gt;
 
@@ -273,8 +291,7 @@ filters, using a &lt;code&gt;.gitattributes&lt;/code&gt; file in our project top
 
 &lt;p&gt;The following &lt;code&gt;.gitattributes&lt;/code&gt; file&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;*_vault* filter=vault diff=vault
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;*_vault* filter=vault diff=vault&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;will run filters on repository blobs/files that match &lt;code&gt;*_vault*&lt;/code&gt;.&lt;/p&gt;
 
@@ -292,13 +309,12 @@ event add them to the project and commit them, so everyone has them.&lt;/p&gt;
 &lt;p&gt;The following section needs to be added to the project’s &lt;code&gt;.git/config&lt;/code&gt;
 file:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;[filter &quot;vault&quot;]
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;[filter &amp;quot;vault&amp;quot;]
   smudge = ~/.bin/smudge_vault
   clean  = ~/.bin/clean_vault
 
-[diff &quot;vault&quot;]
-  textconv = ~/.bin/diff_vault
-&lt;/code&gt;&lt;/pre&gt;
+[diff &amp;quot;vault&amp;quot;]
+  textconv = ~/.bin/diff_vault&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h3 id=&quot;test&quot;&gt;Test&lt;/h3&gt;
 
@@ -318,28 +334,33 @@ time, ensure that encryption works.&lt;/p&gt;
 
 &lt;script src=&quot;https://gist.github.com/leucos/1bfcfc7252e8c262956e.js&quot;&gt; &lt;/script&gt;
 
-</description>
-        <pubDate>Tue, 26 May 2015 00:00:00 +0200</pubDate>
-        <link>//leucos.github.io/2015/05/26/transparent-vault-revisited/</link>
-        <guid isPermaLink="true">//leucos.github.io/2015/05/26/transparent-vault-revisited/</guid>
-        
-        <category>ansible</category>
-        
-        <category>ansible-vaut</category>
-        
-        <category>git</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Transparent encryption/decryption with ansible vault</title>
-        <description>&lt;h1 id=&quot;big-fat-warning&quot;&gt;Big Fat Warning&lt;/h1&gt;
+
+    &lt;p&gt;&lt;a href=&quot;//leucos.github.io/articles/transparent-vault-revisited/&quot;&gt;Transparent encryption with ansible vault revisited&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;//leucos.github.io&quot;&gt;Random stuff&lt;/a&gt; on May 26, 2015.&lt;/p&gt;
+  </content>
+</entry>
+
+
+  
+
+<entry>
+  <title type="html"><![CDATA[Transparent encryption/decryption with ansible vault]]></title>
+  <link rel="alternate" type="text/html" href="//leucos.github.io/articles/ansible-transparent-vault/" />
+  <id>//leucos.github.io/articles/ansible-transparent-vault</id>
+  <updated>2015-05-25T00:00:00-00:00</updated>
+  <published>2015-05-25T00:00:00+02:00</published>
+  
+  <author>
+    <name>Michel Blanc</name>
+    <uri>//leucos.github.io</uri>
+    <email>mb@mbnet.fr</email>
+  </author>
+  <content type="html">
+    &lt;h1 id=&quot;big-fat-warning&quot;&gt;Big Fat Warning&lt;/h1&gt;
 
 &lt;p&gt;&lt;strong&gt;THIS FILE IS LEFT HERE FOR REFERENCE&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;However, the method described here is WRONG. Check out 
-&lt;a href=&quot;/2015/05/26/transparent-vault-revisited/&quot;&gt;next post&lt;/a&gt; instead !&lt;/p&gt;
+&lt;a href=&quot;/articles/transparent-vault-revisited/&quot;&gt;next post&lt;/a&gt; instead !&lt;/p&gt;
 
 &lt;h2 id=&quot;pain-points&quot;&gt;Pain points&lt;/h2&gt;
 
@@ -429,23 +450,28 @@ commit and decrypted after.&lt;/p&gt;
 
 &lt;script src=&quot;https://gist.github.com/leucos/405b406b9d6bde0c3d39.js&quot;&gt; &lt;/script&gt;
 
-</description>
-        <pubDate>Mon, 25 May 2015 00:00:00 +0200</pubDate>
-        <link>//leucos.github.io/2015/05/25/ansible-transparent-vault/</link>
-        <guid isPermaLink="true">//leucos.github.io/2015/05/25/ansible-transparent-vault/</guid>
-        
-        <category>ansible</category>
-        
-        <category>ansible-vaut</category>
-        
-        <category>git</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Making dynamic inventory usable with Ansible and Digital Ocean</title>
-        <description>&lt;h2 id=&quot;the-problem&quot;&gt;The problem&lt;/h2&gt;
+
+    &lt;p&gt;&lt;a href=&quot;//leucos.github.io/articles/ansible-transparent-vault/&quot;&gt;Transparent encryption/decryption with ansible vault&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;//leucos.github.io&quot;&gt;Random stuff&lt;/a&gt; on May 25, 2015.&lt;/p&gt;
+  </content>
+</entry>
+
+
+  
+
+<entry>
+  <title type="html"><![CDATA[Making dynamic inventory usable with Ansible and Digital Ocean]]></title>
+  <link rel="alternate" type="text/html" href="//leucos.github.io/articles/ansible-contract-inventory/" />
+  <id>//leucos.github.io/articles/ansible-contract-inventory</id>
+  <updated>2015-05-11T00:00:00-00:00</updated>
+  <published>2015-05-03T00:00:00+02:00</published>
+  
+  <author>
+    <name>Michel Blanc</name>
+    <uri>//leucos.github.io</uri>
+    <email>mb@mbnet.fr</email>
+  </author>
+  <content type="html">
+    &lt;h2 id=&quot;the-problem&quot;&gt;The problem&lt;/h2&gt;
 
 &lt;p&gt;You’ve been there too. Spinning up droplets on DigitalOcean with Ansible
 and using a dynamic inventory script is quite a pain.&lt;/p&gt;
@@ -679,21 +705,27 @@ rm &lt;span class=&quot;nv&quot;&gt;$INVENTORY&lt;/span&gt;/generated
 
 &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;All done !&amp;quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-</description>
-        <pubDate>Sun, 03 May 2015 00:00:00 +0200</pubDate>
-        <link>//leucos.github.io/2015/05/03/ansible-contract-inventory/</link>
-        <guid isPermaLink="true">//leucos.github.io/2015/05/03/ansible-contract-inventory/</guid>
-        
-        <category>ansible</category>
-        
-        <category>digital ocean</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Testing Ansible roles, part 2</title>
-        <description>&lt;p&gt;Now that we have created our basic role in &lt;a href=&quot;/2015/03/14/testing-ansible-roles-part-1/&quot;&gt;part 1&lt;/a&gt;, we need to set-up a Vagrant machine and some tooling to run our tests.&lt;/p&gt;
+
+    &lt;p&gt;&lt;a href=&quot;//leucos.github.io/articles/ansible-contract-inventory/&quot;&gt;Making dynamic inventory usable with Ansible and Digital Ocean&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;//leucos.github.io&quot;&gt;Random stuff&lt;/a&gt; on May 03, 2015.&lt;/p&gt;
+  </content>
+</entry>
+
+
+  
+
+<entry>
+  <title type="html"><![CDATA[Testing Ansible roles, part 2]]></title>
+  <link rel="alternate" type="text/html" href="//leucos.github.io/articles/testing-ansible-roles-part-2/" />
+  <id>//leucos.github.io/articles/testing-ansible-roles-part-2</id>
+  <published>2015-03-15T00:00:00+01:00</published>
+  <updated>2015-03-15T00:00:00+01:00</updated>
+  <author>
+    <name>Michel Blanc</name>
+    <uri>//leucos.github.io</uri>
+    <email>mb@mbnet.fr</email>
+  </author>
+  <content type="html">
+    &lt;p&gt;Now that we have created our basic role in &lt;a href=&quot;/articles/testing-ansible-roles-part-1/&quot;&gt;part 1&lt;/a&gt;, we need to set-up a Vagrant machine and some tooling to run our tests.&lt;/p&gt;
 
 &lt;h2 id=&quot;creating-the-vagrant-machine&quot;&gt;Creating the Vagrant machine&lt;/h2&gt;
 
@@ -880,27 +912,27 @@ it from the guard watch, the test will loop forever.&lt;/p&gt;
 
 &lt;p&gt;In the next part, we will add some more tests, and see what we can do with &lt;a href=&quot;rolespec&quot;&gt;RoleSpec&lt;/a&gt;.&lt;/p&gt;
 
-</description>
-        <pubDate>Sun, 15 Mar 2015 00:00:00 +0100</pubDate>
-        <link>//leucos.github.io/2015/03/15/testing-ansible-roles-part-2/</link>
-        <guid isPermaLink="true">//leucos.github.io/2015/03/15/testing-ansible-roles-part-2/</guid>
-        
-        <category>ansible</category>
-        
-        <category>tdd</category>
-        
-        <category>rolespec</category>
-        
-        <category>guard</category>
-        
-        <category>vagrant</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Testing Ansible roles, part 1</title>
-        <description>&lt;p&gt;&lt;a href=&quot;rolespec&quot;&gt;RoleSpec&lt;/a&gt; does a great job helping out testing your roles. It is
+
+    &lt;p&gt;&lt;a href=&quot;//leucos.github.io/articles/testing-ansible-roles-part-2/&quot;&gt;Testing Ansible roles, part 2&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;//leucos.github.io&quot;&gt;Random stuff&lt;/a&gt; on March 15, 2015.&lt;/p&gt;
+  </content>
+</entry>
+
+
+  
+
+<entry>
+  <title type="html"><![CDATA[Testing Ansible roles, part 1]]></title>
+  <link rel="alternate" type="text/html" href="//leucos.github.io/articles/testing-ansible-roles-part-1/" />
+  <id>//leucos.github.io/articles/testing-ansible-roles-part-1</id>
+  <published>2015-03-14T00:00:00+01:00</published>
+  <updated>2015-03-14T00:00:00+01:00</updated>
+  <author>
+    <name>Michel Blanc</name>
+    <uri>//leucos.github.io</uri>
+    <email>mb@mbnet.fr</email>
+  </author>
+  <content type="html">
+    &lt;p&gt;&lt;a href=&quot;rolespec&quot;&gt;RoleSpec&lt;/a&gt; does a great job helping out testing your roles. It is
 maintained and used primarily to test the &lt;a href=&quot;debops&quot;&gt;DebOps&lt;/a&gt; role suite by the
 fine folks hanging out in &lt;a href=&quot;irc://irc.freenode.net/debops&quot;&gt;#debops&lt;/a&gt; IRC channel.
 RoleSpec handles all the boiler plate to run tests (installing the right version
@@ -926,7 +958,7 @@ for this. We’ll also use Guard to continuously test our role while writing it.
 
 &lt;p&gt;If you already have a role want to convert it, create the &lt;code&gt;tests/ansible-
 nginx/&lt;/code&gt; directory and skip straight to 
-&lt;a href=&quot;/2015/03/15/testing-ansible-roles-part-2/&quot;&gt;part 2&lt;/a&gt;.&lt;/p&gt;
+&lt;a href=&quot;/articles/testing-ansible-roles-part-2/&quot;&gt;part 2&lt;/a&gt;.&lt;/p&gt;
 
 &lt;h3 id=&quot;defaults&quot;&gt;Defaults&lt;/h3&gt;
 
@@ -993,83 +1025,83 @@ included file, like so:&lt;/p&gt;
 
 &lt;p&gt;We just need to add 2 templates, and our role will be ready. The first one is the main &lt;code&gt;nginx.conf.j2&lt;/code&gt; file:&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span class=&quot;l-Scalar-Plain&quot;&gt;user www-data;&lt;/span&gt;
-&lt;span class=&quot;l-Scalar-Plain&quot;&gt;worker_processes {{ ansible_processor_count }};&lt;/span&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-jinja&quot; data-lang=&quot;jinja&quot;&gt;&lt;span class=&quot;x&quot;&gt;user www-data;&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;worker_processes &lt;/span&gt;&lt;span class=&quot;cp&quot;&gt;{{&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;ansible_processor_count&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;}}&lt;/span&gt;&lt;span class=&quot;x&quot;&gt;;&lt;/span&gt;
 
-&lt;span class=&quot;l-Scalar-Plain&quot;&gt;pid         /var/run/nginx.pid;&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;pid         /var/run/nginx.pid;&lt;/span&gt;
 
-&lt;span class=&quot;l-Scalar-Plain&quot;&gt;events {&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;worker_connections {{ nginx_worker_connections }};&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;# multi_accept on;&lt;/span&gt;
-&lt;span class=&quot;l-Scalar-Plain&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;events {&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    worker_connections &lt;/span&gt;&lt;span class=&quot;cp&quot;&gt;{{&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;nginx_worker_connections&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;}}&lt;/span&gt;&lt;span class=&quot;x&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    # multi_accept on;&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;}&lt;/span&gt;
 
-&lt;span class=&quot;l-Scalar-Plain&quot;&gt;http {&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;##&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;# Basic Settings&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;##&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;sendfile    on;&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;tcp_nopush  on;&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;tcp_nodelay on;&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;http {&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    ##&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    # Basic Settings&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    ##&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    sendfile    on;&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    tcp_nopush  on;&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    tcp_nodelay on;&lt;/span&gt;
 
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;# SSL stuff&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;ssl_protocols TLSv1 TLSv1.1 TLSv1.2;&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    # SSL stuff&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;&lt;/span&gt;
 
-&lt;span class=&quot;l-Scalar-Plain&quot;&gt;{% if nginx_ie8_support %}&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;ssl_ciphers &amp;quot;ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4&amp;quot;;&lt;/span&gt;
-&lt;span class=&quot;l-Scalar-Plain&quot;&gt;{% else %}&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;ssl_ciphers &amp;quot;EECDH+ECDSA+AESGCM:EECDH+aRSA+AESGCM:EECDH+ECDSA+SHA384:EECDH+ECDSA+SHA256:EECDH+aRSA+SHA384:EECDH+aRSA+SHA256:EECDH+aRSA+RC4:EECDH:EDH+aRSA:!RC4:!aNULL:!eNULL:!LOW:!3DES:!MD5:!EXPORT:!PSK:!SRP:!DSS&amp;quot;;&lt;/span&gt;
-&lt;span class=&quot;l-Scalar-Plain&quot;&gt;{% endif %}&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;{%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;nginx_ie8_support&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%}&lt;/span&gt;&lt;span class=&quot;x&quot;&gt;&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    ssl_ciphers &amp;quot;ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4&amp;quot;;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;{%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%}&lt;/span&gt;&lt;span class=&quot;x&quot;&gt;&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    ssl_ciphers &amp;quot;EECDH+ECDSA+AESGCM:EECDH+aRSA+AESGCM:EECDH+ECDSA+SHA384:EECDH+ECDSA+SHA256:EECDH+aRSA+SHA384:EECDH+aRSA+SHA256:EECDH+aRSA+RC4:EECDH:EDH+aRSA:!RC4:!aNULL:!eNULL:!LOW:!3DES:!MD5:!EXPORT:!PSK:!SRP:!DSS&amp;quot;;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;{%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;endif&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%}&lt;/span&gt;&lt;span class=&quot;x&quot;&gt;&lt;/span&gt;
 
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;ssl_session_cache shared:SSL:32m;&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;ssl_buffer_size 8k;&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;ssl_session_timeout 10m;&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    ssl_session_cache shared:SSL:32m;&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    ssl_buffer_size 8k;&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    ssl_session_timeout 10m;&lt;/span&gt;
 
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;keepalive_timeout     65;&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;types_hash_max_size 2048;&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    keepalive_timeout     65;&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    types_hash_max_size 2048;&lt;/span&gt;
 
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;server_tokens off;&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    server_tokens off;&lt;/span&gt;
 
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;include       /etc/nginx/mime.types;&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;default_type  application/octet-stream;&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    include       /etc/nginx/mime.types;&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    default_type  application/octet-stream;&lt;/span&gt;
 
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;##&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;# Logging Settings&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;##&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;access_log /var/log/nginx/access.log;&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;error_log /var/log/nginx/error.log;&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    ##&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    # Logging Settings&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    ##&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    access_log /var/log/nginx/access.log;&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    error_log /var/log/nginx/error.log;&lt;/span&gt;
 
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;##&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;# Gzip Settings&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;##&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;gzip on;&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;gzip_disable &amp;quot;msie6&amp;quot;;&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;gzip_comp_level 6;&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;gzip_buffers 16 8k;&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;gzip_types  application/javascript&lt;/span&gt; 
-                &lt;span class=&quot;l-Scalar-Plain&quot;&gt;application/json&lt;/span&gt; 
-                &lt;span class=&quot;l-Scalar-Plain&quot;&gt;application/x-javascript&lt;/span&gt; 
-                &lt;span class=&quot;l-Scalar-Plain&quot;&gt;application/xml&lt;/span&gt; 
-                &lt;span class=&quot;l-Scalar-Plain&quot;&gt;application/xml+rss&lt;/span&gt; 
-                &lt;span class=&quot;l-Scalar-Plain&quot;&gt;image/svg+xml&lt;/span&gt;
-                &lt;span class=&quot;l-Scalar-Plain&quot;&gt;text/css&lt;/span&gt; 
-                &lt;span class=&quot;l-Scalar-Plain&quot;&gt;text/plain&lt;/span&gt;
-                &lt;span class=&quot;l-Scalar-Plain&quot;&gt;text/xml&lt;/span&gt; 
-                &lt;span class=&quot;l-Scalar-Plain&quot;&gt;text/javascript;&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    ##&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    # Gzip Settings&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    ##&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    gzip on;&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    gzip_disable &amp;quot;msie6&amp;quot;;&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    gzip_comp_level 6;&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    gzip_buffers 16 8k;&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    gzip_types  application/javascript &lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;                application/json &lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;                application/x-javascript &lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;                application/xml &lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;                application/xml+rss &lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;                image/svg+xml&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;                text/css &lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;                text/plain&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;                text/xml &lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;                text/javascript;&lt;/span&gt;
 
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;##&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;# If HTTPS, then set a variable so it can be passed along.&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;##&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;map $scheme $server_https {&lt;/span&gt;
-        &lt;span class=&quot;l-Scalar-Plain&quot;&gt;default off;&lt;/span&gt;
-        &lt;span class=&quot;l-Scalar-Plain&quot;&gt;https on;&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    ##&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    # If HTTPS, then set a variable so it can be passed along.&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    ##&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    map $scheme $server_https {&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;        default off;&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;        https on;&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    }&lt;/span&gt;
 
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;##&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;# Virtual Host Configs&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;##&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;include /etc/nginx/conf.d/*.conf;&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;include /etc/nginx/sites-enabled/*;&lt;/span&gt;
-&lt;span class=&quot;l-Scalar-Plain&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;span class=&quot;x&quot;&gt;    ##&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    # Virtual Host Configs&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    ##&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    include /etc/nginx/conf.d/*.conf;&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;    include /etc/nginx/sites-enabled/*;&lt;/span&gt;
+&lt;span class=&quot;x&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The file is a bit long, but it just contains basic settings. Note that we’re
 aligning the number of worker processes to the number of processors reported by
@@ -1110,29 +1142,30 @@ or not.&lt;/p&gt;
   &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;Our role is now ready. We can now setup the tooling for our tests as explained in &lt;a href=&quot;/2015/03/15/testing-ansible-roles-part-2/&quot;&gt;part 2&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Our role is now ready. We can now setup the tooling for our tests as explained in &lt;a href=&quot;/articles/testing-ansible-roles-part-2/&quot;&gt;part 2&lt;/a&gt;&lt;/p&gt;
 
-</description>
-        <pubDate>Sat, 14 Mar 2015 00:00:00 +0100</pubDate>
-        <link>//leucos.github.io/2015/03/14/testing-ansible-roles-part-1/</link>
-        <guid isPermaLink="true">//leucos.github.io/2015/03/14/testing-ansible-roles-part-1/</guid>
-        
-        <category>ansible</category>
-        
-        <category>tdd</category>
-        
-        <category>rolespec</category>
-        
-        <category>guard</category>
-        
-        <category>vagrant</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Invalidating REDIS cache from Ruby</title>
-        <description>&lt;h2 id=&quot;redis-as-padrino-cache&quot;&gt;REDIS as Padrino cache&lt;/h2&gt;
+
+    &lt;p&gt;&lt;a href=&quot;//leucos.github.io/articles/testing-ansible-roles-part-1/&quot;&gt;Testing Ansible roles, part 1&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;//leucos.github.io&quot;&gt;Random stuff&lt;/a&gt; on March 14, 2015.&lt;/p&gt;
+  </content>
+</entry>
+
+
+  
+
+<entry>
+  <title type="html"><![CDATA[Invalidating REDIS cache from Ruby]]></title>
+  <link rel="alternate" type="text/html" href="//leucos.github.io/articles/expiring-redis-cache-from-ruby/" />
+  <id>//leucos.github.io/articles/expiring-redis-cache-from-ruby</id>
+  <updated>2015-03-01T00:00:00-00:00</updated>
+  <published>2015-03-01T00:00:00+01:00</published>
+  
+  <author>
+    <name>Michel Blanc</name>
+    <uri>//leucos.github.io</uri>
+    <email>mb@mbnet.fr</email>
+  </author>
+  <content type="html">
+    &lt;h2 id=&quot;redis-as-padrino-cache&quot;&gt;REDIS as Padrino cache&lt;/h2&gt;
 
 &lt;p&gt;Using REDIS as and application cache is very handy. You can easily use
 it in, say, &lt;a href=&quot;http://www.padrinorb.com/&quot;&gt;Padrino&lt;/a&gt; like this:&lt;/p&gt;
@@ -1311,27 +1344,31 @@ monitor your Redis statistics for this.&lt;/p&gt;
 &lt;div class=&quot;footnotes&quot;&gt;
   &lt;ol&gt;
     &lt;li id=&quot;fn:1&quot;&gt;
-      &lt;p&gt;&lt;a href=&quot;http://redis.io/commands/KEYS&quot;&gt;http://redis.io/commands/KEYS&lt;/a&gt; &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+      &lt;p&gt;&lt;a href=&quot;http://www.padrinorb.com/&quot;&gt;http://www.padrinorb.com/&lt;/a&gt; &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
   &lt;/ol&gt;
 &lt;/div&gt;
-</description>
-        <pubDate>Sun, 01 Mar 2015 00:00:00 +0100</pubDate>
-        <link>//leucos.github.io/2015/03/01/expiring-redis-cache-from-ruby/</link>
-        <guid isPermaLink="true">//leucos.github.io/2015/03/01/expiring-redis-cache-from-ruby/</guid>
-        
-        <category>redis</category>
-        
-        <category>ruby</category>
-        
-        <category>padrino</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Restoring Arch bootloader for the future self</title>
-        <description>&lt;ul&gt;
+
+    &lt;p&gt;&lt;a href=&quot;//leucos.github.io/articles/expiring-redis-cache-from-ruby/&quot;&gt;Invalidating REDIS cache from Ruby&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;//leucos.github.io&quot;&gt;Random stuff&lt;/a&gt; on March 01, 2015.&lt;/p&gt;
+  </content>
+</entry>
+
+
+  
+
+<entry>
+  <title type="html"><![CDATA[Restoring Arch bootloader for the future self]]></title>
+  <link rel="alternate" type="text/html" href="//leucos.github.io/articles/restoring-arch-bootloader/" />
+  <id>//leucos.github.io/articles/restoring-arch-bootloader</id>
+  <published>2015-02-14T00:00:00+01:00</published>
+  <updated>2015-02-14T00:00:00+01:00</updated>
+  <author>
+    <name>Michel Blanc</name>
+    <uri>//leucos.github.io</uri>
+    <email>mb@mbnet.fr</email>
+  </author>
+  <content type="html">
+    &lt;ul&gt;
   &lt;li&gt;
     &lt;p&gt;Grab latest Arch, create a bootable key (do this before you’re doomed)&lt;sup id=&quot;fnref:1&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;. &lt;/p&gt;
   &lt;/li&gt;
@@ -1351,10 +1388,8 @@ monitor your Redis statistics for this.&lt;/p&gt;
 
 &lt;p&gt;In case you need to reinstall all the things&lt;sup id=&quot;fnref:2&quot;&gt;&lt;a href=&quot;#fn:2&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;:&lt;/p&gt;
 
-&lt;p&gt;&lt;code&gt;
-sudo pacman -Sy `yaourt -Q | grep -v &#39;^aur&#39;| grep -v &#39;^local&#39; | cut -f2
--d&#39;/&#39; | awk &#39;{ print $1 }&#39;`
-&lt;/code&gt;&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;sudo pacman -Sy &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;yaourt -Q &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; grep -v &lt;span class=&quot;s1&quot;&gt;&amp;#39;^aur&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; grep -v &lt;span class=&quot;s1&quot;&gt;&amp;#39;^local&amp;#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; cut -f2
+-d&lt;span class=&quot;s1&quot;&gt;&amp;#39;/&amp;#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; awk &lt;span class=&quot;s1&quot;&gt;&amp;#39;{ print $1 }&amp;#39;&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;div class=&quot;footnotes&quot;&gt;
   &lt;ol&gt;
@@ -1366,17 +1401,9 @@ sudo pacman -Sy `yaourt -Q | grep -v &#39;^aur&#39;| grep -v &#39;^local&#39; | 
     &lt;/li&gt;
   &lt;/ol&gt;
 &lt;/div&gt;
-</description>
-        <pubDate>Sat, 14 Feb 2015 00:00:00 +0100</pubDate>
-        <link>//leucos.github.io/2015/02/14/restoring-arch-bootloader/</link>
-        <guid isPermaLink="true">//leucos.github.io/2015/02/14/restoring-arch-bootloader/</guid>
-        
-        <category>uefi</category>
-        
-        <category>arch</category>
-        
-        
-      </item>
-    
-  </channel>
-</rss>
+
+    &lt;p&gt;&lt;a href=&quot;//leucos.github.io/articles/restoring-arch-bootloader/&quot;&gt;Restoring Arch bootloader for the future self&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;//leucos.github.io&quot;&gt;Random stuff&lt;/a&gt; on February 14, 2015.&lt;/p&gt;
+  </content>
+</entry>
+
+</feed>

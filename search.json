@@ -1,0 +1,95 @@
+[
+
+  
+    {
+      "title"			: "Decoupling your Ansible roles",
+      "link"			: "//leucos.github.io/decoupling-your-ansible-roles",
+      "excerpt"		: "Stay sane, decouple your Ansible roles"
+    }
+  
+
+  
+    ,{
+      "title"			: "Transparent encryption with ansible vault revisited",
+      "link"			: "//leucos.github.io/articles/transparent-vault-revisited/",
+      "excerpt"		: "Note to self: test your blog posts thoroughly next time"
+    }
+  
+
+  
+    ,{
+      "title"			: "Transparent encryption/decryption with ansible vault",
+      "link"			: "//leucos.github.io/articles/ansible-transparent-vault/",
+      "excerpt"		: "Never type ansible-vault again."
+    }
+  
+
+  
+    ,{
+      "title"			: "Making dynamic inventory usable with Ansible and Digital Ocean",
+      "link"			: "//leucos.github.io/articles/ansible-contract-inventory/",
+      "excerpt"		: "Let's face it, dynamic inventory sucks. Let's fix that."
+    }
+  
+
+  
+    ,{
+      "title"			: "Testing Ansible roles, part 2",
+      "link"			: "//leucos.github.io/articles/testing-ansible-roles-part-2/",
+      "excerpt"		: "Testing Ansible roles, TDD style, with rolespec, Vagrant and Guard"
+    }
+  
+
+  
+    ,{
+      "title"			: "Testing Ansible roles, part 1",
+      "link"			: "//leucos.github.io/articles/testing-ansible-roles-part-1/",
+      "excerpt"		: "Testing Ansible roles, TDD style, with rolespec, Vagrant and Guard"
+    }
+  
+
+  
+    ,{
+      "title"			: "Invalidating REDIS cache from Ruby",
+      "link"			: "//leucos.github.io/articles/expiring-redis-cache-from-ruby/",
+      "excerpt"		: "Using REDIS cursors for cache invalidation"
+    }
+  
+
+  
+    ,{
+      "title"			: "Restoring Arch bootloader for the future self",
+      "link"			: "//leucos.github.io/articles/restoring-arch-bootloader/",
+      "excerpt"		: "Quick note on restoring the bootloaded on Asus UX51VZA"
+    }
+  
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    ,{
+      "title"			: "About",
+      "link"			: "//leucos.github.io/about/",
+      "excerpt"		: ""
+    }
+  
+
+  
+
+  
+
+]
