@@ -1,8 +1,55 @@
-# Base URL
-baseurl: ""# the subpath of your site, e.g. /blog/
+# Site wide configuration
 
-# Site live URL
-url: "http://127.0.0.1:4000" # the base hostname & protocol for your site
+title: Random stuff
+locale: en_US
+description: brain dump on sysadmin & DevOps related topics
+logo: logo.png
+search: true
+#url: //leucos.github.io
+url: //127.0.0.1:4000
 
-markdown: kramdown
+# Jekyll configuration
 
+permalink:   /:categories/:title/
+markdown:    kramdown
+highlighter: pygments
+sass:
+  sass_dir: _sass
+  style: compressed
+gems:
+  - jekyll-sitemap
+
+kramdown:
+  auto_ids: true
+  footnote_nr: 1
+  entity_output: as_char
+  toc_levels: 1..2
+  use_coderay: false
+
+include: [".htaccess"]
+exclude: ["lib", "config.rb", "Capfile", "config", "log", "Rakefile", "Rakefile.rb", "tmp", "less", "*.sublime-project", "*.sublime-workspace", "test", "spec", "Gruntfile.js", "package.json", "node_modules", "Gemfile", "Gemfile.lock", "LICENSE", "README.md", "vendor"]
+
+
+# Site owner
+owner:
+  name: Michel Blanc
+  avatar: gravatar.jpg
+  email: mb@mbnet.fr
+  disqus-shortname: #randomstuffonrandomstuff
+  twitter: b9m
+  facebook: #username
+  github: leucos
+  stackexchange: http://stackoverflow.com/users/467722/leucos
+  linkedin: michelblanc
+  instagram: #username
+  flickr: #username
+  tumblr: #username
+  pinterest: #username
+  weibo: #userid
+  google:
+    plus: #username
+    analytics: #UA-60810209-1
+    verify:
+    ad-client:
+    ad-slot:
+  bing-verify:

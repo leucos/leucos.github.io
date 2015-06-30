@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 require "rubygems"
 require 'rake'
 require 'yaml'
@@ -95,4 +97,3 @@ task :publish do
     system "jgd"
   end
 end
-

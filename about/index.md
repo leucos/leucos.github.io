@@ -1,13 +1,8 @@
 ---
 layout: page
 title: About
-tags: [about]
 modified: 2015-03-15T18:25:07.573882+01:00
 comments: false
-# image:
-#  feature: header_about.jpg
-#  credit: WeGraphics
-#  creditlink: http://wegraphics.net/downloads/free-ultimate-blurred-background-pack/
 ---
 
 Witnessed linux being installed from (many) floppy discs (using GNU/Linux since
@@ -45,4 +40,3 @@ I am pretty sold to CI/CD, microservices and MonitorAllTheThings™, as is my ru
 - [Zuzur's blog](http://arzur.net/octopress/)
 - [All the rest](https://delicious.com/leucos)
 
-{% include social.html %}
