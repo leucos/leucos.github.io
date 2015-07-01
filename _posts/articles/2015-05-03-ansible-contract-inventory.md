@@ -6,6 +6,11 @@ tags: [ansible, digital ocean]
 categories: articles
 modified: 2015-05-11
 comments: true
+image:
+  feature: 2015-05-03-ansible-contract-inventory.jpg
+  thumb: 2015-05-03-ansible-contract-inventory-thumb.png
+  credit: X
+  creditlink: https://pixabay.com/fr/users/849356-849356/
 ---
 
 ## The problem

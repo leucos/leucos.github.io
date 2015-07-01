@@ -5,6 +5,12 @@ excerpt: Stay sane, decouple your Ansible roles
 categories: articles
 tags: ansible
 permalink: decoupling-your-ansible-roles
+share: true
+image:
+  feature: 2015-06-27-decoupling-your-ansible-roles.jpg
+  thumb: 2015-06-27-decoupling-your-ansible-roles-thumb.png
+  credit: VitaminaMov
+  creditlink: https://pixabay.com/fr/users/VitaminaMov-852074/
 ---
 
 Having tightly coupled role is the best way to have a hard time

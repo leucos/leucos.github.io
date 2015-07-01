@@ -6,6 +6,11 @@ tags: [ansible, ansible-vaut, git]
 categories: articles
 modified: 2015-05-25
 comments: true
+image:
+  feature: 2015-05-25-ansible-transparent-vault.jpg
+  thumb: 2015-05-25-ansible-transparent-vault-thumb.png
+  credit: Life-Of-Pix
+  creditlink: https://pixabay.com/fr/users/Life-Of-Pix-364018/
 ---
 
 # Big Fat Warning

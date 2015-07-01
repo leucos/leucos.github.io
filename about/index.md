@@ -32,11 +32,18 @@ Since I'm as lazy as a sysadmin can be, I have been focusing on Ansible starting
 in it's early days, writing deployment playbooks to blossom bare metal machines
 (or instances) into fully featured flowery clusters, and currently playing with Docker & Consul.
 
-I am pretty sold to CI/CD, microservices and MonitorAllTheThings™, as is my rubberdyno in the header.
+I am pretty sold to CI/CD, microservices and MonitorAllTheThings™, and
+often discuss about that whith my rubberdyno.
+
+I am open to freelance DevOps-oriented opportunitites on webstacks
+architecture, operations, monitoring, infrastructure and software
+delivery automation.
+
+You can hit me on [LinkedIn](https://fr.linkedin.com/in/michelblanc).
 
 ## Links !
 
-- [GitHub profile](https://github.com/leucos)
-- [Zuzur's blog](http://arzur.net/octopress/)
-- [All the rest](https://delicious.com/leucos)
+[GitHub profile](https://github.com/leucos) - 
+[Zuzur's blog](http://arzur.net/octopress/) - 
+[All the rest](https://delicious.com/leucos)
 
