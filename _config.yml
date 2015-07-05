@@ -5,7 +5,7 @@ locale: en_US
 description: brain dump on sysadmin & DevOps related topics
 logo: logo.png
 search: true
-url: //leucos.github.io
+url: https://leucos.github.io
 
 # Jekyll configuration
 
