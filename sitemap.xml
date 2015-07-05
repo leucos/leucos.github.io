@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>//leucos.github.io/ansible-files-layout</loc>
+    <lastmod>2015-07-02T00:00:00+02:00</lastmod>
+  </url>
+  <url>
     <loc>//leucos.github.io/decoupling-your-ansible-roles</loc>
     <lastmod>2015-06-27T00:00:00+02:00</lastmod>
   </url>
@@ -34,22 +38,22 @@
   </url>
   <url>
     <loc>//leucos.github.io/</loc>
-    <lastmod>2015-07-01T08:39:06+02:00</lastmod>
+    <lastmod>2015-07-05T20:08:11+02:00</lastmod>
   </url>
   <url>
     <loc>//leucos.github.io/tags/</loc>
-    <lastmod>2015-07-01T08:39:06+02:00</lastmod>
+    <lastmod>2015-07-05T20:08:11+02:00</lastmod>
   </url>
   <url>
     <loc>//leucos.github.io/blog/</loc>
-    <lastmod>2015-07-01T08:39:06+02:00</lastmod>
+    <lastmod>2015-07-05T20:08:11+02:00</lastmod>
   </url>
   <url>
     <loc>//leucos.github.io/articles/</loc>
-    <lastmod>2015-07-01T08:39:06+02:00</lastmod>
+    <lastmod>2015-07-05T20:08:11+02:00</lastmod>
   </url>
   <url>
     <loc>//leucos.github.io/about/</loc>
-    <lastmod>2015-07-01T08:39:06+02:00</lastmod>
+    <lastmod>2015-07-05T20:08:11+02:00</lastmod>
   </url>
 </urlset>

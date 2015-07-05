@@ -2,6 +2,14 @@
 
   
     {
+      "title"			: "Laying out roles, inventories and playbooks",
+      "link"			: "//leucos.github.io/ansible-files-layout",
+      "excerpt"		: "Keeping your Ansible infrastructure code tidy"
+    }
+  
+
+  
+    ,{
       "title"			: "Decoupling your Ansible roles",
       "link"			: "//leucos.github.io/decoupling-your-ansible-roles",
       "excerpt"		: "Stay sane, decouple your Ansible roles"

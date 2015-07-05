@@ -1,0 +1,692 @@
+<!doctype html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if (IE 7)&!(IEMobile)]><html class="no-js lt-ie9 lt-ie8" lang="en"><![endif]-->
+<!--[if (IE 8)&!(IEMobile)]><html class="no-js lt-ie9" lang="en"><![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"><!--<![endif]-->
+<head>
+<meta charset="utf-8">
+<title>Laying out roles, inventories and playbooks &#8211; Random stuff</title>
+<meta name="description" content="Keeping your Ansible infrastructure code tidy">
+<meta name="keywords" content="ansible">
+
+
+
+<!-- Twitter Cards -->
+<meta name="twitter:title" content="Laying out roles, inventories and playbooks">
+<meta name="twitter:description" content="Keeping your Ansible infrastructure code tidy">
+<meta name="twitter:site" content="@b9m">
+<meta name="twitter:creator" content="@b9m">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="//leucos.github.io/images/2015-07-02-ansible-layout.jpg">
+
+<!-- Open Graph -->
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Laying out roles, inventories and playbooks">
+<meta property="og:description" content="Keeping your Ansible infrastructure code tidy">
+<meta property="og:url" content="//leucos.github.io/ansible-files-layout">
+<meta property="og:site_name" content="Random stuff">
+
+
+
+
+
+<link rel="canonical" href="//leucos.github.io/ansible-files-layout">
+<link href="//leucos.github.io/feed.xml" type="application/atom+xml" rel="alternate" title="Random stuff Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="//leucos.github.io/assets/css/main.css">
+<!-- Webfonts -->
+<script src="//use.edgefonts.net/source-sans-pro:n2,i2,n3,i3,n4,i4,n6,i6,n7,i7,n9,i9;source-code-pro:n4,n7;volkhov.js"></script>
+
+<meta http-equiv="cleartype" content="on">
+
+<!-- HTML5 Shiv and Media Query Support -->
+<!--[if lt IE 9]>
+  <script src="//leucos.github.io/assets/js/vendor/html5shiv.min.js"></script>
+  <script src="//leucos.github.io/assets/js/vendor/respond.min.js"></script>
+<![endif]-->
+
+<!-- Modernizr -->
+<script src="//leucos.github.io/assets/js/vendor/modernizr-2.7.1.custom.min.js"></script>
+
+<!-- Icons -->
+<!-- 16x16 -->
+<link rel="shortcut icon" href="//leucos.github.io/favicon.ico">
+<!-- 32x32 -->
+<link rel="shortcut icon" href="//leucos.github.io/favicon.png">
+<!-- 57x57 (precomposed) for iPhone 3GS, pre-2011 iPod Touch and older Android devices -->
+<link rel="apple-touch-icon-precomposed" href="//leucos.github.io/images/apple-touch-icon-precomposed.png">
+<!-- 72x72 (precomposed) for 1st generation iPad, iPad 2 and iPad mini -->
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="//leucos.github.io/images/apple-touch-icon-72x72-precomposed.png">
+<!-- 114x114 (precomposed) for iPhone 4, 4S, 5 and post-2011 iPod Touch -->
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="//leucos.github.io/images/apple-touch-icon-114x114-precomposed.png">
+<!-- 144x144 (precomposed) for iPad 3rd and 4th generation -->
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="//leucos.github.io/images/apple-touch-icon-144x144-precomposed.png">
+
+</head>
+
+<body id="post">
+
+<div class="navigation-wrapper">
+	<nav role="navigation" id="site-nav" class="animated drop">
+	    <ul>
+      
+		    
+		        
+		    
+		    <li><a href="//leucos.github.io/" >Home</a></li>
+		  
+		    
+		        
+		    
+		    <li><a href="//leucos.github.io/articles/" >Articles</a></li>
+		  
+		    
+		        
+		    
+		    <li><a href="//leucos.github.io/tags/" >Tags</a></li>
+		  
+		    
+		        
+		    
+		    <li><a href="//leucos.github.io/search/" >Search</a></li>
+		  
+		    
+		        
+		    
+		    <li><a href="//leucos.github.io/about/" >About</a></li>
+		  
+	    </ul>
+	</nav>
+</div><!-- /.navigation-wrapper -->
+
+<!--[if lt IE 9]><div class="upgrade"><strong><a href="http://whatbrowser.org/">Your browser is quite old!</strong> Why not upgrade to a different browser to better enjoy this site?</a></div><![endif]-->
+
+<header class="masthead">
+	
+		<div class="wrap">
+			<a href="//leucos.github.io/" class="site-logo" rel="home" title="Random stuff"><img src="//leucos.github.io/images/logo.png" width="200" height="200" alt="Random stuff logo" class="animated fadeInDown"></a>
+		</div>
+	
+</header><!-- /.masthead -->
+
+
+<div class="js-menu-screen menu-screen"></div>
+
+
+<div id="main" role="main">
+  <article class="hentry">
+    <img src="//leucos.github.io/images/posts/2015-07-02-ansible-layout.jpg" class="entry-feature-image" alt="Laying out roles, inventories and playbooks" ><p class="image-credit">Image credit: <a href="http://pixabay.com/fr/users/Paramjeet-66854/.">Paramjeet</a></p>
+    <div class="entry-wrapper">
+      <header class="entry-header">
+        <span class="entry-tags"><a href="//leucos.github.io/tags/#ansible" title="Pages tagged ansible">ansible</a></span>
+        
+          <h1 class="entry-title">Laying out roles, inventories and playbooks</h1>
+        
+      </header>
+      <footer class="entry-meta">
+        
+        
+        
+          <img src="//leucos.github.io/images/gravatar.jpg" class="bio-photo" alt="Michel Blanc bio photo"></a>
+        
+        <span class="author vcard">By <span class="fn">Michel Blanc</span></span>
+        <span class="entry-date date published"><time datetime="2015-07-02T00:00:00+02:00"><i class="fa fa-calendar-o"></i> July 02, 2015</time></span>
+        
+        
+        <span class="social-share-twitter">
+  <a href="https://twitter.com/intent/tweet?hashtags=ansible&amp;text=Laying%20out%20roles,%20inventories%20and%20playbooks&amp;url=//leucos.github.io/ansible-files-layout&amp;via=b9m" title="Share on Twitter" itemprop="Twitter"><i class="fa fa-twitter-square"></i> Tweet</a>
+</span>
+<span class="social-share-facebook">
+  <a href="https://www.facebook.com/sharer/sharer.php?u=//leucos.github.io/ansible-files-layout" title="Share on Facebook" itemprop="Facebook"><i class="fa fa-facebook-square"></i> Like</a>
+</span>
+<span class="social-share-googleplus">
+  <a href="https://plus.google.com/share?url=//leucos.github.io/ansible-files-layout" title="Share on Google Plus" itemprop="GooglePlus"><i class="fa fa-google-plus-square"></i> +1</a>
+</span>
+<!-- /.social-share -->
+        
+      </footer>
+      <div class="entry-content">
+        <p>I have been writing playbooks for quite a while now. Along the way, I
+went through various stages, and used different ways to layout Ansible
+files. I guess that after going down this trial and error path, I
+finally came up with something I will stick to.</p>
+
+<p>I am not saying that this is the be-all and end-all of Ansible files
+layout but may be it will fast forward you to a saner file layout, and
+you’ll be able to move on from there. This post will probably help you
+if you are new to Ansible, trying to figure out what to put and where.
+I hope it will prove usefull if you have some Ansible experience too.</p>
+
+<h2 id="some-terminology">Some terminology</h2>
+
+<p>In this post, I will mostly talk about 3 things: roles, inventories and
+playbooks. Other items do exist (plays, tasks, …) but those 3 elements
+shape the big picture of the layout.</p>
+
+<h3 id="roles">Roles</h3>
+
+<p>A role is a collection of tasks and templates (among other things, but
+those are the most common) focused on one very specific goal. For
+instance, you can have a role that installs nginx, another that deploys
+ssh keys for admins, etc…</p>
+
+<p>Nginx role will install and configure nginx. Nothing else. It won’t
+create DNS entries, trim logs, add a ftp server or anything. It just
+installs nginx. Period.</p>
+
+<h3 id="inventories">Inventories</h3>
+
+<p>An inventory is a list of hosts, eventually assembled into groups, on
+which you will run ansible playbooks. Ansible automatically puts all defined
+hosts in the aptly named group <code>all</code>.</p>
+
+<p>For instance, you could have hosts <code>www1</code> and <code>www2</code>, assembled in group
+<code>webservers</code>, and later reference the group or individual hosts,
+depending on your needs.</p>
+
+<p>Inventories can also come with variables applied to hosts or groups
+(including <code>all</code>).</p>
+
+<p>Inventories can be dynamic. If the inventory file is executable, Ansible
+will run it and use its output as the inventory (note that, in this
+case, the format is not the same as static inventory).</p>
+
+<p>You can of course have multiple inventories, segregated from each other.
+We will take advantage from this later on.</p>
+
+<h3 id="playbooks">Playbooks</h3>
+
+<p>The last piece of the puzzle is the playbook. The playbook is the pivot
+between and inventory and roles. This is where you basically tell
+Ansible: <em>please install roles foo, bar and baz on machines alice, bob
+and charlie</em>.</p>
+
+<h2 id="role-layout">Role layout</h2>
+
+<p>Role layout is pretty well documented at Ansible website. A role contains
+several directories. All directories are optional besides <code>tasks</code>. For each
+directory, the entry point is <code>main.yml</code>. Thus, the only compulsory file in a
+role is <code>tasks/main.yml</code>.</p>
+
+<pre><code>ansible-foobar/
+├── defaults
+│   └── main.yml
+├── files
+├── handlers
+│   └── main.yml
+├── meta
+│   └── main.yml
+├── tasks
+│   ├── check_vars.yml
+│   ├── foobar.yml
+│   └── main.yml
+└── templates
+    └── foobar.conf.j2
+</code></pre>
+
+<p>Let’s cover briefly the layout an see the function of each file and
+directory.</p>
+
+<h3 id="defaultsmainyml"><code>defaults/main.yml</code></h3>
+
+<p>This directory contains defaults for variables used in roles. I
+encourage you to define every variable used in your role, for several
+reasons:</p>
+
+<ul>
+  <li>this file will be a nice and always up to date reference list of
+settings configuration in your roles</li>
+  <li>having configured variables will prevent your role failing in an
+uncontrolled way (more on this later).</li>
+</ul>
+
+<p>If some of these variables are used in templates to generate config
+files, I highly encourage you to use your target OS defaults. The principle of
+least surprise should apply here.</p>
+
+<p>Best practices assumes that you are using <em>pseudo-namespacing</em> for your role’s variables (e.g. for role <code>foobar</code>, all variables should begin with <code>foobar_</code>) to avoid collisions with other roles.</p>
+
+<h3 id="files"><code>files/</code></h3>
+
+<p>This directory holds files that do not require Jinja interpolation, and can be copied as-is on the remote nodes.</p>
+
+<h3 id="handlersmainyml"><code>handlers/main.yml</code></h3>
+
+<p>This is where you define handlers that get notified by tasks. Handlers
+are just standard tasks. You can use <code>include</code> in this file if you want
+to separate handlers (for different OSes versions for instances), but
+try to keep the file number as low as possible so you don’t end up
+hunting down stuff everywhere.</p>
+
+<p>If your handler restarts any service, you have to make sure that the
+service config file is valid before attempting to restart it. Some
+daemons allow this (e.g. nginx, haproxy, apache). If your service does
+not, provide some fallback mechanism. You don’t want your playbook to
+screw up your running system because you typoed a configuration
+variable. See the <code>validate</code> option in the 
+<a href="http://docs.ansible.com/template_module.html">template module</a>.</p>
+
+<p>Note that handlers are just standard tasks.</p>
+
+<h3 id="metamainyml"><code>meta/main.yml</code></h3>
+
+<p>This metadata has (AFAIK) only two variables:</p>
+
+<ul>
+  <li><code>galaxy_info</code>: meta information for galaxy about your role. You just
+don’t need this if you don intend to push your role to Galaxy. For
+details on the format, see TODO: find ref</li>
+  <li><code>dependencies</code>: what roles this role depends on.</li>
+</ul>
+
+<p>The latter is of utmost importance, and setting it right deserves a blog
+post on it’s own. Until then, the rule of thumb to remember is to <strong>only
+include compulsory role dependencies for the target host</strong>.</p>
+
+<p>This means that adding <code>nginx</code> dependency in a <code>php-fpm</code> role sounds
+perfectly reasonable<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup>. However, adding a <code>mysql</code> dependency to your
+web application role is not, because <code>mysql</code> can be deployed on another
+server.</p>
+
+<h3 id="tasksmainyml"><code>tasks/main.yml</code></h3>
+
+<p>This file is the tasks entry point. However, it should be mostly empty.
+Why ? Because you want to use Ansible tags. Tags are a great way to
+limit task execution for an Ansible run, where only tagged tasks are
+run.</p>
+
+<p>For instance, in a playbook that deploys your application, you could
+choose to run only tasks regarding nginx.</p>
+
+<p>The problem is that tagging every task in <code>main.yml</code> would be
+cumbersome, error prone, and clutter the code unnecessarily.</p>
+
+<p>The best way to tag all your tasks is to include your real task file
+from <code>tasks/main.yml</code> and tag the whole file:</p>
+
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="p-Indicator">-</span> <span class="l-Scalar-Plain">include</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">foobar.yml tags=foobar</span></code></pre></div>
+
+<p>Here, I name the real task file <code>foobar.yml</code> with the same name as the role
+(quite handy with <code>find</code> or <code>locate</code>; no need to guess which <code>main.yml</code> you are
+looking for) and apply the tag <code>foobar</code> to all tasks in the role.</p>
+
+<p>You can repeat this if you have a big list of tasks and want to split
+them in several files. You could, for instance, separate configuration
+and installation matters, and add another specific tag for each of them:</p>
+
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="p-Indicator">-</span> <span class="l-Scalar-Plain">include</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">foobar-install.yml tags=foobar,foobar:install</span>
+<span class="p-Indicator">-</span> <span class="l-Scalar-Plain">include</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">foobar-config.yml tags=foobar,foobar:config</span></code></pre></div>
+
+<p>Here I added two tags to the installation part (<code>foobar</code> and
+<code>foobar:install</code>), and two for the configuration part (<code>foobar</code> and
+<code>foobar:config</code>). </p>
+
+<p>Note that the <code>:</code> between, for instance, <code>foobar</code> and <code>config</code> has no
+meaning. Ansible treats tags as dumb strings. It is just a personnal
+convention (Redis like) for refining tags.</p>
+
+<p>With this setup, you could run only the configuration part of your role
+by issuing:</p>
+
+<p><code>ansible-playbook playbook.yml -t foobar:config</code></p>
+
+<p>The <code>-t</code> and <code>-l</code> combination is a very powerful weapon to target
+a specific host with a precise change (think of this as pointing to a
+matrix cell targetting host (i.e. row) and tag (i.e. column)).</p>
+
+<h3 id="taskscheckvarsyml"><code>tasks/check_vars.yml</code></h3>
+
+<p>I use this file to ensure that required variables are defined.</p>
+
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="c1">#</span>
+<span class="c1"># Checking that required variables are set</span>
+<span class="c1">#</span>
+<span class="p-Indicator">-</span> <span class="l-Scalar-Plain">name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">Checking that required variables are set</span>
+  <span class="l-Scalar-Plain">fail</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">msg=&quot;{{ item }} is not defined&quot;</span>
+  <span class="l-Scalar-Plain">when</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">not {{ item }}</span>
+  <span class="l-Scalar-Plain">with_items</span><span class="p-Indicator">:</span>
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">foobar_database</span>
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">foobar_deploy_user</span></code></pre></div>
+
+<p>Then, include this file in <code>tasks/main.yml</code>:</p>
+
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="p-Indicator">-</span> <span class="l-Scalar-Plain">include</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">check_vars.yml tags=foobar,foobar:check,check</span>
+<span class="p-Indicator">-</span> <span class="l-Scalar-Plain">include</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">foobar.yml tags=foobar</span></code></pre></div>
+
+<h3 id="templates"><code>templates/*</code></h3>
+
+<p>This is the place where templates (i.e. files with interpolated
+variables goes). While this is not necessary, I often reference them
+using a relative path like so:</p>
+
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="p-Indicator">-</span> <span class="l-Scalar-Plain">name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">Template foo</span>
+  <span class="l-Scalar-Plain">template</span><span class="p-Indicator">:</span> 
+    <span class="l-Scalar-Plain">src</span><span class="p-Indicator">:</span> <span class="s">&quot;../templates/foo.conf.j2&quot;</span>
+    <span class="l-Scalar-Plain">dest</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/some/place/in/the/node/filesystem/foo.conf</span></code></pre></div>
+
+<p>The goal of using relative path is to be able to hit <code>gf</code> in Vim and
+open the file directly. You can get rid of that and just use <code>src:
+foo.conf.j2</code>. It is just a readability/convenience tradeoff.</p>
+
+<p>The file name I use is the <strong>intended filename at the destination</strong>,
+appended with <code>.j2</code> so it is clear that it is a Jinja2 template, and
+easier to search (<code>find</code> or <code>locate</code>).</p>
+
+<p>Some folks like to replicate the destination hierarchy (e.g. <code>src: etc/sysconfig
+/network-scripts/ifcfg-ethx.cfg.j2</code>). This is a matter of taste, but personaly I
+don’t see the point of having those deep hierarchies in the role if the naming is correct.</p>
+
+<h3 id="varsmainyml"><code>vars/main.yml</code></h3>
+
+<p>It is sometimes difficult to grok the difference between
+<code>vars/main.yml</code> and <code>defaults/main.yml</code>. After all, they both contain
+variable assignements.</p>
+
+<p>I do not always use a <code>vars/main.yml</code>, but when I do, I put “constants
+like” variables in it. These are variables that are not intended to be
+overriden.</p>
+
+<p>For instance the github repository for a particular piece of code (e.g.
+your web application) will certainly go there. However, the version you
+want to deploy won’t.</p>
+
+<p>All in all, it is just a mechanism to take those values out of tasks files
+readability and role life cycle.</p>
+
+<h2 id="inventories-and-playbook-layout">Inventories and playbook layout</h2>
+
+<p>A playbook glues together roles and inventories. Thus playbooks depend on roles
+and inventories. But while you have mechanisms to list roles requirements in a
+playbook, you don’t have any for inventories.</p>
+
+<p>Since the playbook can not live without the targeted inventories I include my
+inventories in my playbooks.</p>
+
+<pre><code>playbook-foobar/
+├── ansible.cfg
+├── requirements.yml
+├── .imported_roles/
+├── inventories
+│   ├── development
+│   |   ├── group_vars
+│   |   │   └── all
+│   |   └── hosts
+│   ├── integration
+│   |   ├── group_vars
+│   |   │   └── all
+│   |   └── hosts
+│   └── production
+│       ├── group_vars
+│       │   └── all
+│       └── hosts    
+├── site.yml
+└── playbooks
+    ├── database.yml
+    └── stuff.yml
+</code></pre>
+
+<h3 id="ansiblecfg-importedroles-and-requirementsyml"><code>ansible.cfg</code>, <code>.imported_roles/</code> and <code>requirements.yml</code></h3>
+
+<p>This file controles ansible behaviour. You can have one in <code>/etc/ansible</code> or as
+a personal dotfile (<code>~/.ansible.cfg</code>). Adding an <code>ansible.cfg</code> file in the
+playbook root will ensure that the required settings for the playbook to run are
+really there. The precedence order for Ansible config files is<sup id="fnref:2"><a href="#fn:2" class="footnote">2</a></sup>:</p>
+
+<ol>
+  <li>ANSIBLE_CONFIG (an environment variable pointing to a file)</li>
+  <li>ansible.cfg (in the current directory)</li>
+  <li>.ansible.cfg (in the home directory)</li>
+  <li>/etc/ansible/ansible.cfg</li>
+</ol>
+
+<p>Ansible will use the first config file found.</p>
+
+<p>In this config file, I always set at least two options:</p>
+
+<div class="highlight"><pre><code class="language-ini" data-lang="ini"><span class="na">hostfile</span> <span class="o">=</span> <span class="s">./inventories/dev</span>
+<span class="na">roles_path</span> <span class="o">=</span> <span class="s">./.imported_roles:/some/dev/place/with/roles</span></code></pre></div>
+
+<p>The first one (<code>hostfile</code>) sets which inventory Ansible will use. More
+explanations will come below.</p>
+
+<p>The second one set the path where Ansible will look for roles. I typically set
+two directories here (separated by <code>:</code>, like shell’s <code>PATH</code>):</p>
+
+<ul>
+  <li>
+    <p>the first directory will be used by Ansible galaxy hold imported files. I 
+set it to <code>.imported_roles</code> but the name doesn’t matter. Don’t forget to add it to your playbook’s <code>.gitignore</code> though.</p>
+  </li>
+  <li>
+    <p>the second directory points to my roles developmenent directory path</p>
+  </li>
+</ul>
+
+<p>The advantages for this setup are two fold: first, you have a dedicated path,
+ignored by your SCM, where you will download roles. The roles will be searched
+there first. Secondly, if a role is not found, it will be searched in your role
+development directory. This let you hack on your roles while writing a playbook.
+You don’t need to go through a <em>commit/push/install</em> cycle when you are coding
+your roles for this playbook.</p>
+
+<p>Roles dependencies for your playbook are listed in <code>requirements.yml</code> and can be installed with <code>ansible-galaxy install -r requirements.yml</code>:</p>
+
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="c1"># Role on galaxy</span>
+<span class="p-Indicator">-</span> <span class="l-Scalar-Plain">you.rolename</span>
+<span class="c1"># Public role on github</span>
+<span class="p-Indicator">-</span> <span class="l-Scalar-Plain">src</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">https://github.com/erasme/role-public.git</span>
+<span class="c1"># Private role on github</span>
+<span class="p-Indicator">-</span> <span class="l-Scalar-Plain">src</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">git+ssh://git@github.com/you/role-private.git</span></code></pre></div>
+
+<h3 id="inventories-1"><code>inventories/</code></h3>
+
+<p>This directory holds all inventories you want to apply your playbook too. The
+most common pattern is to use per-environment inventories: one for
+<code>development</code>, one for <code>integration</code>, another for <code>production</code>, etc…</p>
+
+<p>Of course, the <code>hostfile</code> variable in <code>ansible.cfg</code> should point to
+<code>development</code> to avoid accidentaly messing with production. Executing the
+playbook on non-development inventories will force you tu use the <code>-i</code>, which is
+a good safety measure.</p>
+
+<p>While you can define variables in groups (in <code>group_vars</code>) and hosts (<code>host_vars</code>), you should stuff as much variables as possible in <code>group_vars/all</code>. The rationale is that it is much easier to find a variable when a single file is involved. Variables scattered in a dozen of files are <em>not</em> manageable.</p>
+
+<p>And when you’ll want to create an additional inventory (e.g. create <code>production</code>
+from <code>development</code>), it will be much easier to change a single file and set the
+variables to proper values than to do the same in several files.</p>
+
+<p>Note that <code>group_vars/all</code> can be a directory containing several files. I
+usually split variables in a clear text file (<code>group_vars/all/all</code>) and a
+ciphered one (<code>group_vars/all_secret</code>) using the transparent vaulting techniques
+described in<br />
+<a href="/articles/transparent-vault-revisited/">this post</a>.</p>
+
+<h3 id="siteyml-and-playbooks"><code>site.yml</code> and <code>playbooks/</code></h3>
+
+<p>This directory contains the playbookks themselves. I always create a “master” playbook called <code>site.yml</code> in the playbook root directory, which includes all other playbooks located in <code>playbooks/</code>. For instance:</p>
+
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="c1">#!/usr/bin/env ansible-playbook</span>
+
+<span class="p-Indicator">-</span> <span class="l-Scalar-Plain">include</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">playbooks/database.yml</span>
+<span class="p-Indicator">-</span> <span class="l-Scalar-Plain">include</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">playbooks/stuff.yml</span></code></pre></div>
+
+<p>The rationale is to be able to use <code>ansible-pull</code> easily if needed (<code>ansible-
+pull</code>, by default, tries to execute a playbook called<code>site.yml</code>). The other
+point is to split playbook in related parts.</p>
+
+<p>For instance, you could have a playbook the takes care of setting up the
+database, another that will set the OS level stuff (e.g. ssh keys, firewalling,
+…), another one that takes care of deploying your web application, etc… When
+needed, You can use all the playbooks at once with <code>site.yml</code>, or just focus on
+a specific problem running the appropriate playbook (no need to run the ssh-key
+setup if you’re just deploying the latest version of your web application).</p>
+
+<p>The shebang line at the top of the file (<code>#!/usr/bin/env ansible-playbook</code>) will
+make the playbook directly executable (adjust <code>ansible-playbook</code> path and <code>chmod
++x</code> the playbook file).</p>
+
+<h2 id="layout-antipatterns">Layout Antipatterns</h2>
+
+<p>When I started using Ansible, I cumulated several antipatterns at the
+same time: trying to emcompass all my infrastructure in a single
+inventory containing per-host fine grained variables, used in a single
+playbook, without using any role.</p>
+
+<p>While this sounds feasible, it is doomed to failure unless you manage a
+very small infrastructure. Let’s zoom in briefly on each mistake.</p>
+
+<h3 id="trying-to-encompass-all-your-infrastructure-in-one-playbook">Trying to encompass all your infrastructure in one playbook</h3>
+
+<p>Is is tempting to aim for a one-liner that will magically deploy all
+your infrastructure in one shot. This gives you some bragging rights at
+your next meetup, and feels like the ultimate sysadmin masterpiece.</p>
+
+<p>However, it has many drawbacks:</p>
+
+<ul>
+  <li>
+    <p>it will be slow: do you really want to run a playbook over dozens of
+more tasks or roles, just to change an entry in <code>/etc/hosts</code> ? Yes,
+there are workaround for this, but it will require some command line
+magic, a lot of thinking. </p>
+  </li>
+  <li>
+    <p>it mixes bananas and apples: you should strive for separation of
+concerns in your playbooks if you want be able to read them (and, as a
+consequence, maintain them).</p>
+  </li>
+</ul>
+
+<p>As a consequence, your infrastructure code will be unnecessary hard to
+test and maintain.</p>
+
+<h3 id="per-host-fine-grained-variables">Per-host fine grained variables</h3>
+
+<p>This is a corolary of the previous antipattern: when you try to
+encompass your whole infrastructure, you start to think, inheritance,
+variables overriding and refining.</p>
+
+<p>And while doing this, you add considerable complexity to your
+inventories. It is very hard to track down variables definitions when
+you overrides them in <code>group_vars/some_group</code>, <code>group_vars/all</code>,
+<code>hosts_vars/machine</code>, role defaults, …</p>
+
+<p>Now this can get even worse when you use the <code>hash_behavior: merge</code>
+Ansible configuration setting: it introduces more confusion, and makes
+your Ansible work potentially unshareable with people using
+<code>hash_behaviour: replace</code>. Since I am
+<a href="https://github.com/ansible/ansible/commit/e28e538c6ed7520ecef305c776eb6036aff42d06">guilty</a>
+on this one, it is time to make some apologies. Sorry folks. Michael
+DeHaan did not like it, and he was right.</p>
+
+<h3 id="single-playbook">Single playbook</h3>
+
+<p>A single playbook relates to the first Sin again, but also applies to
+more focused playbooks where you only deploy one thing. Splitting your
+playbooks between various logically related roles will fasten your
+deployments. Again, why running ssh key distribution, storage cluster
+deployment, web stack, middlewares and application when you just change
+the color of a button in your web app ?</p>
+
+<p>Split your playbook in related parts that reflects your stack
+architecture. They will be faster and easier to use.</p>
+
+<h3 id="no-roles-tasks-only">No roles (tasks only)</h3>
+
+<p>Well, this is obvious. Even if you don’t want to share, make roles and
+strive for code reuse. Reused code will save you time of course, but it
+is also battle tested since it is used more frequently.</p>
+
+<p>Tasks-only playbook can be used for a quick hit and run, solving a
+transient problem that doesn’t offer any code reuse opportunities.</p>
+
+<p>I also try to avoid tasks along roles in playbooks: this hurts the
+abstraction level you manage to build using roles. When thinking in
+terms of roles, you don’t need to think about the nitty gritty details
+of the roles when reading your playbooks. If your roles are thouroughly
+tested, you can read your infrastructure in seconds. Add tasks to the
+mix, and you loose this superpower.</p>
+
+<div class="footnotes">
+  <ol>
+    <li id="fn:1">
+      <p>Yes, you could separate your application server (e.g. php-fpm) and put it on a different machine than your webserver, it ll depends on your local context. <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
+    </li>
+    <li id="fn:2">
+      <p>http://docs.ansible.com/intro_configuration.html <a href="#fnref:2" class="reversefootnote">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+        
+      </div><!-- /.entry-content -->
+    </div><!-- /.entry-wrapper -->
+    <nav class="pagination" role="navigation">
+      
+        <a href="//leucos.github.io/decoupling-your-ansible-roles" class="btn" title="Decoupling your Ansible roles">Previous</a>
+      
+      
+    </nav><!-- /.pagination -->
+  </article>
+</div><!-- /#main -->
+
+<div class="footer-wrapper">
+  <footer role="contentinfo" class="entry-wrapper">
+    
+
+<span>&copy; 2015 Michel Blanc. Powered by <a href="http://jekyllrb.com" rel="nofollow">Jekyll</a> using the <a href="https://mmistakes.github.io/so-simple-theme/" rel="nofollow">So Simple Theme</a>.</span>
+<div class="social-icons">
+	<a href="http://twitter.com/b9m" title="Michel Blanc on Twitter" target="_blank"><i class="fa fa-twitter-square fa-2x"></i></a>
+	
+	
+	<a href="http://linkedin.com/in/michelblanc" title="Michel Blanc on LinkedIn" target="_blank"><i class="fa fa-linkedin-square fa-2x"></i></a>
+	<a href="http://stackoverflow.com/users/467722/leucos" title="Michel Blanc on StackExchange" target="_blank"><i class="fa fa-stack-exchange fa-2x"></i></a>
+	
+	
+	<a href="http://github.com/leucos" title="Michel Blanc on Github" target="_blank"><i class="fa fa-github-square fa-2x"></i></a>
+	
+  
+	
+  <a href="//leucos.github.io/feed.xml" title="Atom/RSS feed"><i class="fa fa-rss-square fa-2x"></i></a>
+</div><!-- /.social-icons -->
+
+  </footer>
+</div><!-- /.footer-wrapper -->
+
+<script type="text/javascript">
+  var BASE_URL = '//leucos.github.io';
+</script>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="//leucos.github.io/assets/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+<script src="//leucos.github.io/assets/js/scripts.min.js"></script>
+
+
+<!-- Asynchronous Google Analytics snippet -->
+<script>
+  var _gaq = _gaq || [];
+  var pluginUrl = 
+ '//www.google-analytics.com/plugins/ga/inpage_linkid.js';
+  _gaq.push(['_require', 'inpage_linkid', pluginUrl]);
+  _gaq.push(['_setAccount', 'UA-60810209-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+</body>
+</html>

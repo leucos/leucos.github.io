@@ -4,13 +4,504 @@
 <generator uri="https://github.com/jekyll/jekyll">Jekyll</generator>
 <link rel="self" type="application/atom+xml" href="//leucos.github.io/feed.xml" />
 <link rel="alternate" type="text/html" href="//leucos.github.io" />
-<updated>2015-07-01T08:39:06+02:00</updated>
+<updated>2015-07-05T20:08:11+02:00</updated>
 <id>//leucos.github.io/</id>
 <author>
   <name>Michel Blanc</name>
   <uri>//leucos.github.io/</uri>
   <email>mb@mbnet.fr</email>
 </author>
+
+
+  
+
+<entry>
+  <title type="html"><![CDATA[Laying out roles, inventories and playbooks]]></title>
+  <link rel="alternate" type="text/html" href="//leucos.github.io/ansible-files-layout" />
+  <id>//leucos.github.io/ansible-layout</id>
+  <published>2015-07-02T00:00:00+02:00</published>
+  <updated>2015-07-02T00:00:00+02:00</updated>
+  <author>
+    <name>Michel Blanc</name>
+    <uri>//leucos.github.io</uri>
+    <email>mb@mbnet.fr</email>
+  </author>
+  <content type="html">
+    &lt;p&gt;I have been writing playbooks for quite a while now. Along the way, I
+went through various stages, and used different ways to layout Ansible
+files. I guess that after going down this trial and error path, I
+finally came up with something I will stick to.&lt;/p&gt;
+
+&lt;p&gt;I am not saying that this is the be-all and end-all of Ansible files
+layout but may be it will fast forward you to a saner file layout, and
+you’ll be able to move on from there. This post will probably help you
+if you are new to Ansible, trying to figure out what to put and where.
+I hope it will prove usefull if you have some Ansible experience too.&lt;/p&gt;
+
+&lt;h2 id=&quot;some-terminology&quot;&gt;Some terminology&lt;/h2&gt;
+
+&lt;p&gt;In this post, I will mostly talk about 3 things: roles, inventories and
+playbooks. Other items do exist (plays, tasks, …) but those 3 elements
+shape the big picture of the layout.&lt;/p&gt;
+
+&lt;h3 id=&quot;roles&quot;&gt;Roles&lt;/h3&gt;
+
+&lt;p&gt;A role is a collection of tasks and templates (among other things, but
+those are the most common) focused on one very specific goal. For
+instance, you can have a role that installs nginx, another that deploys
+ssh keys for admins, etc…&lt;/p&gt;
+
+&lt;p&gt;Nginx role will install and configure nginx. Nothing else. It won’t
+create DNS entries, trim logs, add a ftp server or anything. It just
+installs nginx. Period.&lt;/p&gt;
+
+&lt;h3 id=&quot;inventories&quot;&gt;Inventories&lt;/h3&gt;
+
+&lt;p&gt;An inventory is a list of hosts, eventually assembled into groups, on
+which you will run ansible playbooks. Ansible automatically puts all defined
+hosts in the aptly named group &lt;code&gt;all&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;For instance, you could have hosts &lt;code&gt;www1&lt;/code&gt; and &lt;code&gt;www2&lt;/code&gt;, assembled in group
+&lt;code&gt;webservers&lt;/code&gt;, and later reference the group or individual hosts,
+depending on your needs.&lt;/p&gt;
+
+&lt;p&gt;Inventories can also come with variables applied to hosts or groups
+(including &lt;code&gt;all&lt;/code&gt;).&lt;/p&gt;
+
+&lt;p&gt;Inventories can be dynamic. If the inventory file is executable, Ansible
+will run it and use its output as the inventory (note that, in this
+case, the format is not the same as static inventory).&lt;/p&gt;
+
+&lt;p&gt;You can of course have multiple inventories, segregated from each other.
+We will take advantage from this later on.&lt;/p&gt;
+
+&lt;h3 id=&quot;playbooks&quot;&gt;Playbooks&lt;/h3&gt;
+
+&lt;p&gt;The last piece of the puzzle is the playbook. The playbook is the pivot
+between and inventory and roles. This is where you basically tell
+Ansible: &lt;em&gt;please install roles foo, bar and baz on machines alice, bob
+and charlie&lt;/em&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;role-layout&quot;&gt;Role layout&lt;/h2&gt;
+
+&lt;p&gt;Role layout is pretty well documented at Ansible website. A role contains
+several directories. All directories are optional besides &lt;code&gt;tasks&lt;/code&gt;. For each
+directory, the entry point is &lt;code&gt;main.yml&lt;/code&gt;. Thus, the only compulsory file in a
+role is &lt;code&gt;tasks/main.yml&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;ansible-foobar/
+├── defaults
+│   └── main.yml
+├── files
+├── handlers
+│   └── main.yml
+├── meta
+│   └── main.yml
+├── tasks
+│   ├── check_vars.yml
+│   ├── foobar.yml
+│   └── main.yml
+└── templates
+    └── foobar.conf.j2
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Let’s cover briefly the layout an see the function of each file and
+directory.&lt;/p&gt;
+
+&lt;h3 id=&quot;defaultsmainyml&quot;&gt;&lt;code&gt;defaults/main.yml&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;This directory contains defaults for variables used in roles. I
+encourage you to define every variable used in your role, for several
+reasons:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;this file will be a nice and always up to date reference list of
+settings configuration in your roles&lt;/li&gt;
+  &lt;li&gt;having configured variables will prevent your role failing in an
+uncontrolled way (more on this later).&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;If some of these variables are used in templates to generate config
+files, I highly encourage you to use your target OS defaults. The principle of
+least surprise should apply here.&lt;/p&gt;
+
+&lt;p&gt;Best practices assumes that you are using &lt;em&gt;pseudo-namespacing&lt;/em&gt; for your role’s variables (e.g. for role &lt;code&gt;foobar&lt;/code&gt;, all variables should begin with &lt;code&gt;foobar_&lt;/code&gt;) to avoid collisions with other roles.&lt;/p&gt;
+
+&lt;h3 id=&quot;files&quot;&gt;&lt;code&gt;files/&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;This directory holds files that do not require Jinja interpolation, and can be copied as-is on the remote nodes.&lt;/p&gt;
+
+&lt;h3 id=&quot;handlersmainyml&quot;&gt;&lt;code&gt;handlers/main.yml&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;This is where you define handlers that get notified by tasks. Handlers
+are just standard tasks. You can use &lt;code&gt;include&lt;/code&gt; in this file if you want
+to separate handlers (for different OSes versions for instances), but
+try to keep the file number as low as possible so you don’t end up
+hunting down stuff everywhere.&lt;/p&gt;
+
+&lt;p&gt;If your handler restarts any service, you have to make sure that the
+service config file is valid before attempting to restart it. Some
+daemons allow this (e.g. nginx, haproxy, apache). If your service does
+not, provide some fallback mechanism. You don’t want your playbook to
+screw up your running system because you typoed a configuration
+variable. See the &lt;code&gt;validate&lt;/code&gt; option in the 
+&lt;a href=&quot;http://docs.ansible.com/template_module.html&quot;&gt;template module&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Note that handlers are just standard tasks.&lt;/p&gt;
+
+&lt;h3 id=&quot;metamainyml&quot;&gt;&lt;code&gt;meta/main.yml&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;This metadata has (AFAIK) only two variables:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code&gt;galaxy_info&lt;/code&gt;: meta information for galaxy about your role. You just
+don’t need this if you don intend to push your role to Galaxy. For
+details on the format, see TODO: find ref&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;dependencies&lt;/code&gt;: what roles this role depends on.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The latter is of utmost importance, and setting it right deserves a blog
+post on it’s own. Until then, the rule of thumb to remember is to &lt;strong&gt;only
+include compulsory role dependencies for the target host&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;This means that adding &lt;code&gt;nginx&lt;/code&gt; dependency in a &lt;code&gt;php-fpm&lt;/code&gt; role sounds
+perfectly reasonable&lt;sup id=&quot;fnref:1&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;. However, adding a &lt;code&gt;mysql&lt;/code&gt; dependency to your
+web application role is not, because &lt;code&gt;mysql&lt;/code&gt; can be deployed on another
+server.&lt;/p&gt;
+
+&lt;h3 id=&quot;tasksmainyml&quot;&gt;&lt;code&gt;tasks/main.yml&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;This file is the tasks entry point. However, it should be mostly empty.
+Why ? Because you want to use Ansible tags. Tags are a great way to
+limit task execution for an Ansible run, where only tagged tasks are
+run.&lt;/p&gt;
+
+&lt;p&gt;For instance, in a playbook that deploys your application, you could
+choose to run only tasks regarding nginx.&lt;/p&gt;
+
+&lt;p&gt;The problem is that tagging every task in &lt;code&gt;main.yml&lt;/code&gt; would be
+cumbersome, error prone, and clutter the code unnecessarily.&lt;/p&gt;
+
+&lt;p&gt;The best way to tag all your tasks is to include your real task file
+from &lt;code&gt;tasks/main.yml&lt;/code&gt; and tag the whole file:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;include&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;foobar.yml tags=foobar&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Here, I name the real task file &lt;code&gt;foobar.yml&lt;/code&gt; with the same name as the role
+(quite handy with &lt;code&gt;find&lt;/code&gt; or &lt;code&gt;locate&lt;/code&gt;; no need to guess which &lt;code&gt;main.yml&lt;/code&gt; you are
+looking for) and apply the tag &lt;code&gt;foobar&lt;/code&gt; to all tasks in the role.&lt;/p&gt;
+
+&lt;p&gt;You can repeat this if you have a big list of tasks and want to split
+them in several files. You could, for instance, separate configuration
+and installation matters, and add another specific tag for each of them:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;include&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;foobar-install.yml tags=foobar,foobar:install&lt;/span&gt;
+&lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;include&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;foobar-config.yml tags=foobar,foobar:config&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Here I added two tags to the installation part (&lt;code&gt;foobar&lt;/code&gt; and
+&lt;code&gt;foobar:install&lt;/code&gt;), and two for the configuration part (&lt;code&gt;foobar&lt;/code&gt; and
+&lt;code&gt;foobar:config&lt;/code&gt;). &lt;/p&gt;
+
+&lt;p&gt;Note that the &lt;code&gt;:&lt;/code&gt; between, for instance, &lt;code&gt;foobar&lt;/code&gt; and &lt;code&gt;config&lt;/code&gt; has no
+meaning. Ansible treats tags as dumb strings. It is just a personnal
+convention (Redis like) for refining tags.&lt;/p&gt;
+
+&lt;p&gt;With this setup, you could run only the configuration part of your role
+by issuing:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;ansible-playbook playbook.yml -t foobar:config&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;The &lt;code&gt;-t&lt;/code&gt; and &lt;code&gt;-l&lt;/code&gt; combination is a very powerful weapon to target
+a specific host with a precise change (think of this as pointing to a
+matrix cell targetting host (i.e. row) and tag (i.e. column)).&lt;/p&gt;
+
+&lt;h3 id=&quot;taskscheckvarsyml&quot;&gt;&lt;code&gt;tasks/check_vars.yml&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;I use this file to ensure that required variables are defined.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# Checking that required variables are set&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;Checking that required variables are set&lt;/span&gt;
+  &lt;span class=&quot;l-Scalar-Plain&quot;&gt;fail&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;msg=&amp;quot;{{ item }} is not defined&amp;quot;&lt;/span&gt;
+  &lt;span class=&quot;l-Scalar-Plain&quot;&gt;when&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;not {{ item }}&lt;/span&gt;
+  &lt;span class=&quot;l-Scalar-Plain&quot;&gt;with_items&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;foobar_database&lt;/span&gt;
+    &lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;foobar_deploy_user&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Then, include this file in &lt;code&gt;tasks/main.yml&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;include&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;check_vars.yml tags=foobar,foobar:check,check&lt;/span&gt;
+&lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;include&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;foobar.yml tags=foobar&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;templates&quot;&gt;&lt;code&gt;templates/*&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;This is the place where templates (i.e. files with interpolated
+variables goes). While this is not necessary, I often reference them
+using a relative path like so:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;Template foo&lt;/span&gt;
+  &lt;span class=&quot;l-Scalar-Plain&quot;&gt;template&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; 
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;src&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;../templates/foo.conf.j2&amp;quot;&lt;/span&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;dest&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;/some/place/in/the/node/filesystem/foo.conf&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The goal of using relative path is to be able to hit &lt;code&gt;gf&lt;/code&gt; in Vim and
+open the file directly. You can get rid of that and just use &lt;code&gt;src:
+foo.conf.j2&lt;/code&gt;. It is just a readability/convenience tradeoff.&lt;/p&gt;
+
+&lt;p&gt;The file name I use is the &lt;strong&gt;intended filename at the destination&lt;/strong&gt;,
+appended with &lt;code&gt;.j2&lt;/code&gt; so it is clear that it is a Jinja2 template, and
+easier to search (&lt;code&gt;find&lt;/code&gt; or &lt;code&gt;locate&lt;/code&gt;).&lt;/p&gt;
+
+&lt;p&gt;Some folks like to replicate the destination hierarchy (e.g. &lt;code&gt;src: etc/sysconfig
+/network-scripts/ifcfg-ethx.cfg.j2&lt;/code&gt;). This is a matter of taste, but personaly I
+don’t see the point of having those deep hierarchies in the role if the naming is correct.&lt;/p&gt;
+
+&lt;h3 id=&quot;varsmainyml&quot;&gt;&lt;code&gt;vars/main.yml&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;It is sometimes difficult to grok the difference between
+&lt;code&gt;vars/main.yml&lt;/code&gt; and &lt;code&gt;defaults/main.yml&lt;/code&gt;. After all, they both contain
+variable assignements.&lt;/p&gt;
+
+&lt;p&gt;I do not always use a &lt;code&gt;vars/main.yml&lt;/code&gt;, but when I do, I put “constants
+like” variables in it. These are variables that are not intended to be
+overriden.&lt;/p&gt;
+
+&lt;p&gt;For instance the github repository for a particular piece of code (e.g.
+your web application) will certainly go there. However, the version you
+want to deploy won’t.&lt;/p&gt;
+
+&lt;p&gt;All in all, it is just a mechanism to take those values out of tasks files
+readability and role life cycle.&lt;/p&gt;
+
+&lt;h2 id=&quot;inventories-and-playbook-layout&quot;&gt;Inventories and playbook layout&lt;/h2&gt;
+
+&lt;p&gt;A playbook glues together roles and inventories. Thus playbooks depend on roles
+and inventories. But while you have mechanisms to list roles requirements in a
+playbook, you don’t have any for inventories.&lt;/p&gt;
+
+&lt;p&gt;Since the playbook can not live without the targeted inventories I include my
+inventories in my playbooks.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;playbook-foobar/
+├── ansible.cfg
+├── requirements.yml
+├── .imported_roles/
+├── inventories
+│   ├── development
+│   |   ├── group_vars
+│   |   │   └── all
+│   |   └── hosts
+│   ├── integration
+│   |   ├── group_vars
+│   |   │   └── all
+│   |   └── hosts
+│   └── production
+│       ├── group_vars
+│       │   └── all
+│       └── hosts    
+├── site.yml
+└── playbooks
+    ├── database.yml
+    └── stuff.yml
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;ansiblecfg-importedroles-and-requirementsyml&quot;&gt;&lt;code&gt;ansible.cfg&lt;/code&gt;, &lt;code&gt;.imported_roles/&lt;/code&gt; and &lt;code&gt;requirements.yml&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;This file controles ansible behaviour. You can have one in &lt;code&gt;/etc/ansible&lt;/code&gt; or as
+a personal dotfile (&lt;code&gt;~/.ansible.cfg&lt;/code&gt;). Adding an &lt;code&gt;ansible.cfg&lt;/code&gt; file in the
+playbook root will ensure that the required settings for the playbook to run are
+really there. The precedence order for Ansible config files is&lt;sup id=&quot;fnref:2&quot;&gt;&lt;a href=&quot;#fn:2&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;ANSIBLE_CONFIG (an environment variable pointing to a file)&lt;/li&gt;
+  &lt;li&gt;ansible.cfg (in the current directory)&lt;/li&gt;
+  &lt;li&gt;.ansible.cfg (in the home directory)&lt;/li&gt;
+  &lt;li&gt;/etc/ansible/ansible.cfg&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Ansible will use the first config file found.&lt;/p&gt;
+
+&lt;p&gt;In this config file, I always set at least two options:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ini&quot; data-lang=&quot;ini&quot;&gt;&lt;span class=&quot;na&quot;&gt;hostfile&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;./inventories/dev&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;roles_path&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;./.imported_roles:/some/dev/place/with/roles&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The first one (&lt;code&gt;hostfile&lt;/code&gt;) sets which inventory Ansible will use. More
+explanations will come below.&lt;/p&gt;
+
+&lt;p&gt;The second one set the path where Ansible will look for roles. I typically set
+two directories here (separated by &lt;code&gt;:&lt;/code&gt;, like shell’s &lt;code&gt;PATH&lt;/code&gt;):&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;the first directory will be used by Ansible galaxy hold imported files. I 
+set it to &lt;code&gt;.imported_roles&lt;/code&gt; but the name doesn’t matter. Don’t forget to add it to your playbook’s &lt;code&gt;.gitignore&lt;/code&gt; though.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;the second directory points to my roles developmenent directory path&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The advantages for this setup are two fold: first, you have a dedicated path,
+ignored by your SCM, where you will download roles. The roles will be searched
+there first. Secondly, if a role is not found, it will be searched in your role
+development directory. This let you hack on your roles while writing a playbook.
+You don’t need to go through a &lt;em&gt;commit/push/install&lt;/em&gt; cycle when you are coding
+your roles for this playbook.&lt;/p&gt;
+
+&lt;p&gt;Roles dependencies for your playbook are listed in &lt;code&gt;requirements.yml&lt;/code&gt; and can be installed with &lt;code&gt;ansible-galaxy install -r requirements.yml&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# Role on galaxy&lt;/span&gt;
+&lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;you.rolename&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# Public role on github&lt;/span&gt;
+&lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;src&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;https://github.com/erasme/role-public.git&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# Private role on github&lt;/span&gt;
+&lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;src&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;git+ssh://git@github.com/you/role-private.git&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;inventories-1&quot;&gt;&lt;code&gt;inventories/&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;This directory holds all inventories you want to apply your playbook too. The
+most common pattern is to use per-environment inventories: one for
+&lt;code&gt;development&lt;/code&gt;, one for &lt;code&gt;integration&lt;/code&gt;, another for &lt;code&gt;production&lt;/code&gt;, etc…&lt;/p&gt;
+
+&lt;p&gt;Of course, the &lt;code&gt;hostfile&lt;/code&gt; variable in &lt;code&gt;ansible.cfg&lt;/code&gt; should point to
+&lt;code&gt;development&lt;/code&gt; to avoid accidentaly messing with production. Executing the
+playbook on non-development inventories will force you tu use the &lt;code&gt;-i&lt;/code&gt;, which is
+a good safety measure.&lt;/p&gt;
+
+&lt;p&gt;While you can define variables in groups (in &lt;code&gt;group_vars&lt;/code&gt;) and hosts (&lt;code&gt;host_vars&lt;/code&gt;), you should stuff as much variables as possible in &lt;code&gt;group_vars/all&lt;/code&gt;. The rationale is that it is much easier to find a variable when a single file is involved. Variables scattered in a dozen of files are &lt;em&gt;not&lt;/em&gt; manageable.&lt;/p&gt;
+
+&lt;p&gt;And when you’ll want to create an additional inventory (e.g. create &lt;code&gt;production&lt;/code&gt;
+from &lt;code&gt;development&lt;/code&gt;), it will be much easier to change a single file and set the
+variables to proper values than to do the same in several files.&lt;/p&gt;
+
+&lt;p&gt;Note that &lt;code&gt;group_vars/all&lt;/code&gt; can be a directory containing several files. I
+usually split variables in a clear text file (&lt;code&gt;group_vars/all/all&lt;/code&gt;) and a
+ciphered one (&lt;code&gt;group_vars/all_secret&lt;/code&gt;) using the transparent vaulting techniques
+described in&lt;br /&gt;
+&lt;a href=&quot;/articles/transparent-vault-revisited/&quot;&gt;this post&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;siteyml-and-playbooks&quot;&gt;&lt;code&gt;site.yml&lt;/code&gt; and &lt;code&gt;playbooks/&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;This directory contains the playbookks themselves. I always create a “master” playbook called &lt;code&gt;site.yml&lt;/code&gt; in the playbook root directory, which includes all other playbooks located in &lt;code&gt;playbooks/&lt;/code&gt;. For instance:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span class=&quot;c1&quot;&gt;#!/usr/bin/env ansible-playbook&lt;/span&gt;
+
+&lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;include&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;playbooks/database.yml&lt;/span&gt;
+&lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;include&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;playbooks/stuff.yml&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The rationale is to be able to use &lt;code&gt;ansible-pull&lt;/code&gt; easily if needed (&lt;code&gt;ansible-
+pull&lt;/code&gt;, by default, tries to execute a playbook called&lt;code&gt;site.yml&lt;/code&gt;). The other
+point is to split playbook in related parts.&lt;/p&gt;
+
+&lt;p&gt;For instance, you could have a playbook the takes care of setting up the
+database, another that will set the OS level stuff (e.g. ssh keys, firewalling,
+…), another one that takes care of deploying your web application, etc… When
+needed, You can use all the playbooks at once with &lt;code&gt;site.yml&lt;/code&gt;, or just focus on
+a specific problem running the appropriate playbook (no need to run the ssh-key
+setup if you’re just deploying the latest version of your web application).&lt;/p&gt;
+
+&lt;p&gt;The shebang line at the top of the file (&lt;code&gt;#!/usr/bin/env ansible-playbook&lt;/code&gt;) will
+make the playbook directly executable (adjust &lt;code&gt;ansible-playbook&lt;/code&gt; path and &lt;code&gt;chmod
++x&lt;/code&gt; the playbook file).&lt;/p&gt;
+
+&lt;h2 id=&quot;layout-antipatterns&quot;&gt;Layout Antipatterns&lt;/h2&gt;
+
+&lt;p&gt;When I started using Ansible, I cumulated several antipatterns at the
+same time: trying to emcompass all my infrastructure in a single
+inventory containing per-host fine grained variables, used in a single
+playbook, without using any role.&lt;/p&gt;
+
+&lt;p&gt;While this sounds feasible, it is doomed to failure unless you manage a
+very small infrastructure. Let’s zoom in briefly on each mistake.&lt;/p&gt;
+
+&lt;h3 id=&quot;trying-to-encompass-all-your-infrastructure-in-one-playbook&quot;&gt;Trying to encompass all your infrastructure in one playbook&lt;/h3&gt;
+
+&lt;p&gt;Is is tempting to aim for a one-liner that will magically deploy all
+your infrastructure in one shot. This gives you some bragging rights at
+your next meetup, and feels like the ultimate sysadmin masterpiece.&lt;/p&gt;
+
+&lt;p&gt;However, it has many drawbacks:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;it will be slow: do you really want to run a playbook over dozens of
+more tasks or roles, just to change an entry in &lt;code&gt;/etc/hosts&lt;/code&gt; ? Yes,
+there are workaround for this, but it will require some command line
+magic, a lot of thinking. &lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;it mixes bananas and apples: you should strive for separation of
+concerns in your playbooks if you want be able to read them (and, as a
+consequence, maintain them).&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;As a consequence, your infrastructure code will be unnecessary hard to
+test and maintain.&lt;/p&gt;
+
+&lt;h3 id=&quot;per-host-fine-grained-variables&quot;&gt;Per-host fine grained variables&lt;/h3&gt;
+
+&lt;p&gt;This is a corolary of the previous antipattern: when you try to
+encompass your whole infrastructure, you start to think, inheritance,
+variables overriding and refining.&lt;/p&gt;
+
+&lt;p&gt;And while doing this, you add considerable complexity to your
+inventories. It is very hard to track down variables definitions when
+you overrides them in &lt;code&gt;group_vars/some_group&lt;/code&gt;, &lt;code&gt;group_vars/all&lt;/code&gt;,
+&lt;code&gt;hosts_vars/machine&lt;/code&gt;, role defaults, …&lt;/p&gt;
+
+&lt;p&gt;Now this can get even worse when you use the &lt;code&gt;hash_behavior: merge&lt;/code&gt;
+Ansible configuration setting: it introduces more confusion, and makes
+your Ansible work potentially unshareable with people using
+&lt;code&gt;hash_behaviour: replace&lt;/code&gt;. Since I am
+&lt;a href=&quot;https://github.com/ansible/ansible/commit/e28e538c6ed7520ecef305c776eb6036aff42d06&quot;&gt;guilty&lt;/a&gt;
+on this one, it is time to make some apologies. Sorry folks. Michael
+DeHaan did not like it, and he was right.&lt;/p&gt;
+
+&lt;h3 id=&quot;single-playbook&quot;&gt;Single playbook&lt;/h3&gt;
+
+&lt;p&gt;A single playbook relates to the first Sin again, but also applies to
+more focused playbooks where you only deploy one thing. Splitting your
+playbooks between various logically related roles will fasten your
+deployments. Again, why running ssh key distribution, storage cluster
+deployment, web stack, middlewares and application when you just change
+the color of a button in your web app ?&lt;/p&gt;
+
+&lt;p&gt;Split your playbook in related parts that reflects your stack
+architecture. They will be faster and easier to use.&lt;/p&gt;
+
+&lt;h3 id=&quot;no-roles-tasks-only&quot;&gt;No roles (tasks only)&lt;/h3&gt;
+
+&lt;p&gt;Well, this is obvious. Even if you don’t want to share, make roles and
+strive for code reuse. Reused code will save you time of course, but it
+is also battle tested since it is used more frequently.&lt;/p&gt;
+
+&lt;p&gt;Tasks-only playbook can be used for a quick hit and run, solving a
+transient problem that doesn’t offer any code reuse opportunities.&lt;/p&gt;
+
+&lt;p&gt;I also try to avoid tasks along roles in playbooks: this hurts the
+abstraction level you manage to build using roles. When thinking in
+terms of roles, you don’t need to think about the nitty gritty details
+of the roles when reading your playbooks. If your roles are thouroughly
+tested, you can read your infrastructure in seconds. Add tasks to the
+mix, and you loose this superpower.&lt;/p&gt;
+
+&lt;div class=&quot;footnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:1&quot;&gt;
+      &lt;p&gt;Yes, you could separate your application server (e.g. php-fpm) and put it on a different machine than your webserver, it ll depends on your local context. &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:2&quot;&gt;
+      &lt;p&gt;http://docs.ansible.com/intro_configuration.html &lt;a href=&quot;#fnref:2&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;
+
+    &lt;p&gt;&lt;a href=&quot;//leucos.github.io/ansible-files-layout&quot;&gt;Laying out roles, inventories and playbooks&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;//leucos.github.io&quot;&gt;Random stuff&lt;/a&gt; on July 02, 2015.&lt;/p&gt;
+  </content>
+</entry>
 
 
   
