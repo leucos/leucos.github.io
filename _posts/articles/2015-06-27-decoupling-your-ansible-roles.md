@@ -55,15 +55,15 @@ inventory.
 
 ## Another try
 
-So the best way is to have two variables, `php_fpm_environment`, which is
-meaningful, and `myapp_environment`. But now how can I sync them together ?
+So the best way is to have two variables, `php_fpm_environment` and `myapp_environment` which makes is meaningful. But now how can I sync
+them together ?
 
 One ways is to match them in your inventory, like so :
 
 {% highlight yaml %}
 # Somewhere in inventory
 myapp_environment: "production"
-php_fpm_environment: {% raw %}{{ myapp_environment }}{% endraw %}
+php_fpm_environment: "{% raw %}{{ myapp_environment }}{% endraw %}"
 {% endhighlight %}
 
 However, this has some drawbacks. For instance, we are still talking about
@@ -94,7 +94,7 @@ and somewhere in inventory:
 
 {% highlight yaml %}
 myapp_environment: "production"
-{% raw %}php_fpm_display_errors: {{ myapp_environment == "production" }}{% endraw %}
+{% raw %}php_fpm_display_errors: "{{ myapp_environment == 'production' }}"{% endraw %}
 {% endhighlight %}
 
 ## Streamlining our solution
@@ -110,7 +110,7 @@ dependencies, this configuration setting becomes completely transparent, and we 
 {% highlight yaml %}
 dependencies:
   - role: role-php-fpm
-    {% raw %}php_fpm_display_errors: {{ myapp_environment == "production" }}{% endraw %}
+    {% raw %}php_fpm_display_errors: "{{ myapp_environment == 'production' }}"{% endraw %}
 {% endhighlight %}
 
 Now, php-fpm role is completely decoupled from myapp role, and the production
