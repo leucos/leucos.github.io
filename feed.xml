@@ -4,7 +4,7 @@
 <generator uri="https://github.com/jekyll/jekyll">Jekyll</generator>
 <link rel="self" type="application/atom+xml" href="//leucos.github.io/feed.xml" />
 <link rel="alternate" type="text/html" href="//leucos.github.io" />
-<updated>2015-07-05T20:08:11+02:00</updated>
+<updated>2015-07-05T20:16:20+02:00</updated>
 <id>//leucos.github.io/</id>
 <author>
   <name>Michel Blanc</name>
@@ -556,14 +556,14 @@ inventory.&lt;/p&gt;
 
 &lt;h2 id=&quot;another-try&quot;&gt;Another try&lt;/h2&gt;
 
-&lt;p&gt;So the best way is to have two variables, &lt;code&gt;php_fpm_environment&lt;/code&gt;, which is
-meaningful, and &lt;code&gt;myapp_environment&lt;/code&gt;. But now how can I sync them together ?&lt;/p&gt;
+&lt;p&gt;So the best way is to have two variables, &lt;code&gt;php_fpm_environment&lt;/code&gt; and &lt;code&gt;myapp_environment&lt;/code&gt; which makes is meaningful. But now how can I sync
+them together ?&lt;/p&gt;
 
 &lt;p&gt;One ways is to match them in your inventory, like so :&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# Somewhere in inventory&lt;/span&gt;
 &lt;span class=&quot;l-Scalar-Plain&quot;&gt;myapp_environment&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;production&amp;quot;&lt;/span&gt;
-&lt;span class=&quot;l-Scalar-Plain&quot;&gt;php_fpm_environment&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p-Indicator&quot;&gt;{{&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;myapp_environment&lt;/span&gt; &lt;span class=&quot;p-Indicator&quot;&gt;}}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;span class=&quot;l-Scalar-Plain&quot;&gt;php_fpm_environment&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;{{&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;myapp_environment&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;}}&amp;quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;However, this has some drawbacks. For instance, we are still talking about
 &lt;code&gt;php_fpm_environment&lt;/code&gt; and, while not a big deal, it has no php-fpm
@@ -588,7 +588,7 @@ meaningful) and make it a boolean. We now can do this :&lt;/p&gt;
 &lt;p&gt;and somewhere in inventory:&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span class=&quot;l-Scalar-Plain&quot;&gt;myapp_environment&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;production&amp;quot;&lt;/span&gt;
-&lt;span class=&quot;l-Scalar-Plain&quot;&gt;php_fpm_display_errors&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p-Indicator&quot;&gt;{{&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;myapp_environment == &amp;quot;production&amp;quot;&lt;/span&gt; &lt;span class=&quot;p-Indicator&quot;&gt;}}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;span class=&quot;l-Scalar-Plain&quot;&gt;php_fpm_display_errors&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;{{&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;myapp_environment&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;production&amp;#39;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;}}&amp;quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2 id=&quot;streamlining-our-solution&quot;&gt;Streamlining our solution&lt;/h2&gt;
 
@@ -602,7 +602,7 @@ dependencies, this configuration setting becomes completely transparent, and we 
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span class=&quot;l-Scalar-Plain&quot;&gt;dependencies&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt;
   &lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;role&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;role-php-fpm&lt;/span&gt;
-    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;php_fpm_display_errors&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p-Indicator&quot;&gt;{{&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;myapp_environment == &amp;quot;production&amp;quot;&lt;/span&gt; &lt;span class=&quot;p-Indicator&quot;&gt;}}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+    &lt;span class=&quot;l-Scalar-Plain&quot;&gt;php_fpm_display_errors&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;{{&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;myapp_environment&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;production&amp;#39;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;}}&amp;quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Now, php-fpm role is completely decoupled from myapp role, and the production
 setting is completely transparent to the role user. Setting &lt;code&gt;myapp_environment&lt;/code&gt;

@@ -192,14 +192,14 @@ inventory.</p>
 
 <h2 id="another-try">Another try</h2>
 
-<p>So the best way is to have two variables, <code>php_fpm_environment</code>, which is
-meaningful, and <code>myapp_environment</code>. But now how can I sync them together ?</p>
+<p>So the best way is to have two variables, <code>php_fpm_environment</code> and <code>myapp_environment</code> which makes is meaningful. But now how can I sync
+them together ?</p>
 
 <p>One ways is to match them in your inventory, like so :</p>
 
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="c1"># Somewhere in inventory</span>
 <span class="l-Scalar-Plain">myapp_environment</span><span class="p-Indicator">:</span> <span class="s">&quot;production&quot;</span>
-<span class="l-Scalar-Plain">php_fpm_environment</span><span class="p-Indicator">:</span> <span class="p-Indicator">{{</span> <span class="nv">myapp_environment</span> <span class="p-Indicator">}}</span></code></pre></div>
+<span class="l-Scalar-Plain">php_fpm_environment</span><span class="p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">myapp_environment</span><span class="nv"> </span><span class="s">}}&quot;</span></code></pre></div>
 
 <p>However, this has some drawbacks. For instance, we are still talking about
 <code>php_fpm_environment</code> and, while not a big deal, it has no php-fpm
@@ -224,7 +224,7 @@ meaningful) and make it a boolean. We now can do this :</p>
 <p>and somewhere in inventory:</p>
 
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">myapp_environment</span><span class="p-Indicator">:</span> <span class="s">&quot;production&quot;</span>
-<span class="l-Scalar-Plain">php_fpm_display_errors</span><span class="p-Indicator">:</span> <span class="p-Indicator">{{</span> <span class="nv">myapp_environment == &quot;production&quot;</span> <span class="p-Indicator">}}</span></code></pre></div>
+<span class="l-Scalar-Plain">php_fpm_display_errors</span><span class="p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">myapp_environment</span><span class="nv"> </span><span class="s">==</span><span class="nv"> </span><span class="s">&#39;production&#39;</span><span class="nv"> </span><span class="s">}}&quot;</span></code></pre></div>
 
 <h2 id="streamlining-our-solution">Streamlining our solution</h2>
 
@@ -238,7 +238,7 @@ dependencies, this configuration setting becomes completely transparent, and we 
 
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">dependencies</span><span class="p-Indicator">:</span>
   <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">role</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">role-php-fpm</span>
-    <span class="l-Scalar-Plain">php_fpm_display_errors</span><span class="p-Indicator">:</span> <span class="p-Indicator">{{</span> <span class="nv">myapp_environment == &quot;production&quot;</span> <span class="p-Indicator">}}</span></code></pre></div>
+    <span class="l-Scalar-Plain">php_fpm_display_errors</span><span class="p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">myapp_environment</span><span class="nv"> </span><span class="s">==</span><span class="nv"> </span><span class="s">&#39;production&#39;</span><span class="nv"> </span><span class="s">}}&quot;</span></code></pre></div>
 
 <p>Now, php-fpm role is completely decoupled from myapp role, and the production
 setting is completely transparent to the role user. Setting <code>myapp_environment</code>
