@@ -2,13 +2,13 @@
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
 <title type="text">Random stuff</title>
 <generator uri="https://github.com/jekyll/jekyll">Jekyll</generator>
-<link rel="self" type="application/atom+xml" href="//leucos.github.io/feed.xml" />
-<link rel="alternate" type="text/html" href="//leucos.github.io" />
-<updated>2015-07-05T20:16:20+02:00</updated>
-<id>//leucos.github.io/</id>
+<link rel="self" type="application/atom+xml" href="https://leucos.github.io/feed.xml" />
+<link rel="alternate" type="text/html" href="https://leucos.github.io" />
+<updated>2015-07-06T16:48:29+02:00</updated>
+<id>https://leucos.github.io/</id>
 <author>
   <name>Michel Blanc</name>
-  <uri>//leucos.github.io/</uri>
+  <uri>https://leucos.github.io/</uri>
   <email>mb@mbnet.fr</email>
 </author>
 
@@ -17,13 +17,13 @@
 
 <entry>
   <title type="html"><![CDATA[Laying out roles, inventories and playbooks]]></title>
-  <link rel="alternate" type="text/html" href="//leucos.github.io/ansible-files-layout" />
-  <id>//leucos.github.io/ansible-layout</id>
+  <link rel="alternate" type="text/html" href="https://leucos.github.io/ansible-files-layout" />
+  <id>https://leucos.github.io/ansible-layout</id>
   <published>2015-07-02T00:00:00+02:00</published>
   <updated>2015-07-02T00:00:00+02:00</updated>
   <author>
     <name>Michel Blanc</name>
-    <uri>//leucos.github.io</uri>
+    <uri>https://leucos.github.io</uri>
     <email>mb@mbnet.fr</email>
   </author>
   <content type="html">
@@ -355,9 +355,11 @@ your roles for this playbook.&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# Role on galaxy&lt;/span&gt;
 &lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;you.rolename&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;# Public role on github&lt;/span&gt;
-&lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;src&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;https://github.com/erasme/role-public.git&lt;/span&gt;
+&lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;role-public&lt;/span&gt;
+  &lt;span class=&quot;l-Scalar-Plain&quot;&gt;src&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;https://github.com/erasme/role-public.git&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;# Private role on github&lt;/span&gt;
-&lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;src&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;git+ssh://git@github.com/you/role-private.git&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;span class=&quot;p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;role-private&lt;/span&gt;
+  &lt;span class=&quot;l-Scalar-Plain&quot;&gt;src&lt;/span&gt;&lt;span class=&quot;p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l-Scalar-Plain&quot;&gt;git+ssh://git@github.com/you/role-private.git&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h3 id=&quot;inventories-1&quot;&gt;&lt;code&gt;inventories/&lt;/code&gt;&lt;/h3&gt;
 
@@ -499,7 +501,7 @@ mix, and you loose this superpower.&lt;/p&gt;
   &lt;/ol&gt;
 &lt;/div&gt;
 
-    &lt;p&gt;&lt;a href=&quot;//leucos.github.io/ansible-files-layout&quot;&gt;Laying out roles, inventories and playbooks&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;//leucos.github.io&quot;&gt;Random stuff&lt;/a&gt; on July 02, 2015.&lt;/p&gt;
+    &lt;p&gt;&lt;a href=&quot;https://leucos.github.io/ansible-files-layout&quot;&gt;Laying out roles, inventories and playbooks&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;https://leucos.github.io&quot;&gt;Random stuff&lt;/a&gt; on July 02, 2015.&lt;/p&gt;
   </content>
 </entry>
 
@@ -508,13 +510,13 @@ mix, and you loose this superpower.&lt;/p&gt;
 
 <entry>
   <title type="html"><![CDATA[Decoupling your Ansible roles]]></title>
-  <link rel="alternate" type="text/html" href="//leucos.github.io/decoupling-your-ansible-roles" />
-  <id>//leucos.github.io/decoupling-your-ansible-roles</id>
+  <link rel="alternate" type="text/html" href="https://leucos.github.io/decoupling-your-ansible-roles" />
+  <id>https://leucos.github.io/decoupling-your-ansible-roles</id>
   <published>2015-06-27T00:00:00+02:00</published>
   <updated>2015-06-27T00:00:00+02:00</updated>
   <author>
     <name>Michel Blanc</name>
-    <uri>//leucos.github.io</uri>
+    <uri>https://leucos.github.io</uri>
     <email>mb@mbnet.fr</email>
   </author>
   <content type="html">
@@ -618,7 +620,7 @@ roles. Try to make them self sufficient, and avoid cross variables or
 even worse, group names in roles !&lt;/p&gt;
 
 
-    &lt;p&gt;&lt;a href=&quot;//leucos.github.io/decoupling-your-ansible-roles&quot;&gt;Decoupling your Ansible roles&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;//leucos.github.io&quot;&gt;Random stuff&lt;/a&gt; on June 27, 2015.&lt;/p&gt;
+    &lt;p&gt;&lt;a href=&quot;https://leucos.github.io/decoupling-your-ansible-roles&quot;&gt;Decoupling your Ansible roles&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;https://leucos.github.io&quot;&gt;Random stuff&lt;/a&gt; on June 27, 2015.&lt;/p&gt;
   </content>
 </entry>
 
@@ -627,14 +629,14 @@ even worse, group names in roles !&lt;/p&gt;
 
 <entry>
   <title type="html"><![CDATA[Transparent encryption with ansible vault revisited]]></title>
-  <link rel="alternate" type="text/html" href="//leucos.github.io/articles/transparent-vault-revisited/" />
-  <id>//leucos.github.io/articles/transparent-vault-revisited</id>
+  <link rel="alternate" type="text/html" href="https://leucos.github.io/articles/transparent-vault-revisited/" />
+  <id>https://leucos.github.io/articles/transparent-vault-revisited</id>
   <updated>2015-05-25T00:00:00-00:00</updated>
   <published>2015-05-26T00:00:00+02:00</published>
   
   <author>
     <name>Michel Blanc</name>
-    <uri>//leucos.github.io</uri>
+    <uri>https://leucos.github.io</uri>
     <email>mb@mbnet.fr</email>
   </author>
   <content type="html">
@@ -826,7 +828,7 @@ time, ensure that encryption works.&lt;/p&gt;
 &lt;script src=&quot;https://gist.github.com/leucos/1bfcfc7252e8c262956e.js&quot;&gt; &lt;/script&gt;
 
 
-    &lt;p&gt;&lt;a href=&quot;//leucos.github.io/articles/transparent-vault-revisited/&quot;&gt;Transparent encryption with ansible vault revisited&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;//leucos.github.io&quot;&gt;Random stuff&lt;/a&gt; on May 26, 2015.&lt;/p&gt;
+    &lt;p&gt;&lt;a href=&quot;https://leucos.github.io/articles/transparent-vault-revisited/&quot;&gt;Transparent encryption with ansible vault revisited&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;https://leucos.github.io&quot;&gt;Random stuff&lt;/a&gt; on May 26, 2015.&lt;/p&gt;
   </content>
 </entry>
 
@@ -835,14 +837,14 @@ time, ensure that encryption works.&lt;/p&gt;
 
 <entry>
   <title type="html"><![CDATA[Transparent encryption/decryption with ansible vault]]></title>
-  <link rel="alternate" type="text/html" href="//leucos.github.io/articles/ansible-transparent-vault/" />
-  <id>//leucos.github.io/articles/ansible-transparent-vault</id>
+  <link rel="alternate" type="text/html" href="https://leucos.github.io/articles/ansible-transparent-vault/" />
+  <id>https://leucos.github.io/articles/ansible-transparent-vault</id>
   <updated>2015-05-25T00:00:00-00:00</updated>
   <published>2015-05-25T00:00:00+02:00</published>
   
   <author>
     <name>Michel Blanc</name>
-    <uri>//leucos.github.io</uri>
+    <uri>https://leucos.github.io</uri>
     <email>mb@mbnet.fr</email>
   </author>
   <content type="html">
@@ -942,7 +944,7 @@ commit and decrypted after.&lt;/p&gt;
 &lt;script src=&quot;https://gist.github.com/leucos/405b406b9d6bde0c3d39.js&quot;&gt; &lt;/script&gt;
 
 
-    &lt;p&gt;&lt;a href=&quot;//leucos.github.io/articles/ansible-transparent-vault/&quot;&gt;Transparent encryption/decryption with ansible vault&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;//leucos.github.io&quot;&gt;Random stuff&lt;/a&gt; on May 25, 2015.&lt;/p&gt;
+    &lt;p&gt;&lt;a href=&quot;https://leucos.github.io/articles/ansible-transparent-vault/&quot;&gt;Transparent encryption/decryption with ansible vault&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;https://leucos.github.io&quot;&gt;Random stuff&lt;/a&gt; on May 25, 2015.&lt;/p&gt;
   </content>
 </entry>
 
@@ -951,14 +953,14 @@ commit and decrypted after.&lt;/p&gt;
 
 <entry>
   <title type="html"><![CDATA[Making dynamic inventory usable with Ansible and Digital Ocean]]></title>
-  <link rel="alternate" type="text/html" href="//leucos.github.io/articles/ansible-contract-inventory/" />
-  <id>//leucos.github.io/articles/ansible-contract-inventory</id>
+  <link rel="alternate" type="text/html" href="https://leucos.github.io/articles/ansible-contract-inventory/" />
+  <id>https://leucos.github.io/articles/ansible-contract-inventory</id>
   <updated>2015-05-11T00:00:00-00:00</updated>
   <published>2015-05-03T00:00:00+02:00</published>
   
   <author>
     <name>Michel Blanc</name>
-    <uri>//leucos.github.io</uri>
+    <uri>https://leucos.github.io</uri>
     <email>mb@mbnet.fr</email>
   </author>
   <content type="html">
@@ -1197,7 +1199,7 @@ rm &lt;span class=&quot;nv&quot;&gt;$INVENTORY&lt;/span&gt;/generated
 &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;All done !&amp;quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
-    &lt;p&gt;&lt;a href=&quot;//leucos.github.io/articles/ansible-contract-inventory/&quot;&gt;Making dynamic inventory usable with Ansible and Digital Ocean&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;//leucos.github.io&quot;&gt;Random stuff&lt;/a&gt; on May 03, 2015.&lt;/p&gt;
+    &lt;p&gt;&lt;a href=&quot;https://leucos.github.io/articles/ansible-contract-inventory/&quot;&gt;Making dynamic inventory usable with Ansible and Digital Ocean&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;https://leucos.github.io&quot;&gt;Random stuff&lt;/a&gt; on May 03, 2015.&lt;/p&gt;
   </content>
 </entry>
 
@@ -1206,13 +1208,13 @@ rm &lt;span class=&quot;nv&quot;&gt;$INVENTORY&lt;/span&gt;/generated
 
 <entry>
   <title type="html"><![CDATA[Testing Ansible roles, part 2]]></title>
-  <link rel="alternate" type="text/html" href="//leucos.github.io/articles/testing-ansible-roles-part-2/" />
-  <id>//leucos.github.io/articles/testing-ansible-roles-part-2</id>
+  <link rel="alternate" type="text/html" href="https://leucos.github.io/articles/testing-ansible-roles-part-2/" />
+  <id>https://leucos.github.io/articles/testing-ansible-roles-part-2</id>
   <published>2015-03-15T00:00:00+01:00</published>
   <updated>2015-03-15T00:00:00+01:00</updated>
   <author>
     <name>Michel Blanc</name>
-    <uri>//leucos.github.io</uri>
+    <uri>https://leucos.github.io</uri>
     <email>mb@mbnet.fr</email>
   </author>
   <content type="html">
@@ -1404,7 +1406,7 @@ it from the guard watch, the test will loop forever.&lt;/p&gt;
 &lt;p&gt;In the next part, we will add some more tests, and see what we can do with &lt;a href=&quot;rolespec&quot;&gt;RoleSpec&lt;/a&gt;.&lt;/p&gt;
 
 
-    &lt;p&gt;&lt;a href=&quot;//leucos.github.io/articles/testing-ansible-roles-part-2/&quot;&gt;Testing Ansible roles, part 2&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;//leucos.github.io&quot;&gt;Random stuff&lt;/a&gt; on March 15, 2015.&lt;/p&gt;
+    &lt;p&gt;&lt;a href=&quot;https://leucos.github.io/articles/testing-ansible-roles-part-2/&quot;&gt;Testing Ansible roles, part 2&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;https://leucos.github.io&quot;&gt;Random stuff&lt;/a&gt; on March 15, 2015.&lt;/p&gt;
   </content>
 </entry>
 
@@ -1413,13 +1415,13 @@ it from the guard watch, the test will loop forever.&lt;/p&gt;
 
 <entry>
   <title type="html"><![CDATA[Testing Ansible roles, part 1]]></title>
-  <link rel="alternate" type="text/html" href="//leucos.github.io/articles/testing-ansible-roles-part-1/" />
-  <id>//leucos.github.io/articles/testing-ansible-roles-part-1</id>
+  <link rel="alternate" type="text/html" href="https://leucos.github.io/articles/testing-ansible-roles-part-1/" />
+  <id>https://leucos.github.io/articles/testing-ansible-roles-part-1</id>
   <published>2015-03-14T00:00:00+01:00</published>
   <updated>2015-03-14T00:00:00+01:00</updated>
   <author>
     <name>Michel Blanc</name>
-    <uri>//leucos.github.io</uri>
+    <uri>https://leucos.github.io</uri>
     <email>mb@mbnet.fr</email>
   </author>
   <content type="html">
@@ -1636,7 +1638,7 @@ or not.&lt;/p&gt;
 &lt;p&gt;Our role is now ready. We can now setup the tooling for our tests as explained in &lt;a href=&quot;/articles/testing-ansible-roles-part-2/&quot;&gt;part 2&lt;/a&gt;&lt;/p&gt;
 
 
-    &lt;p&gt;&lt;a href=&quot;//leucos.github.io/articles/testing-ansible-roles-part-1/&quot;&gt;Testing Ansible roles, part 1&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;//leucos.github.io&quot;&gt;Random stuff&lt;/a&gt; on March 14, 2015.&lt;/p&gt;
+    &lt;p&gt;&lt;a href=&quot;https://leucos.github.io/articles/testing-ansible-roles-part-1/&quot;&gt;Testing Ansible roles, part 1&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;https://leucos.github.io&quot;&gt;Random stuff&lt;/a&gt; on March 14, 2015.&lt;/p&gt;
   </content>
 </entry>
 
@@ -1645,14 +1647,14 @@ or not.&lt;/p&gt;
 
 <entry>
   <title type="html"><![CDATA[Invalidating REDIS cache from Ruby]]></title>
-  <link rel="alternate" type="text/html" href="//leucos.github.io/articles/expiring-redis-cache-from-ruby/" />
-  <id>//leucos.github.io/articles/expiring-redis-cache-from-ruby</id>
+  <link rel="alternate" type="text/html" href="https://leucos.github.io/articles/expiring-redis-cache-from-ruby/" />
+  <id>https://leucos.github.io/articles/expiring-redis-cache-from-ruby</id>
   <updated>2015-03-01T00:00:00-00:00</updated>
   <published>2015-03-01T00:00:00+01:00</published>
   
   <author>
     <name>Michel Blanc</name>
-    <uri>//leucos.github.io</uri>
+    <uri>https://leucos.github.io</uri>
     <email>mb@mbnet.fr</email>
   </author>
   <content type="html">
@@ -1840,7 +1842,7 @@ monitor your Redis statistics for this.&lt;/p&gt;
   &lt;/ol&gt;
 &lt;/div&gt;
 
-    &lt;p&gt;&lt;a href=&quot;//leucos.github.io/articles/expiring-redis-cache-from-ruby/&quot;&gt;Invalidating REDIS cache from Ruby&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;//leucos.github.io&quot;&gt;Random stuff&lt;/a&gt; on March 01, 2015.&lt;/p&gt;
+    &lt;p&gt;&lt;a href=&quot;https://leucos.github.io/articles/expiring-redis-cache-from-ruby/&quot;&gt;Invalidating REDIS cache from Ruby&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;https://leucos.github.io&quot;&gt;Random stuff&lt;/a&gt; on March 01, 2015.&lt;/p&gt;
   </content>
 </entry>
 
@@ -1849,13 +1851,13 @@ monitor your Redis statistics for this.&lt;/p&gt;
 
 <entry>
   <title type="html"><![CDATA[Restoring Arch bootloader for the future self]]></title>
-  <link rel="alternate" type="text/html" href="//leucos.github.io/articles/restoring-arch-bootloader/" />
-  <id>//leucos.github.io/articles/restoring-arch-bootloader</id>
+  <link rel="alternate" type="text/html" href="https://leucos.github.io/articles/restoring-arch-bootloader/" />
+  <id>https://leucos.github.io/articles/restoring-arch-bootloader</id>
   <published>2015-02-14T00:00:00+01:00</published>
   <updated>2015-02-14T00:00:00+01:00</updated>
   <author>
     <name>Michel Blanc</name>
-    <uri>//leucos.github.io</uri>
+    <uri>https://leucos.github.io</uri>
     <email>mb@mbnet.fr</email>
   </author>
   <content type="html">
@@ -1893,7 +1895,7 @@ monitor your Redis statistics for this.&lt;/p&gt;
   &lt;/ol&gt;
 &lt;/div&gt;
 
-    &lt;p&gt;&lt;a href=&quot;//leucos.github.io/articles/restoring-arch-bootloader/&quot;&gt;Restoring Arch bootloader for the future self&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;//leucos.github.io&quot;&gt;Random stuff&lt;/a&gt; on February 14, 2015.&lt;/p&gt;
+    &lt;p&gt;&lt;a href=&quot;https://leucos.github.io/articles/restoring-arch-bootloader/&quot;&gt;Restoring Arch bootloader for the future self&lt;/a&gt; was originally published by Michel Blanc at &lt;a href=&quot;https://leucos.github.io&quot;&gt;Random stuff&lt;/a&gt; on February 14, 2015.&lt;/p&gt;
   </content>
 </entry>
 
