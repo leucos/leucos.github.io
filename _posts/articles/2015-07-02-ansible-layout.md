@@ -354,9 +354,11 @@ Roles dependencies for your playbook are listed in `requirements.yml` and can be
 # Role on galaxy
 - you.rolename
 # Public role on github
-- src: https://github.com/erasme/role-public.git
+- name: role-public
+  src: https://github.com/erasme/role-public.git
 # Private role on github
-- src: git+ssh://git@github.com/you/role-private.git
+- name: role-private
+  src: git+ssh://git@github.com/you/role-private.git
 
 {% endhighlight %}
 
