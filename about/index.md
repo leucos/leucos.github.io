@@ -36,7 +36,7 @@ playing with Docker & Rancher.
 Sold to CI/CD & MonitorAllTheThings™, I love the TICK stack coupled with
 Grafana.
 
-Working for http://devops.works on webstacks architecture, operations,
+Working for [devops.works](http://devops.works) on webstacks architecture, operations,
 monitoring, infrastructure and software delivery automation.
 
 You can hit me on [LinkedIn](https://fr.linkedin.com/in/michelblanc).
