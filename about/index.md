@@ -25,19 +25,19 @@ love iptables/iproute2.
 
 Worked extensively with various major web serving software (squid, apache,
 nginx, varnish, haproxy), sometimes in clustering or cloudified situations. I
-also _love_ Cyrus, Redis, Mysql/Percona/MariaDB and have good vibrations with
-postfix.
+also _love_ Cyrus, Redis, Mysql/Percona/MariaDB Elasticsearch and have
+good vibrations with postfix.
 
 Since I'm as lazy as a sysadmin can be, I have been focusing on Ansible starting
 in it's early days, writing deployment playbooks to blossom bare metal machines
-(or instances) into fully featured flowery clusters, and currently playing with Docker & Consul.
+(or instances) into fully featured flowery clusters, and currently
+playing with Docker & Rancher.
 
-I am pretty sold to CI/CD, microservices and MonitorAllTheThings™, and
-often discuss about that whith my rubberdyno.
+Sold to CI/CD & MonitorAllTheThings™, I love the TICK stack coupled with
+Grafana.
 
-I am open to freelance DevOps-oriented opportunitites on webstacks
-architecture, operations, monitoring, infrastructure and software
-delivery automation.
+Working for http://devops.works on webstacks architecture, operations,
+monitoring, infrastructure and software delivery automation.
 
 You can hit me on [LinkedIn](https://fr.linkedin.com/in/michelblanc).
 
