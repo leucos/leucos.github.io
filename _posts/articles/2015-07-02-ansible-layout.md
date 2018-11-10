@@ -227,7 +227,7 @@ matrix cell targetting host (i.e. row) and tag (i.e. column)).
 #### A word of caution
 
 Do not overdo tags: most of the time, this is YAGNI (You Ain't Gonna
-Need It). Create a tag if you're gonne need it. It can be hard to
+Need It). Create a tag if you're gonna need it. It can be hard to
 mentally predic what will happen if you do too much. Beware of the
 `never` tag, that will skip tasks **unless** you explicitely use another
 tag.
