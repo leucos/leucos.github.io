@@ -155,6 +155,12 @@ perfectly reasonable[^1]. However, adding a `mysql` dependency to your
 web application role is not, because `mysql` can be deployed on another
 server.
 
+**A note 3 years later**: I do not use dependencies anymore. I had issues
+regarding role's defaults variables behavior. Also, the playbook is the
+main focus area when building infrastructure code. Having explicit
+dependencies in the playbook is the way to go. No weird or hard to track
+magic.
+
 ### `tasks/main.yml`
 
 This file is the tasks entry point. However, it should be mostly empty.
@@ -173,7 +179,7 @@ from `tasks/main.yml` and tag the whole file:
 
 {% highlight yaml %}
 
-- include: foobar.yml
+- import_tasks: foobar.yml
   tags
     - foobar
 
@@ -189,12 +195,12 @@ and installation matters, and add another specific tag for each of them:
 
 {% highlight yaml %}
 
-- include: foobar-install.yml
+- import_tasks: foobar-install.yml
   tags
     - foobar
     - foobar:install
 
-- include: foobar-config.yml
+- import_tasks: foobar-config.yml
   tags:
     - foobar
     - foobar:config
@@ -230,7 +236,7 @@ For instance:
 
 {% highlight yaml %}
 
-- include: foobar-uninstall.yml
+- import_tasks: foobar-uninstall.yml
   tags
     - never
     - foobar
@@ -253,7 +259,7 @@ I use this file to ensure that required variables are defined.
 #
 - name: Checking that required variables are set
   fail: msg="{{ item }} is not defined"
-  when: not item
+  when: item not in vars
   loop:
     - foobar_database
     - foobar_deploy_user
@@ -266,13 +272,13 @@ Then, include this file in `tasks/main.yml`:
 
 {% highlight yaml %}
 
-- include: check_vars.yml
+- import_tasks: check_vars.yml
   tags:
     - foobar
     - foobar:check
     - check
 
-- include: foobar.yml
+- import_tasks: foobar.yml
   tags:
     - foobar
 
@@ -288,7 +294,7 @@ using a relative path like so:
 
 - name: Template foo
   template:
-    src: "../templates/foo.conf.j2"
+    src: ../templates/foo.conf.j2
     dest: /some/place/in/the/node/filesystem/foo.conf
 
 {% endhighlight %}
@@ -351,8 +357,8 @@ inventories in my playbooks.
     │       └── hosts
     ├── site.yml
     └── playbooks
-        ├── database.yml
-        └── stuff.yml
+        ├── 10_database.yml
+        └── 20_stuff.yml
 
 ### `ansible.cfg`, `.imported_roles/` and `requirements.yml`
 
@@ -404,7 +410,8 @@ development directory. This let you hack on your roles while writing a playbook.
 You don't need to go through a _commit/push/install_ cycle when you are coding
 your roles for this playbook.
 
-Roles dependencies for your playbook are listed in `requirements.yml` and can be installed with `ansible-galaxy install -r requirements.yml`:
+Roles dependencies for your playbook are listed in `requirements.yml`
+and can be installed with `ansible-galaxy install -r requirements.yml`:
 
 {% highlight yaml %}
 
@@ -430,7 +437,11 @@ Of course, the `hostfile` variable in `ansible.cfg` should point to
 playbook on non-development inventories will force you tu use the `-i`, which is
 a good safety measure.
 
-While you can define variables in groups (in `group_vars`) and hosts (`host_vars`), you should stuff as much variables as possible in `group_vars/all`. The rationale is that it is much easier to find a variable when a single file is involved. Variables scattered in a dozen of files are _not_ manageable.
+While you can define variables in groups (in `group_vars`) and hosts
+(`host_vars`), you should stuff as much variables as possible in
+`group_vars/all`. The rationale is that it is much easier to find a
+variable when a single file is involved. Variables scattered in a dozen
+of files are _not_ manageable.
 
 And when you'll want to create an additional inventory (e.g. create `production`
 from `development`), it will be much easier to change a single file and set the
@@ -439,19 +450,33 @@ variables to proper values than to do the same in several files.
 Note that `group_vars/all` can be a directory containing several files. I
 usually split variables in a clear text file (`group_vars/all/all`) and a
 ciphered one (`group_vars/all_secret`) using the transparent vaulting techniques
-described in  
+described in 
 [this post]({% post_url articles/2015-05-26-transparent-vault-revisited %}).
+
+**Note 3 years later**: now ansible allow you to vault a single variable in
+an inventory. Use it !
+
+Here is a handy bash alias that crypts text selected with a mouse:
+
+`alias vault_clip_crypt='echo Passing $(xclip -rmlastnl -o) to ansible-vault && echo -n "$(xclip -rmlastnl -o)" | ansible-vault encrypt_string'`
 
 ### `site.yml` and `playbooks/`
 
-This directory contains the playbookks themselves. I always create a "master" playbook called `site.yml` in the playbook root directory, which includes all other playbooks located in `playbooks/`. For instance:
+This directory contains the playbooks themselves. I always create a
+"master" playbook called `site.yml` in the playbook root directory,
+which includes all other playbooks located in `playbooks/`.
+
+I prefix playbooks with a number (Basic style) so I get a sense of the
+order playbook will be executed just by looking at `playbooks/` content.
+
+For instance:
 
 {% highlight yaml %}
 
 #!/usr/bin/env ansible-playbook
 
-- include: playbooks/database.yml
-- include: playbooks/stuff.yml
+- import_playbook: playbooks/10_database.yml
+- import_playbook: playbooks/20_stuff.yml
 
 {% endhighlight %}
 
@@ -468,7 +493,8 @@ setup if you're just deploying the latest version of your web application).
 
 The shebang line at the top of the file (`#!/usr/bin/env ansible-playbook`) will
 make the playbook directly executable (adjust `ansible-playbook` path and `chmod
-+x` the playbook file).
++x` the playbook file). You can still pass additional
+`ansible-playbook` parameters if required.
 
 ### `requirements.txt`
 
