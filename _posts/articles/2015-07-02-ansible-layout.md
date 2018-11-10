@@ -13,6 +13,8 @@ image:
   creditlink: http://pixabay.com/fr/users/Paramjeet-66854/.
 ---
 
+(revised 20181110 by @theenglishway suggestions)
+
 I have been writing playbooks for quite a while now. Along the way, I
 went through various stages, and used different ways to layout Ansible
 files. I guess that after going down this trial and error path, I
@@ -109,7 +111,9 @@ If some of these variables are used in templates to generate config
 files, I highly encourage you to use your target OS defaults. The principle of
 least surprise should apply here.
 
-Best practices assumes that you are using _pseudo-namespacing_ for your role's variables (e.g. for role `foobar`, all variables should begin with `foobar_`) to avoid collisions with other roles.
+Best practices assumes that you are using _pseudo-namespacing_ for your
+role's variables (e.g. for role `foobar`, all variables should begin
+with `foobar_`) to avoid collisions with other roles.
 
 ### `files/`
 
@@ -169,7 +173,9 @@ from `tasks/main.yml` and tag the whole file:
 
 {% highlight yaml %}
 
-- include: foobar.yml tags=foobar
+- include: foobar.yml
+  tags
+    - foobar
 
 {% endhighlight %}
 
@@ -182,13 +188,22 @@ them in several files. You could, for instance, separate configuration
 and installation matters, and add another specific tag for each of them:
 
 {% highlight yaml %}
-- include: foobar-install.yml tags=foobar,foobar:install
-- include: foobar-config.yml tags=foobar,foobar:config
+
+- include: foobar-install.yml
+  tags
+    - foobar
+    - foobar:install
+
+- include: foobar-config.yml
+  tags:
+    - foobar
+    - foobar:config
+
 {% endhighlight %}
 
 Here I added two tags to the installation part (`foobar` and
 `foobar:install`), and two for the configuration part (`foobar` and
-`foobar:config`). 
+`foobar:config`).
 
 Note that the `:` between, for instance, `foobar` and `config` has no
 meaning. Ansible treats tags as dumb strings. It is just a personnal
@@ -197,11 +212,33 @@ convention (Redis like) for refining tags.
 With this setup, you could run only the configuration part of your role
 by issuing:
 
-```ansible-playbook playbook.yml -t foobar:config```
+`ansible-playbook playbook.yml -t foobar:config`
 
 The `-t` and `-l` combination is a very powerful weapon to target
 a specific host with a precise change (think of this as pointing to a
 matrix cell targetting host (i.e. row) and tag (i.e. column)).
+
+#### A word of caution
+
+Do not overdo tags: most of the time, this is YAGNI (You Ain't Gonna
+Need It). Create a tag if you're gonne need it. It can be hard to
+mentally predic what will happen if you do too much. Beware of the
+`never` tag, that will skip tasks **unless** you explicitely use another
+tag.
+
+For instance:
+
+{% highlight yaml %}
+
+- include: foobar-uninstall.yml
+  tags
+    - never
+    - foobar
+
+{% endhighlight %}
+
+will execute tasks in `foobar-uninstall.yml` is tag `foobar` is
+specified at the command line.
 
 ### `tasks/check_vars.yml`
 
@@ -210,15 +247,17 @@ I use this file to ensure that required variables are defined.
 {% highlight yaml %}
 
 {% raw %}
+
 #
 # Checking that required variables are set
 #
 - name: Checking that required variables are set
   fail: msg="{{ item }} is not defined"
-  when: not {{ item }}
-  with_items:
+  when: not item
+  loop:
     - foobar_database
     - foobar_deploy_user
+
 {% endraw %}
 
 {% endhighlight %}
@@ -226,10 +265,18 @@ I use this file to ensure that required variables are defined.
 Then, include this file in `tasks/main.yml`:
 
 {% highlight yaml %}
-- include: check_vars.yml tags=foobar,foobar:check,check
-- include: foobar.yml tags=foobar
-{% endhighlight %}
 
+- include: check_vars.yml
+  tags:
+    - foobar
+    - foobar:check
+    - check
+
+- include: foobar.yml
+  tags:
+    - foobar
+
+{% endhighlight %}
 
 ### `templates/*`
 
@@ -240,7 +287,7 @@ using a relative path like so:
 {% highlight yaml %}
 
 - name: Template foo
-  template: 
+  template:
     src: "../templates/foo.conf.j2"
     dest: /some/place/in/the/node/filesystem/foo.conf
 
@@ -286,8 +333,9 @@ inventories in my playbooks.
 
     playbook-foobar/
     ├── ansible.cfg
-    ├── requirements.yml
-    ├── .imported_roles/
+    ├── requirements.txt
+    ├── roles/
+    │   └── requirements.yml
     ├── inventories
     │   ├── development
     │   |   ├── group_vars
@@ -300,7 +348,7 @@ inventories in my playbooks.
     │   └── production
     │       ├── group_vars
     │       │   └── all
-    │       └── hosts    
+    │       └── hosts
     ├── site.yml
     └── playbooks
         ├── database.yml
@@ -325,7 +373,7 @@ In this config file, I always set at least two options:
 {% highlight ini %}
 
 hostfile = ./inventories/dev
-roles_path = ./.imported_roles:/some/dev/place/with/roles
+roles_path = ./roles:/some/path/to/roles/repos
 
 {% endhighlight %}
 
@@ -335,10 +383,19 @@ explanations will come below.
 The second one set the path where Ansible will look for roles. I typically set
 two directories here (separated by `:`, like shell's `PATH`):
 
-- the first directory will be used by Ansible galaxy hold imported files. I 
-  set it to `.imported_roles` but the name doesn't matter. Don't forget to add it to your playbook's `.gitignore` though.
+- the first directory will be used by ansible galaxy to install imported
+  roles. I set it to `./roles` but the name doesn't matter. Don't forget
+  to add the directory content (except `requirements.yml`) in your
+  playbook's `.gitignore` like so:
 
-- the second directory points to my roles developmenent directory path
+```
+!/roles
+/roles/*
+!/roles/requirements.yml
+```
+
+- sometimes I add a second directory that points to my roles
+  developmenent directory path
 
 The advantages for this setup are two fold: first, you have a dedicated path,
 ignored by your SCM, where you will download roles. The roles will be searched
@@ -413,6 +470,25 @@ The shebang line at the top of the file (`#!/usr/bin/env ansible-playbook`) will
 make the playbook directly executable (adjust `ansible-playbook` path and `chmod
 +x` the playbook file).
 
+### `requirements.txt`
+
+This file contains the result of a `pip freeze`. I now only use `pip`
+under `virtualenv` to install ansible and required modules. It makes it
+really easy to switch ansible (and even python) version between
+projects.
+
+So when someone needs to work on this project, the workflow is simple:
+
+```bash
+git clone http://github.com/some/playbook-repos
+cd playbook-repos
+mkvirtualenv playbook-repos --no-site-packages
+pip install -r requirements.txt
+ansible-galaxy install -r roles/requirements.yml
+```
+
+and you're good to go.
+
 ## Layout Antipatterns
 
 When I started using Ansible, I cumulated several antipatterns at the
@@ -434,7 +510,7 @@ However, it has many drawbacks:
 - it will be slow: do you really want to run a playbook over dozens of
   more tasks or roles, just to change an entry in `/etc/hosts` ? Yes,
 there are workaround for this, but it will require some command line
-magic, a lot of thinking. 
+magic, a lot of thinking.
 
 - it mixes bananas and apples: you should strive for separation of
   concerns in your playbooks if you want be able to read them (and, as a
