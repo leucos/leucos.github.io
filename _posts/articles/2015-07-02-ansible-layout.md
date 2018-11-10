@@ -13,7 +13,7 @@ image:
   creditlink: http://pixabay.com/fr/users/Paramjeet-66854/.
 ---
 
-(revised 20181110 by @theenglishway suggestions)
+*(revised 20181110 per @theenglishway suggestions)*
 
 I have been writing playbooks for quite a while now. Along the way, I
 went through various stages, and used different ways to layout Ansible
