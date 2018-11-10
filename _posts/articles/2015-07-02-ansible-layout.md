@@ -180,7 +180,7 @@ from `tasks/main.yml` and tag the whole file:
 {% highlight yaml %}
 
 - import_tasks: foobar.yml
-  tags
+  tags:
     - foobar
 
 {% endhighlight %}
@@ -196,7 +196,7 @@ and installation matters, and add another specific tag for each of them:
 {% highlight yaml %}
 
 - import_tasks: foobar-install.yml
-  tags
+  tags:
     - foobar
     - foobar:install
 
@@ -228,7 +228,7 @@ matrix cell targetting host (i.e. row) and tag (i.e. column)).
 
 Do not overdo tags: most of the time, this is YAGNI (You Ain't Gonna
 Need It). Create a tag if you're gonna need it. It can be hard to
-mentally predic what will happen if you do too much. Beware of the
+mentally predict what will happen if you do too much. Beware of the
 `never` tag, that will skip tasks **unless** you explicitely use another
 tag.
 
@@ -243,7 +243,7 @@ For instance:
 
 {% endhighlight %}
 
-will execute tasks in `foobar-uninstall.yml` is tag `foobar` is
+will execute tasks in `foobar-uninstall.yml` if tag `foobar` is
 specified at the command line.
 
 ### `tasks/check_vars.yml`
