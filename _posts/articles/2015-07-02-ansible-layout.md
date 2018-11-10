@@ -367,10 +367,10 @@ a personal dotfile (`~/.ansible.cfg`). Adding an `ansible.cfg` file in the
 playbook root will ensure that the required settings for the playbook to run are
 really there. The precedence order for Ansible config files is[^2]:
 
-1. ANSIBLE_CONFIG (an environment variable pointing to a file)
-2. ansible.cfg (in the current directory)
-3. .ansible.cfg (in the home directory)
-4. /etc/ansible/ansible.cfg
+1. `ANSIBLE_CONFIG` (an environment variable pointing to a file)
+2. `ansible.cfg` (in the current directory)
+3. `.ansible.cfg` (in the home directory)
+4. `/etc/ansible/ansible.cfg`
 
 Ansible will use the first config file found.
 
