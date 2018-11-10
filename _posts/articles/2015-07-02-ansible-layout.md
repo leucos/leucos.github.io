@@ -360,7 +360,7 @@ inventories in my playbooks.
         ├── 10_database.yml
         └── 20_stuff.yml
 
-### `ansible.cfg`, `.imported_roles/` and `requirements.yml`
+### `ansible.cfg`, `roles/` and `roles/requirements.yml`
 
 This file controles ansible behaviour. You can have one in `/etc/ansible` or as
 a personal dotfile (`~/.ansible.cfg`). Adding an `ansible.cfg` file in the
